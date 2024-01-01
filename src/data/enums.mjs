@@ -20,6 +20,28 @@ const Piece = {
 }
 
 /**
+ * Converts a piece [p] to its string representation.
+ */
+function pieceToString(p) {
+  switch(p) {
+    case Piece.W_PAWN: return "P";
+    case Piece.W_ROOK: return "R";
+    case Piece.W_KNIGHT: return "N";
+    case Piece.W_BISHOP: return "B";
+    case Piece.W_QUEEN: return "Q";
+    case Piece.W_KING: return "K";
+    case Piece.B_PAWN: return "p";
+    case Piece.B_ROOK: return "r";
+    case Piece.B_KNIGHT: return "n";
+    case Piece.B_BISHOP: return "b";
+    case Piece.B_QUEEN: return "q";
+    case Piece.B_KING: return "k";
+    case Piece.NULL: return " ";
+    default: throw "Incomplete case match: " + p;
+  }
+}
+
+/**
  * Enum containing players' colors. NONE represents a "neutral" color.
  */
 const Color = {
@@ -63,4 +85,4 @@ const DELAY = 2000;
 const ELIXIR = 4000;
 const BAR_MAX = 10;
 
-export {Piece, Color, colorOf, MoveType, URL, DELAY, ELIXIR, BAR_MAX};
+export {Piece, pieceToString, Color, colorOf, MoveType, URL, DELAY, ELIXIR, BAR_MAX};

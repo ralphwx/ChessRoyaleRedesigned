@@ -1,70 +1,6 @@
 import {ChessBoard} from "../data/chess.mjs";
 import {Piece, Color, colorOf, MoveType} from "../data/enums.mjs";
-
-let correct = 0;
-let total = 0;
-
-function test(name, code) {
-  total++;
-  try {
-    let result = code();
-    if(result) {
-      console.log(name + ": PASS");
-      correct++;
-    } else console.log(name + ": FAIL");
-  } catch(error) {
-    console.log(name + ": CRASHED");
-    console.log(error);
-  }
-}
-
-function checkEq(b1, b2) {
-  for(let r = 0; r < 8; r++) {
-    for(let c = 0; c < 8; c++) {
-      if(b1.pieceAt(r, c) !== b2.pieceAt(r, c)) return false;
-    }
-  }
-  return true;
-}
-
-function pieceString(p) {
-  switch(p) {
-    case Piece.W_PAWN: return "P";
-    case Piece.W_ROOK: return "R";
-    case Piece.W_KNIGHT: return "N";
-    case Piece.W_BISHOP: return "B";
-    case Piece.W_QUEEN: return "Q";
-    case Piece.W_KING: return "K";
-    case Piece.B_PAWN: return "p";
-    case Piece.B_ROOK: return "r";
-    case Piece.B_KNIGHT: return "n";
-    case Piece.B_BISHOP: return "b";
-    case Piece.B_QUEEN: return "q";
-    case Piece.B_KING: return "k";
-    case Piece.NULL: return " ";
-    default: throw "Incomplete case match: " + p;
-  }
-}
-function checkEqStr(board, str) {
-  if(str.length !== 64) throw "Incorrect str len";
-  for(let r = 0; r < 8; r++) {
-    for(let c = 0; c < 8; c++) {
-      if(pieceString(board.pieceAt(r, c)) !== str[8 * r + c]) return false;
-    }
-  }
-  return true;
-}
-function render(board) {
-  let output = [];
-  for(let r = 7; r >= 0; r--) {
-    for(let c = 0; c < 8; c++) {
-      if(board.pieceAt(r, c) === Piece.NULL) output.push("/");
-      else output.push(pieceString(board.pieceAt(r, c)));
-    }
-    output.push("\n");
-  }
-  console.log(output.join(""));
-}
+import {test, checkEq, checkEqStr, printBoard, printResults} from "./test_framework.mjs";
 
 let t1 = () => {
   let output = true;
@@ -329,4 +265,4 @@ test("en passant 2", t14);
 test("illegal en passant 5", t15);
 test("en passant 3", t16);
 test("black kingside castle", t17);
-console.log(correct + "/" + total + " tests passed");
+printResults();
