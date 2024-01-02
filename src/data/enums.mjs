@@ -85,4 +85,13 @@ const DELAY = 2000;
 const ELIXIR = 4000;
 const BAR_MAX = 10;
 
-export {Piece, pieceToString, Color, colorOf, MoveType, URL, DELAY, ELIXIR, BAR_MAX};
+/**
+ * Enum representing types of logins
+ */
+const LoginType = {
+  CREATE: 0,
+  LOGIN: 1,
+  GUEST: 2,
+}
+
+export {Piece, pieceToString, Color, colorOf, MoveType, URL, DELAY, ELIXIR, BAR_MAX, LoginType};
