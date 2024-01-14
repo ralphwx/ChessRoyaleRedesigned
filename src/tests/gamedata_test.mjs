@@ -103,6 +103,79 @@ let t9 = () => {
   return checkEqStr(state.getBoard(), "RNBQKBNRPPP PPPP           P                    pppppppprnbqkbnr");
 }
 
+let t10 = () => {
+  let state = new GameData(-1);
+  state.move(new Move(Color.WHITE, ELIXIR, 1, 4, 3, 4));
+  state.move(new Move(Color.BLACK, ELIXIR * 1.2, 6, 4, 4, 4));
+  state.move(new Move(Color.WHITE, ELIXIR * 2, 0, 1, 2, 2));
+  state.move(new Move(Color.BLACK, ELIXIR * 2.2, 7, 1, 5, 2));
+  let moves_since_1 = state.movesSince(1);
+  if(moves_since_1[0].color !== Color.BLACK) return false;
+  if(moves_since_1[0].iRow !== 6) return false;
+  if(moves_since_1[1].color !== Color.WHITE) return false;
+  if(moves_since_1[1].fRow !== 2) return false;
+  if(moves_since_1.length !== 3) return false;
+  return true;
+}
+
+let t11 = () => {
+  let state = new GameData(-1);
+  state.move(new Move(Color.WHITE, ELIXIR, 1, 4, 3, 4));
+  state.move(new Move(Color.BLACK, ELIXIR * 1.2, 6, 4, 4, 4));
+  state.move(new Move(Color.WHITE, ELIXIR * 2, 0, 1, 2, 2));
+  state.move(new Move(Color.BLACK, ELIXIR * 2.2, 7, 1, 5, 2));
+  let moves_since_10 = state.movesSince(10);
+  return moves_since_10.length === 0;
+}
+
+let t12 = () => {
+  let state = new GameData(-1);
+  state.move(new Move(Color.WHITE, ELIXIR, 1, 4, 3, 4));
+  state.move(new Move(Color.BLACK, ELIXIR * 1.2, 6, 4, 4, 4));
+  state.move(new Move(Color.WHITE, ELIXIR * 2, 0, 1, 2, 2));
+  state.move(new Move(Color.BLACK, ELIXIR * 2.2, 7, 1, 5, 2));
+  let moves_since_zero = state.movesSince(0);
+  if(moves_since_zero.length !== 4) return false;
+  if(moves_since_zero[0].color !== Color.WHITE) return false;
+  if(moves_since_zero[0].iRow !== 1) return false;
+  if(moves_since_zero[1].color !== Color.BLACK) return false;
+  if(moves_since_zero[1].fRow !== 4) return false;
+  if(moves_since_zero[2].iCol !== 1) return false;
+  if(moves_since_zero[3].fCol !== 2) return false;
+  return true;
+}
+
+let t13 = () => {
+  let data1 = new GameData(-1);
+  let data2 = new GameData(-1);
+  data1.addListener((i, moves) => {
+    data2.rewriteMoves(data2.history.length - i, moves);
+  });
+  data1.move(new Move(Color.WHITE, ELIXIR * 1.2, 1, 4, 3, 4));
+  data1.move(new Move(Color.BLACK, ELIXIR, 6, 4, 4, 4));
+  data1.move(new Move(Color.WHITE, ELIXIR * 2, 0, 6, 2, 5));
+  data1.move(new Move(Color.BLACK, ELIXIR * 2.2, 7, 1, 5, 2));
+  return checkEq(data1.getBoard(), data2.getBoard());
+}
+
+let t14 = () => {
+  let data1 = new GameData(-1);
+  let data2 = new GameData(-1);
+  data1.move(new Move(Color.WHITE, ELIXIR, 1, 4, 3, 4));
+  data1.move(new Move(Color.BLACK, ELIXIR * 1.2, 6, 4, 4, 4));
+  data1.addListener((i, moves) => {
+    let starti = data2.history.length - i;
+    if(starti < 0) {
+      starti = 0;
+      moves = data1.movesSince(data2.history.length - 1);
+    }
+    data2.rewriteMoves(starti, moves);
+  });
+  data1.move(new Move(Color.WHITE, ELIXIR * 2, 0, 6, 2, 5));
+  data1.move(new Move(Color.BLACK, ELIXIR * 2.2, 7, 1, 5, 2));
+  return checkEq(data1.getBoard(), data2.getBoard());
+}
+
 test("normal gameplay", t1);
 test("out of order gameplay", t2);
 test("past invaludates future", t3);
@@ -112,4 +185,9 @@ test("motion sickness", t6);
 test("excess elixir cap", t7);
 test("invalid chess moves", t8);
 test("past consumes future elixir", t9);
+test("movesSince test, normal case", t10);
+test("movesSince future = empty", t11);
+test("movesSince zero = all", t12);
+test("board synchronization 1", t13);
+test("board synchronization 2", t14);
 printResults();

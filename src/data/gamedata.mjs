@@ -233,8 +233,10 @@ class GameData {
       l(outi, outMoves);
     }
   }
-  //removes the last [i] states from this game's history, then makes the moves
-  //[newMoves]
+  /**
+   * Removes the last [i] states from this game's history, then makes the
+   * moves [newMoves]
+   */
   rewriteMoves(i, newMoves) {
     let startState = this.history;
     let outi = startState.length - i;
@@ -249,17 +251,23 @@ class GameData {
     }
   }
   /**
+   * Returns the list of all [Move] objects in the history, starting from
+   * the [i]th move (inclusive, index starting from zero). If [i] is out of
+   * bounds, empty list is returned; if [i] is negative, [i] is treated as 0.
+   */
+  movesSince(i) {
+    let h = this.history.head.moveHistory;
+    let output = [];
+    while(!h.isNil() && h.length > i) {
+      output.push(h.head);
+      h = h.tail;
+    }
+    return output.reverse();
+  }
+  /**
    * Converts this object to a string for debugging purposes.
    */
   toString() {
-//    let moves = [];
-//    let movesHT = this.history.head.moveHistory;
-//    while(!movesHT.isNil()) {
-//      moves.push(movesHT.head);
-//      movesHT = movesHT.tail;
-//    }
-//    moves.reverse();
-//    return JSON.stringify(moves);
     let output = [];
     let h = this.history;
     while(!h.isNil()) {

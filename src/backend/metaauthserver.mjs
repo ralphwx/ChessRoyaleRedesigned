@@ -1,6 +1,6 @@
 
 import {UserManager} from "./users.mjs";
-import {SocketManager} from "./socketmanager.mjs";
+import {MultiMap} from "../data/maps.mjs";
 import {Server} from "socket.io";
 import {LoginType} from "../data/enums.mjs";
 import {generateGuestName} from "./guestid.mjs";
@@ -29,7 +29,7 @@ class MetaAuthServer {
     this.io = new Server(server);
     this.eventHandlers = [];
     this.users = new UserManager(userpath);
-    this.socketmap = new SocketManager();
+    this.socketmap = new MultiMap();
 
     this.io.on("connection", (socket) => {
       let user = null;
@@ -64,14 +64,17 @@ class MetaAuthServer {
        * to log in, create an account, or play as guest. If playing as guest,
        * the [username] and [password] fields are ignored.
        * 
-       * [ack] is an acknowledgement function that takes two arguments. The
+       * [ack] is an acknowledgement function that takes three arguments. The
        * first is a bool for whether the login attempt was successful. If the
        * login was not successful, the second argument is the corresponding
        * error message; otherwise, the second argument is the username assigned
        * to the connecting socket ([username] if creating account or logging in,
        * or some randomly generated guest username if connecting as guest).
+       * The third argument is an object with properties [serverReceiveTime]
+       * and [serverSendTime], but it is sent only on successful login.
        */
       socket.on("login", (username, password, type, ack) => {
+        let receiveTime = Date.now();
         if(user !== null) ack(false);
         if(type === LoginType.CREATE) {
           if(!this.users.validUsername(username)) {
@@ -91,7 +94,11 @@ class MetaAuthServer {
             return;
           }
           this.users.createUser(username, password);
-          ack(true, username);
+          let times = {
+            serverReceiveTime: receiveTime,
+            serverSendTime: Date.now(),
+          };
+          ack(true, username, times);
           user = username;
           this.socketmap.add(user, socket);
           return;
@@ -99,7 +106,11 @@ class MetaAuthServer {
           if(this.users.authenticate(username, password)) {
             user = username;
             this.socketmap.add(user, socket);
-            ack(true, user);
+            let times = {
+              serverReceiveTime: receiveTime,
+              serverSendTime: Date.now(),
+            };
+            ack(true, user, times);
           } else {
             if(!this.users.userExists(username)) {
               ack(false, "User '" + username + "' does not exist");
@@ -110,7 +121,12 @@ class MetaAuthServer {
         } else {
           user = generateGuestName();
           isGuest = true;
-          ack(true, user);
+          this.socketmap.add(user, socket);
+          let times = {
+            serverReceiveTime: receiveTime,
+            serverSendTime: Date.now(),
+          };
+          ack(true, user, times);
         }
       });
       socket.on("disconnect", () => {
@@ -138,16 +154,21 @@ class MetaAuthServer {
     this.eventHandlers.push([eventName, func]);
   }
   
-  //notifies the user [user] of the event [event] with arguments [data]
-  //sends out one notification per socket.
+  /**
+   * Sends event [eventName] with corresponding data [data] to all sockets
+   * associated with user [user].
+   * 
+   * Implementation note: metadata is not sent from server to client.
+   */
   notify(user, eventName, data) {
     for(let socket of this.socketmap.get(user)) {
       socket.emit(eventName, data);
     }
   }
 
-  //returns whether the user [user] is online. If the user does not exist, then
-  //returns false.
+  /**
+   * Returns whether a user with identifier [user] is online.
+   */
   isOnline(user) {
     return this.socketmap.get(user).length > 0;
   }
