@@ -8,3 +8,13 @@
   stop spectating ...
   Design decisions surrounding spectator mode can be put off for the future,
   but for now, we can identify games by user instead of by some generated id.
+
+- Implement rematch as a private challenge sent from one person to another?
+  That way they can view the private challenge even if they're in the lobby
+  screen. Implementation detail, if two people send private challenges to each
+  other, then automatically pair them up
+
+- Later, implement a mechanism such that when someone issues an open challenge,
+  and there are already at least [n] open challenges available, then perform
+  automatic matchmaking. Probably, match the newest person joining the open
+  challenges list with the player of nearest elo

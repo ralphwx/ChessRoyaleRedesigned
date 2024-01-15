@@ -1,6 +1,5 @@
 
 TODO:
-- Update servergame.mjs
 - Add listeners to servergame.mjs
 - Combine components into new backend server
 - learn SQL?

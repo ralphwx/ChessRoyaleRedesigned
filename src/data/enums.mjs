@@ -94,4 +94,13 @@ const LoginType = {
   GUEST: 2,
 }
 
-export {Piece, pieceToString, Color, colorOf, MoveType, URL, DELAY, ELIXIR, BAR_MAX, LoginType};
+/**
+ * Enum representing different ways a game can end
+ */
+const GameOverCause = {
+  RESIGN: 0, //resignation
+  AGREE: 1,  //agree to draw
+  ABORT: 2,  //game aborted
+}
+
+export {Piece, pieceToString, Color, colorOf, MoveType, URL, DELAY, ELIXIR, BAR_MAX, LoginType, GameOverCause};
