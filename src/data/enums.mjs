@@ -103,4 +103,12 @@ const GameOverCause = {
   ABORT: 2,  //game aborted
 }
 
-export {Piece, pieceToString, Color, colorOf, MoveType, URL, DELAY, ELIXIR, BAR_MAX, LoginType, GameOverCause};
+/**
+ * Enum representing places a user could be
+ */
+const Location = {
+  LOBBY: 0,
+  GAME: 1,
+}
+
+export {Piece, pieceToString, Color, colorOf, MoveType, URL, DELAY, ELIXIR, BAR_MAX, LoginType, GameOverCause, Location};

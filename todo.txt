@@ -1,5 +1,6 @@
 
 TODO:
-- Add listeners to servergame.mjs
 - Combine components into new backend server
+- Write tests for server backend, make sure to include cases where the
+    user is logged in, user is guest, and login request was never sent.
 - learn SQL?

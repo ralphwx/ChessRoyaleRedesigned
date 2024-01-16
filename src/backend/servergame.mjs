@@ -54,15 +54,54 @@ class ServerGame {
    *   - chatUpdate(int, list)
    *   - metaUpdate(data)
    *   - gameOver(data)
+   *   - gameStarted(now)
    * [boardUpdate] is a function with the same specifications as the argument to
    * GameData.addListener. [chatUpdate] is a function with the same 
    * specifications as the argument to ChatLog.addListener. 
-   * TODO: write the spec for metaUpdate and gameOver
+   *
+   * [metaUpdate] is a function that takes an object with properties [white],
+   * [black], [wready], [bready], [wdraw], and [bdraw]. [white] and [black] are
+   * the usernames of the players; [wready] and [bready] signify whether they 
+   * have declared ready, and [wdraw] and [bdraw] signify whether they have
+   * offered a draw.
+   *
+   * [gameOver] is a function that takes an object with properties 
+   * [gameOverCause] and [gameOverResult]. This function is called when the
+   * game ends.
+   * 
+   * [gameStarted] is a function that takes [now] as an input, where [now]
+   * is the local time when the game started. This function is called
+   * immediately after both players declare ready.
    */
   addListener(listener) {
     this.listeners.push(listener);
   }
-
+  /**
+   * Helper function for telling all the listeners the metadata was updated
+   */
+  notifyMetaUpdate() {
+    for(let l of this.listeners) {
+      l.metaUpdate({
+        white: this.white,
+        black: this.black,
+        wdraw: this.wdraw,
+        bdraw: this.bdraw,
+        wready: this.wready,
+        bready: this.bready,
+      });
+    }
+  }
+  /**
+   * Helper function for telling all the listeners the game ended
+   */
+  notifyGameOver() {
+    for(let l of this.listeners) {
+      l.gameOver({
+        gameOverCause: this.gameOverCause,
+        gameOverResult: this.gameOverResult,
+      });
+    }
+  }
   /**
    * Records a "declare ready" from [user].
    */
@@ -71,6 +110,7 @@ class ServerGame {
     else if(this.black === user && !this.bready) this.bready = true;
     else return;
     this.chat.addMessage(system, user + " declared ready");
+    this.notifyMetaUpdate();
     if(this.bothReady()) {
       let now = Date.now();
       this.gameState = new GameData(now);
@@ -80,6 +120,9 @@ class ServerGame {
         }
       });
       this.chat.addMessage(system, "game started");
+      for(let l of this.listeners) {
+        l.gameStarted(now);
+      }
     }
   }
 
@@ -97,11 +140,13 @@ class ServerGame {
     if(this.white === user && !this.wdraw) this.wdraw = true;
     else if(this.black === user && !this.bdraw) this.bdraw = true;
     else return;
+    this.notifyMetaUpdate();
     if(this.wdraw && this.bdraw) {
       this.chat.addMessage(system, user + " accepted the draw");
       this.gameOver = true;
       this.gameOverCause = GameOverCause.AGREE;
       this.gameResult = Color.NONE;
+      this.notifyGameOver();
     } else {
       this.chat.addMessage(system, user + " offered a draw");
     }
@@ -136,7 +181,8 @@ class ServerGame {
       this.gameOverCause = GameOverCause.RESIGN;
       this.gameResult = Color.WHITE;
       this.chat.addMessage(system, user + "resigned");
-    }
+    } else return;
+    this.notifyGameOver();
   }
 
   /**
@@ -145,6 +191,7 @@ class ServerGame {
   abort() {
     this.gameOver = true;
     this.gameOverCause = GameOverCause.ABORT;
+    this.notifyGameOver();
   }
 
   /**

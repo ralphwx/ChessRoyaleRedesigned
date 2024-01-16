@@ -76,11 +76,15 @@ class LobbyData {
 
   /**
    * Attempts to start a game with [user] accepting the challenge issued by
-   * [sender]. Returns true if the game was successfully started, false
-   * otherwise.
+   * [sender]. This can fail if:
+   *  - If [sender] did not send a challenge that can be accepted by
+   *    [user].
+   *  - If either [sender] or [user] are in a game.
+   * Returns true if the game was successfully started, false otherwise.
    */
   attemptJoin(user, sender) {
     if(this.isInGame(user)) return false;
+    if(this.isInGame(sender)) return false;
     if(this.privateSenders.get(sender) === user
       || this.openChallenges.indexOf(sender) !== -1) {
       this.cancelChallenge(user);

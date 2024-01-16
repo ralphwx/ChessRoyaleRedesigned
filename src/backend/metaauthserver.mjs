@@ -23,12 +23,12 @@ import {generateGuestName} from "./guestid.mjs";
 class MetaAuthServer {
   /**
    * Constructs a new MetaAuthServer instance from [server]. [server] is an
-   * "http" server. [userpath] is a directory where user information is stored.
+   * "http" server. [users] is a UserManager object.
    */
-  constructor(server, userpath) {
+  constructor(server, users) {
     this.io = new Server(server);
     this.eventHandlers = [];
-    this.users = new UserManager(userpath);
+    this.users = users;
     this.socketmap = new MultiMap();
 
     this.io.on("connection", (socket) => {
