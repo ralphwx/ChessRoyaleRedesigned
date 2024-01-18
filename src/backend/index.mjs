@@ -1,4 +1,26 @@
 
+/**
+ * Main backend script for chess royale. Connecting clients should implement
+ * endpoints for the following server to client requests:
+ * 
+ * [joined] (no args): notifies the client that they have been matched in a game
+ *   and should redirect to a game screen.
+ * [boardUpdate] (i, moves): notifies the client of new moves that have been
+ *   added to the game that they are taking part in. [i] and [moves] have the
+ *   same specifications as the input to listeners attached to GameData objects.
+ * [chatUpdate] (i, messages): notifies the client of new chat messages.
+ *   [i] and [messages] have the same specifications as the input to listeners
+ *   attached to ChatLog objects.
+ * [metaUpdate] (data): notifies the client of metadata changes in their game.
+ *   [data] is an object containing attributes [white], [black], [wdraw],
+ *   [wready], and so on.
+ * [gameOver] (data): notifies the client that the game they are taking part
+ *   in has ended. [data] is an object containing [gameOverCause] and 
+ *   [gameOverResult] attributes.
+ * [gameStarted] (now): notifies the client that their game started at local
+ *   time [now].
+ *
+ */
 import {createServer} from "http";
 const server = createServer();
 
@@ -11,6 +33,53 @@ let authserver = new MetaAuthServer(server, users);
 
 let guestlobby = new LobbyData();
 let userslobby = new LobbyData();
+
+/**
+ * Set up lobby listeners that notify the client upon changes.
+ */
+let handleBoardUpdate = (users_list, i, l) => {
+  for(let user of users_list) {
+    authserver.notify(user, "boardUpdate", {i: i, moves: l})
+  }
+};
+
+let handleChatUpdate = (users_list, i, l) => {
+  for(let user of users_list) {
+    authserver.notify(user, "chatUpdate", {i: i, messages: l});
+  }
+};
+
+let handleMetaUpdate = (users_list, data) => {
+  for(let user of users_list) {
+    authserver.notify(user, "metaUpdate", {data: data});
+  }
+};
+
+let handleGameOver = (users_list, data) => {
+  for(let user of users_list) {
+    authserver.notify(user, "gameOver", {data: data});
+  }
+};
+
+let handleGameStart = (users_list, now) => {
+  for(let user of users_list) {
+    authserver.notify(user, "gameStarted", {now: now});
+  }
+};
+
+let listener = {
+  boardUpdate: handleBoardUpdate,
+  chatUpdate: handleChatUpdate,
+  metaUpdate: handleMetaUpdate,
+  gameOver: handleGameOver,
+  gameStarted: handleGameStarted,
+};
+guestlobby.addListener(listener);
+userslobby.addListener(listener);
+
+/**
+ * The remainder of the code implements server responses to client requests
+ */
 
 /**
  * Redirect? request is used by the client to determine if they need to redirect
@@ -86,7 +155,9 @@ authserver.addEventHandler("createPrivateChallenge", (meta, args, ack) => {
 
 /**
  * Attempts to accept a challenge from another user. [args] is the username of
- * the other user. [ack] returns nothing.
+ * the other user. [ack] returns nothing. If successful, the two players will be
+ * matched up in a game and both players are notified. Otherwise, nothing 
+ * happens.
  */
 authserver.addEventHandler("acceptChallenge", (meta, args, ack) => {
   let result;
@@ -99,10 +170,40 @@ authserver.addEventHandler("acceptChallenge", (meta, args, ack) => {
     authserver.notify(meta.user, "joined");
     authserver.notify(args, "joined");
   }
+  ack();
 });
 
-authserver.addEventHandler("cancelChallenge");
-authserver.addEventHandler("lobbyData");
+/**
+ * Handles a request to cancel outgoing challenges. [args] is not used. [ack]
+ * returns nothing.
+ */
+authserver.addEventHandler("cancelChallenge", (meta, args, ack) => {
+  if(meta.isGuest) guestlobby.cancelChallenge(meta.user);
+  else userslobby.cancelChallenge(meta.user);
+  ack();
+});
+
+/**
+ * Handles a request for lobbyData. [args] is not used. [ack] returns an object
+ * containing the properties:
+ *   [open]: a list of users who submitted open challenges
+ *   [incoming]: a list of users who submitted private challenges to the user
+ *   [outgoing]: a list of users to whom the user submitted a private challenge
+ */
+authserver.addEventHandler("lobbyData", (meta, args, ack) => {
+  let lobby;
+  if(meta.isGuest) lobby = guestlobby;
+  else lobby = userslobby;
+  let open = lobby.publicChallenges();
+  let incoming = lobby.privateChallenges();
+  let outgoing = lobby.outgoingChallenges();
+  ack({
+    open: open,
+    incoming: incoming,
+    outgoing: outgoing,
+  });
+});
+
 authserver.addEventHandler("declareReady");
 authserver.addEventHandler("move");
 authserver.addEventHandler("message");
@@ -110,7 +211,19 @@ authserver.addEventHandler("getMetaData");
 authserver.addEventHandler("getGameData");
 authserver.addEventHandler("offerDraw");
 authserver.addEventHandler("resign");
-authserver.addEventHandler("abort");
+
+/**
+ * Handles a request to abort the game. [args] is not used and [ack] returns
+ * nothing. If the user is in a game but the game has not yet started, this
+ * request aborts the game, otherwise, it does nothing.
+ */
+authserver.addEventHandler("abort", (meta, args, ack) => {
+  let lobby = meta.isGuest ? guestlobby : userslobby;
+  if(lobby.isInGame(meta.user)) {
+    lobby.getGame(meta.user).abort();
+  }
+  ack();
+});
 
 server.listen(8080, () => {
   console.log("listening on *:8080");

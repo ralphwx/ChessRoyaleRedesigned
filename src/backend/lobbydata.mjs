@@ -7,23 +7,42 @@ import {MultiMap} from "../data/maps.mjs";
  * of ongoing games. LobbyData does not track offline bots.
  */
 class LobbyData {
-  //impl note
-  //  openChallenges is a list of users who submitted an open challenge
-  //  privateSenders is a map of users who submitted private challenges to
-  //    the users they challenged
-  //  privateReceivers is a map of users to a list of users that sent them
-  //    private challenges
-  //  games is a map from users to a list [opp, game] where [opp] is the
-  //  opponent and [game] is a servergame object. Games stores the user's
-  //  most recently played game, and this lobbydata object does not allow users
-  //  to take part in multiple games at once.
+  /**
+   * Implementation note:
+   *  [openChallenges] is a list of users who submitted an open challenge
+   *  [privateSenders] is a map of users who submitted private challenges to
+   *    the users they challenged
+   *  [privateReceivers] is a map of users to a list of users that sent them
+   *    private challenges
+   *  [games] is a map from users to a list [opp, game] where [opp] is the
+   *    opponent and [game] is a servergame object. Games stores the user's
+   *    most recently played game. Users may not take part in more than one game
+   *    concurrently.
+   *  [listeners] is a list of objects that react to changes to lobby data.
+   */
   constructor() {
     this.openChallenges = [];
     this.privateSenders = new Map();
     this.privateReceivers = new MultiMap();
     this.games = new Map();
+    this.listeners = [];
   }
-
+  
+  /**
+   * Adds a listener object to this LobbyData object. [listener] is an object
+   * with the functions:
+   *  - boardUpdate(list, int, list)
+   *  - chatUpdate(list, int, list)
+   *  - metaUpdate(list, data)
+   *  - gameOver(list, data)
+   *  - gameStarted(list, now)
+   * These functions have the same specifications as the input for
+   * ServerGame.addListener(), but with an extra first argument containing
+   * the list of users to notify.
+   */
+  addListener(listener) {
+    this.listeners.push(listener);
+  }
   /**
    * Returns the list of users who have posted open challenges
    */
@@ -73,6 +92,43 @@ class LobbyData {
       this.privateReceivers.remove(privateOpponent, user);
     }
   }
+  /**
+   * Helper function for setting up ServerGame listener
+   */
+  makeGameListener(users) {
+    let boardUpdate = (i, l) => {
+      for(let listener of this.listeners) {
+        listener.boardUpdate(users, i, l);
+      }
+    };
+    let chatUpdate = (i, l) => {
+      for(let listener of this.listeners) {
+        listener.chatUpdate(users, i, l);
+      }
+    };
+    let metaUpdate = (data) => {
+      for(let listener of this.listeners) {
+        listener.metaUpdate(users, data);
+      }
+    };
+    let gameOver = (data) => {
+      for(let listener of this.listeners) {
+        listener.gameOver(users, data);
+      }
+    };
+    let gameStarted = (now) => {
+      for(let listener of this.listeners) {
+        listener.gameStarted(users, now);
+      }
+    };
+    return {
+      boardUpdate: boardUpdate,
+      chatUpdate: chatUpdate,
+      metaUpdate: metaUpdate,
+      gameOver: gameOver,
+      gameStarted: gameStarted,
+    };
+  }
 
   /**
    * Attempts to start a game with [user] accepting the challenge issued by
@@ -93,6 +149,7 @@ class LobbyData {
         new ServerGame(user, sender);
       this.games.set(user, [sender, gamedata]);
       this.games.set(sender, [user, gamedata]);
+      this.gamedata.addListener(makeGameListener([user, sender]);
       return true;
     }
     return false;
