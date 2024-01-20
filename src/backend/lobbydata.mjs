@@ -152,7 +152,7 @@ class LobbyData {
         new ServerGame(user, sender);
       this.games.set(user, [sender, gamedata]);
       this.games.set(sender, [user, gamedata]);
-      this.gamedata.addListener(makeGameListener([user, sender]));
+      gamedata.addListener(this.makeGameListener([user, sender]));
       for(let listener of this.listeners) {
         listener.joined(gamedata.white, gamedata.black);
       }

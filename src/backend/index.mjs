@@ -94,10 +94,8 @@ userslobby.addListener(listener);
  * specifying where the client should redirect to.
  */
 authserver.addEventHandler("redirect?", (meta, args, ack) => {
-  console.log("processing request");
   let game = meta.isGuest ? guestlobby.getGame(meta.user) 
     : userslobby.getGame(meta.user);
-  console.log("got game");
   if(!game || game.gameOver) {
     ack(Location.LOBBY);
   } else {
@@ -199,8 +197,8 @@ authserver.addEventHandler("lobbyData", (meta, args, ack) => {
   if(meta.isGuest) lobby = guestlobby;
   else lobby = userslobby;
   let open = lobby.publicChallenges();
-  let incoming = lobby.privateChallenges();
-  let outgoing = lobby.outgoingChallenges();
+  let incoming = lobby.privateChallenges(meta.user);
+  let outgoing = lobby.outgoingChallenges(meta.user);
   ack({
     open: open,
     incoming: incoming,

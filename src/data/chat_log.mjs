@@ -7,7 +7,7 @@ import {HTList} from "./htlist.mjs"
  */
 class ChatLog {
   constructor() {
-    this.history = new HTList.NIL;
+    this.history = HTList.NIL;
     this.listeners = [];
   }
 
