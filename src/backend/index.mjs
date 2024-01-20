@@ -27,6 +27,7 @@ const server = createServer();
 import {MetaAuthServer} from "./metaauthserver.mjs";
 import {LobbyData} from "./lobbydata.mjs";
 import {UserManager} from "./users.mjs";
+import {Location} from "../data/enums.mjs";
 
 let users = new UserManager("./users/");
 let authserver = new MetaAuthServer(server, users);
@@ -93,8 +94,10 @@ userslobby.addListener(listener);
  * specifying where the client should redirect to.
  */
 authserver.addEventHandler("redirect?", (meta, args, ack) => {
+  console.log("processing request");
   let game = meta.isGuest ? guestlobby.getGame(meta.user) 
     : userslobby.getGame(meta.user);
+  console.log("got game");
   if(!game || game.gameOver) {
     ack(Location.LOBBY);
   } else {

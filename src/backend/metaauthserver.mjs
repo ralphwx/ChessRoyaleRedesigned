@@ -183,7 +183,7 @@ class MetaAuthServer {
     console.log("  name: " + name);
     console.log("  metadata: " + JSON.stringify(meta));
     console.log("  arguments: " + JSON.stringify(args));
-    console.log("  error message: " + JSON.stringify(reason));
+    console.log(reason);
     return;
   }
 }
