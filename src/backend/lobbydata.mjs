@@ -36,9 +36,13 @@ class LobbyData {
    *  - metaUpdate(list, data)
    *  - gameOver(list, data)
    *  - gameStarted(list, now)
-   * These functions have the same specifications as the input for
+   *  - joined(white, black)
+   * The first five functions have the same specifications as the input for
    * ServerGame.addListener(), but with an extra first argument containing
    * the list of users to notify.
+   * 
+   * [joined] notifies the listener that two players with usernames [white] and 
+   * [black] have joined a game with each other.
    */
   addListener(listener) {
     this.listeners.push(listener);
@@ -136,11 +140,10 @@ class LobbyData {
    *  - If [sender] did not send a challenge that can be accepted by
    *    [user].
    *  - If either [sender] or [user] are in a game.
-   * Returns true if the game was successfully started, false otherwise.
    */
   attemptJoin(user, sender) {
-    if(this.isInGame(user)) return false;
-    if(this.isInGame(sender)) return false;
+    if(this.isInGame(user)) return;
+    if(this.isInGame(sender)) return;
     if(this.privateSenders.get(sender) === user
       || this.openChallenges.indexOf(sender) !== -1) {
       this.cancelChallenge(user);
@@ -150,9 +153,10 @@ class LobbyData {
       this.games.set(user, [sender, gamedata]);
       this.games.set(sender, [user, gamedata]);
       this.gamedata.addListener(makeGameListener([user, sender]);
-      return true;
+      for(let listener of this.listeners) {
+        listener.joined(gamedata.white, gamedata.black);
+      }
     }
-    return false;
   }
 
   /**

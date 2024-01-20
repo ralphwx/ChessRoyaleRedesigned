@@ -67,12 +67,18 @@ let handleGameStart = (users_list, now) => {
   }
 };
 
+let handleJoined = (white, black) => {
+  authserver.notify(white, "joined");
+  authserver.notify(black, "joined");
+}
+
 let listener = {
   boardUpdate: handleBoardUpdate,
   chatUpdate: handleChatUpdate,
   metaUpdate: handleMetaUpdate,
   gameOver: handleGameOver,
   gameStarted: handleGameStarted,
+  joined: handleJoined,
 };
 guestlobby.addListener(listener);
 userslobby.addListener(listener);
@@ -160,15 +166,10 @@ authserver.addEventHandler("createPrivateChallenge", (meta, args, ack) => {
  * happens.
  */
 authserver.addEventHandler("acceptChallenge", (meta, args, ack) => {
-  let result;
   if(meta.isGuest) {
-    result = guestlobby.attemptJoin(meta.user, args);
+    guestlobby.attemptJoin(meta.user, args);
   } else {
-    result = userslobby.attemptJoin(meta.user, args);
-  }
-  if(result) {
-    authserver.notify(meta.user, "joined");
-    authserver.notify(args, "joined");
+    userslobby.attemptJoin(meta.user, args);
   }
   ack();
 });
