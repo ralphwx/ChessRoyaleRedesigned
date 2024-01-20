@@ -48,3 +48,5 @@ class ChatLog {
     return output.reverse();
   }
 }
+
+export {ChatLog}

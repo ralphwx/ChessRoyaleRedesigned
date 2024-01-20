@@ -77,7 +77,7 @@ let listener = {
   chatUpdate: handleChatUpdate,
   metaUpdate: handleMetaUpdate,
   gameOver: handleGameOver,
-  gameStarted: handleGameStarted,
+  gameStarted: handleGameStart,
   joined: handleJoined,
 };
 guestlobby.addListener(listener);
