@@ -1,10 +1,5 @@
 
 TODO:
-- Combine components into new backend server
-- Decide whether the server or lobbydata object is responsible for determining
-  which users need to know about which changes
 - Write tests for server backend, make sure to include cases where the
     user is logged in, user is guest, and login request was never sent.
-- Write a test for, when a user joins a game, their outgoing challenges are
-    cancelled.
 - learn SQL?

@@ -18,3 +18,8 @@
   and there are already at least [n] open challenges available, then perform
   automatic matchmaking. Probably, match the newest person joining the open
   challenges list with the player of nearest elo
+
+- The lobbydata object should keep track of which users need to know about
+  which changes. This is because games are currently tracked based on the
+  usernames of the two players, so the lobbydata object is already inherently
+  tracking which users need to know about which games.

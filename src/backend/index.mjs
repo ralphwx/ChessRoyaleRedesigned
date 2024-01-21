@@ -206,13 +206,150 @@ authserver.addEventHandler("lobbyData", (meta, args, ack) => {
   });
 });
 
-authserver.addEventHandler("declareReady");
-authserver.addEventHandler("move");
-authserver.addEventHandler("message");
-authserver.addEventHandler("getMetaData");
-authserver.addEventHandler("getGameData");
-authserver.addEventHandler("offerDraw");
-authserver.addEventHandler("resign");
+/**
+ * Handles a request to declare ready in a game. Does nothing if the user is
+ * not in a game or if the user has already declared ready. [args] is not used,
+ * and [ack] returns nothing.
+ */
+authserver.addEventHandler("declareReady", (meta, args, ack) => {
+  let lobby = meta.isGuest ? guestlobby : userslobby;
+  if(lobby.isInGame(meta.user)) {
+    lobby.getGame(meta.user).setReady(meta.user);
+  }
+  ack();
+});
+
+/**
+ * Handles a request to make a move. Does nothing if the user is not in a game,
+ * or if the move is illegal in that game's context for any reason. [args] is
+ * required to have properties [iRow], [iCol], [fRow], [fCol]. [ack] returns
+ * nothing.
+ */
+authserver.addEventHandler("move", (meta, args, ack) => {
+  let lobby = meta.isGuest ? guestlobby : userslobby;
+  if(lobby.isInGame(meta.user)) {
+    let game = lobby.getGame(meta.user);
+    let color;
+    if(game.white === meta.user) color = Color.WHITE;
+    else if(game.black === meta.user) color = Color.BLACK;
+    else throw new Error("What color are you playing??");
+    let move = {
+      iRow: args.iRow,
+      iCol: args.iCol,
+      fRow: args.fRow,
+      fCol: args.fCol,
+      time: meta.serverReceiveTime,
+      color: color,
+    };
+    game.move(args.iRow, args.iCol, args.fRow, args.fCol, color, 
+      meta.serverReceiveTime);
+  }
+  ack();
+});
+
+/**
+ * Responds to a request to post a message in the chat in either the current
+ * game the user is playing, or in the most recent game the user was playing.
+ * If the user has not yet played any games, then nothing is posted.
+ *
+ * [args] is the string message to be posted. [ack] returns nothing.
+ */
+authserver.addEventHandler("message", (meta, args, ack) => {
+  let lobby = meta.isGuest ? guestlobby : userslobby;
+  let game = lobby.getGame(meta.user);
+  if(game) {
+    game.chatMessage(meta.user, args);
+  }
+  ack();
+});
+
+/**
+ * Returns the metadata of either the current game the user is playing
+ * or of the user's most recent game. If the user has not yet played any games,
+ * then empty object is returned.
+ *
+ * [args] is not used. [ack] returns an object with the properties [white],
+ * [black], [wready], [bready], [wdraw], and [bdraw], each with the same meaning
+ * as the input to the metaUpdate function specified for listeners to 
+ * [ServerGame].
+ */
+authserver.addEventHandler("getMetaData", (meta, args, ack) => {
+  let lobby = meta.isGuest ? guestlobby : userslobby;
+  let game = lobby.getGame(meta.user);
+  let output = {};
+  if(game) {
+    output.white = game.white;
+    output.black = game.black;
+    output.wready = game.wready;
+    output.bready = game.bready;
+    output.wdraw = game.wdraw;
+    output.bdraw = game.bdraw;
+  }
+  ack(output);
+});
+
+/**
+ * Returns the moves of [game], starting from the move at index [i], inclusive.
+ * [game] is the current game the user is playing, or, if the user is not
+ * currently playing a game, the user's most recently played game. Also returns
+ * the starting time of the game. If the user has not yet played any games, then
+ * empty object is returned. If the user is in a game, but the game has not yet
+ * started (ie, one or both players have not yet declared ready), then moves
+ * will be empty list and start time will be undefined.
+ *
+ * [args] is the integer [i], representing the start index. 
+ * [ack] returns an object with properties [startTime] and
+ * [moves], where [moves] is the move list and [startTime] is the local time
+ * when the game started. All timestamps are expressed in terms of local server
+ * time.
+ */
+authserver.addEventHandler("getGameData", (meta, args, ack) => {
+  let lobby = meta.isGuest ? guestlobby : userslobby;
+  let game = lobby.getGame(meta.user);
+  if(!game) {
+    ack({});
+    return;
+  }
+  if(!game.bothReady()) {
+    ack({
+      moves: [],
+      startTime: undefined,
+    });
+    return;
+  }
+  ack({
+    moves: game.gameState.movesSince(args),
+    startTime: game.gameState.startTime,
+  });
+});
+
+/**
+ * Handles a request to offer a draw. If the user is not currently in a game,
+ * or if the user has already offered a draw, this does nothing.
+ *
+ * [args] is not used, [ack] returns nothing.
+ */
+authserver.addEventHandler("offerDraw", (meta, args, ack) => {
+  let lobby = meta.isGuest ? guestlobby : userslobby;
+  if(lobby.isInGame(meta.user)) {
+    lobby.getGame(meta.user).drawOffer(meta.user);
+  }
+  ack();
+});
+
+/**
+ * Handles a request to resign the game. If the user is not currently in a
+ * game, this does nothing.
+ *
+ * [args] is not used, [ack] returns nothing.
+ */
+authserver.addEventHandler("resign", (meta, args, ack) => {
+  let lobby = meta.isGuest ? guestLobby : usersLobby;
+  if(lobby.isInGame(meta.user)) {
+    lobby.getGame(meta.user).resign(user);
+  }
+  ack();
+});
 
 /**
  * Handles a request to abort the game. [args] is not used and [ack] returns

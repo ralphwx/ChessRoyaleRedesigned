@@ -144,6 +144,7 @@ class GameState {
  */
 class GameData {
   constructor(start) {
+    this.startTime = start;
     this.history = HTList.cons(GameState.initial(start), HTList.NIL);
     this.listeners = [];
   }

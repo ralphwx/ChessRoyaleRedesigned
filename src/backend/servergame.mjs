@@ -155,7 +155,8 @@ class ServerGame {
   /**
    * Attempts to make a move, starting at [iRow, iCol] and ending at
    * [fRow, fCol]. [color] is the color of the player attempting this move,
-   * and [time] is the local time when the move was received.
+   * and [time] is the local time when the move was received. Does nothing if
+   * the move is illegal for any reason.
    */
   move(iRow, iCol, fRow, fCol, color, time) {
     let m = new Move(color, time, iRow, iCol, fRow, fCol);
