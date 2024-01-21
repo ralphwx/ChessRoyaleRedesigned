@@ -101,6 +101,7 @@ const GameOverCause = {
   RESIGN: 0, //resignation
   AGREE: 1,  //agree to draw
   ABORT: 2,  //game aborted
+  KING: 3,   //king captured
 }
 
 /**

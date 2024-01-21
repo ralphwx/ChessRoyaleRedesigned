@@ -27,7 +27,7 @@ const server = createServer();
 import {MetaAuthServer} from "./metaauthserver.mjs";
 import {LobbyData} from "./lobbydata.mjs";
 import {UserManager} from "./users.mjs";
-import {Location} from "../data/enums.mjs";
+import {Location, Color} from "../data/enums.mjs";
 
 let users = new UserManager("./users/");
 let authserver = new MetaAuthServer(server, users);
@@ -324,6 +324,25 @@ authserver.addEventHandler("getGameData", (meta, args, ack) => {
 });
 
 /**
+ * Returns the chat log, starting from the [i]th message, of the current game 
+ * the user is playing. If the user is not currently playing, the most recent 
+ * game the user played is used instead. If the user has not yet played any
+ * games, then empty list is returned.
+ *
+ * [args] is the integer [i]; [ack] returns the list of [sender, message] pairs.
+ */
+authserver.addEventHandler("getChat", (meta, args, ack) => {
+  let lobby = meta.isGuest ? guestlobby : userslobby;
+  let game = lobby.getGame(meta.user);
+  if(!game) {
+    ack([]);
+    return;
+  }
+  ack(game.chat.getSince(args));
+  return;
+});
+
+/**
  * Handles a request to offer a draw. If the user is not currently in a game,
  * or if the user has already offered a draw, this does nothing.
  *
@@ -344,9 +363,9 @@ authserver.addEventHandler("offerDraw", (meta, args, ack) => {
  * [args] is not used, [ack] returns nothing.
  */
 authserver.addEventHandler("resign", (meta, args, ack) => {
-  let lobby = meta.isGuest ? guestLobby : usersLobby;
+  let lobby = meta.isGuest ? guestlobby : userslobby;
   if(lobby.isInGame(meta.user)) {
-    lobby.getGame(meta.user).resign(user);
+    lobby.getGame(meta.user).resign(meta.user);
   }
   ack();
 });

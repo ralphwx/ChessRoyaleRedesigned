@@ -1,6 +1,7 @@
 
 import {Color, GameOverCause} from "../data/enums.mjs";
 import {ChatLog} from "../data/chat_log.mjs";
+import {Move, GameData} from "../data/gamedata.mjs";
 
 /**
  * A string constant representing the origin of server-generated messages.
@@ -98,7 +99,7 @@ class ServerGame {
     for(let l of this.listeners) {
       l.gameOver({
         gameOverCause: this.gameOverCause,
-        gameOverResult: this.gameOverResult,
+        gameOverResult: this.gameResult,
       });
     }
   }
@@ -164,6 +165,12 @@ class ServerGame {
     if(!this.bothReady()) return;
     if(!this.gameState.isLegalMove(m)) return;
     this.gameState.move(m);
+    if(this.gameState.history.head.gameOver !== Color.NONE) {
+      this.gameOver = true;
+      this.gameResult = this.gameState.history.head.gameOver;
+      this.gameOverCause = GameOverCause.KING;
+      this.notifyGameOver();
+    }
   }
 
   /**
@@ -190,6 +197,7 @@ class ServerGame {
    * Records an abort request.
    */
   abort() {
+    this.gameResult = Color.NONE;
     this.gameOver = true;
     this.gameOverCause = GameOverCause.ABORT;
     this.notifyGameOver();
