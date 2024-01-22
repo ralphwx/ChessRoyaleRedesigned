@@ -2,12 +2,9 @@
 - Instead of spectating a specific game, spectate a specific user, eg,
     https://royalechess.org/spectate?user=sereyuu
   And if the player is not in a game, show a pop-up message saying the player
-  is not currently playing, then redirect to main lobby
-  When a player starts spectating, they should send a "beginSpectate" event
-  to let the server know, and when the socket disconnects, the player should
-  stop spectating ...
-  Design decisions surrounding spectator mode can be put off for the future,
-  but for now, we can identify games by user instead of by some generated id.
+  is not currently playing, then redirect to main lobby.
+  When a player connects as a spectator, they should be treated as that user
+  for the purposes of receiving notifications. No need for unique game id's.
 
 - Implement rematch as a private challenge sent from one person to another?
   That way they can view the private challenge even if they're in the lobby

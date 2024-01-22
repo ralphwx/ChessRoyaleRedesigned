@@ -52,7 +52,7 @@ let main = async () => {
   function refreshGameData() {
     return new Promise((resolve) => {
       let startIndex = gamedata === undefined ? 0 : gamedata.history.length - 1;
-      socket1.notify("getGameData", startIndex, (meta, args) => {
+      socket1.notify("getGameData", {i: startIndex}, (meta, args) => {
         if(args.startTime === undefined) {
           gamedata = undefined
           resolve();
@@ -66,7 +66,7 @@ let main = async () => {
   }
   function refreshMetaData() {
     return new Promise((resolve) => {
-      socket1.notify("getMetaData", {}, (meta, args) => {
+      socket1.notify("getMetaData", undefined, (meta, args) => {
         metadata = args;
         resolve();
       });
@@ -74,7 +74,7 @@ let main = async () => {
   }
   function refreshChat() {
     return new Promise((resolve) => {
-      socket1.notify("getChat", chat.length, (meta, args) => {
+      socket1.notify("getChat", {i: chat.length}, (meta, args) => {
         for(let pair of args) {
           chat.push(pair);
         }
@@ -177,7 +177,7 @@ let main = async () => {
   //check game, meta, chat synchronization features before ending this game
   let gamedata2;
   await new Promise((resolve) => {
-    socket2.notify("getGameData", 0, (meta, args) => {
+    socket2.notify("getGameData", {i: 0}, (meta, args) => {
       gamedata2 = new GameData(args.startTime);
       for(let move of args.moves) gamedata2.move(move);
       resolve();
@@ -185,7 +185,7 @@ let main = async () => {
   });
   let chat2 = [];
   await new Promise((resolve) => {
-    socket2.notify("getChat", 0, (meta, args) => {
+    socket2.notify("getChat", {i: 0}, (meta, args) => {
       for(let pair of args) {
         chat2.push(pair);
       }
@@ -194,7 +194,7 @@ let main = async () => {
   });
   let meta2 = {};
   await new Promise((resolve) => {
-    socket2.notify("getMetaData", {}, (meta, args) => {
+    socket2.notify("getMetaData", undefined, (meta, args) => {
       meta2 = args;
       resolve();
     });

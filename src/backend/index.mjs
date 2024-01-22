@@ -264,18 +264,21 @@ authserver.addEventHandler("message", (meta, args, ack) => {
 });
 
 /**
- * Returns the metadata of either the current game the user is playing
- * or of the user's most recent game. If the user has not yet played any games,
+ * Returns the metadata of either the current game a specified user is playing
+ * or of that user's most recent game. If the user has not yet played any games,
  * then empty object is returned.
  *
- * [args] is not used. [ack] returns an object with the properties [white],
+ * [args] is the string username of the user whose game this request should
+ * retrieve, or undefined, if retrieving the user's own game. 
+ * [ack] returns an object with the properties [white],
  * [black], [wready], [bready], [wdraw], and [bdraw], each with the same meaning
  * as the input to the metaUpdate function specified for listeners to 
  * [ServerGame].
  */
 authserver.addEventHandler("getMetaData", (meta, args, ack) => {
-  let lobby = meta.isGuest ? guestlobby : userslobby;
-  let game = lobby.getGame(meta.user);
+  let lobby = (args || !meta.isGuest) ? userslobby : guestlobby;
+  let user = args ? args : meta.user;
+  let game = lobby.getGame(user);
   let output = {};
   if(game) {
     output.white = game.white;
@@ -290,22 +293,26 @@ authserver.addEventHandler("getMetaData", (meta, args, ack) => {
 
 /**
  * Returns the moves of [game], starting from the move at index [i], inclusive.
- * [game] is the current game the user is playing, or, if the user is not
- * currently playing a game, the user's most recently played game. Also returns
- * the starting time of the game. If the user has not yet played any games, then
- * empty object is returned. If the user is in a game, but the game has not yet
- * started (ie, one or both players have not yet declared ready), then moves
- * will be empty list and start time will be undefined.
+ * [game] is the current game a specified user is playing, or, if that user is 
+ * not currently playing a game, the user's most recently played game. Also 
+ * returns the starting time of the game. If the user has not yet played any 
+ * games, then empty object is returned. If the user is in a game, but the game
+ * has not yet started (ie, one or both players have not yet declared ready), 
+ * then moves will be empty list and start time will be undefined.
  *
- * [args] is the integer [i], representing the start index. 
+ * [args] is an object containing properties [i] and [user], where [i] is the
+ * start index and [user] is the user whose game this request should retrieve.
+ * If [user] is not specified, then the user's own game will be retrieved.
+ *
  * [ack] returns an object with properties [startTime] and
  * [moves], where [moves] is the move list and [startTime] is the local time
  * when the game started. All timestamps are expressed in terms of local server
  * time.
  */
 authserver.addEventHandler("getGameData", (meta, args, ack) => {
-  let lobby = meta.isGuest ? guestlobby : userslobby;
-  let game = lobby.getGame(meta.user);
+  let lobby = (args.user || !meta.isGuest) ? userslobby : guestlobby;
+  let user = args.user ? args.user : meta.user;
+  let game = lobby.getGame(user);
   if(!game) {
     ack({});
     return;
@@ -318,18 +325,20 @@ authserver.addEventHandler("getGameData", (meta, args, ack) => {
     return;
   }
   ack({
-    moves: game.gameState.movesSince(args),
+    moves: game.gameState.movesSince(args.i),
     startTime: game.gameState.startTime,
   });
 });
 
 /**
  * Returns the chat log, starting from the [i]th message, of the current game 
- * the user is playing. If the user is not currently playing, the most recent 
- * game the user played is used instead. If the user has not yet played any
+ * of a specified user. If that user is not currently playing, the most recent 
+ * game that user played is used instead. If the user has not yet played any
  * games, then empty list is returned.
  *
- * [args] is the integer [i]; [ack] returns the list of [sender, message] pairs.
+ * [args] is an object with properties [user] and [i]. If [user] is not
+ * specified, then meta.user will be used instead. [ack] returns the list of 
+ * [sender, message] pairs.
  */
 authserver.addEventHandler("getChat", (meta, args, ack) => {
   let lobby = meta.isGuest ? guestlobby : userslobby;
@@ -338,7 +347,7 @@ authserver.addEventHandler("getChat", (meta, args, ack) => {
     ack([]);
     return;
   }
-  ack(game.chat.getSince(args));
+  ack(game.chat.getSince(args.i));
   return;
 });
 
