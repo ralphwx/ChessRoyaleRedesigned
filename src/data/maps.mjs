@@ -145,14 +145,14 @@ class MultiMap {
       this.map.set(user, [socket]);
       return;
     }
-    if(ls.indexOf(socket) !== -1) throw "socket already added";
+    if(ls.indexOf(socket) !== -1) throw new Error("socket already added");
     ls.push(socket);
   }
   remove(user, socket) {
     let ls = this.map.get(user);
-    if(ls === undefined) throw "nothing to remove";
+    if(ls === undefined) throw new Error("nothing to remove");
     let index = ls.indexOf(socket);
-    if(index === -1) throw "cannot remove";
+    if(index === -1) throw new Error("cannot remove");
     if(ls.length === 1) this.map.delete(user);
     else ls.splice(index, 1);
   }

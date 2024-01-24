@@ -28,6 +28,7 @@ import {MetaAuthServer} from "./metaauthserver.mjs";
 import {LobbyData} from "./lobbydata.mjs";
 import {UserManager} from "./users.mjs";
 import {Location, Color} from "../data/enums.mjs";
+import {isGuest} from "./guestid.mjs";
 
 let users = new UserManager("./users/");
 let authserver = new MetaAuthServer(server, users);
@@ -276,8 +277,8 @@ authserver.addEventHandler("message", (meta, args, ack) => {
  * [ServerGame].
  */
 authserver.addEventHandler("getMetaData", (meta, args, ack) => {
-  let lobby = (args || !meta.isGuest) ? userslobby : guestlobby;
   let user = args ? args : meta.user;
+  let lobby = isGuest(user) ? guestlobby : userslobby;
   let game = lobby.getGame(user);
   let output = {};
   if(game) {
@@ -310,8 +311,8 @@ authserver.addEventHandler("getMetaData", (meta, args, ack) => {
  * time.
  */
 authserver.addEventHandler("getGameData", (meta, args, ack) => {
-  let lobby = (args.user || !meta.isGuest) ? userslobby : guestlobby;
   let user = args.user ? args.user : meta.user;
+  let lobby = isGuest(user) ? guestlobby : userslobby;
   let game = lobby.getGame(user);
   if(!game) {
     ack({});
@@ -341,8 +342,9 @@ authserver.addEventHandler("getGameData", (meta, args, ack) => {
  * [sender, message] pairs.
  */
 authserver.addEventHandler("getChat", (meta, args, ack) => {
-  let lobby = meta.isGuest ? guestlobby : userslobby;
-  let game = lobby.getGame(meta.user);
+  let user = args.user ? args.user : meta.user;
+  let lobby = isGuest(user) ? guestlobby : userslobby;
+  let game = lobby.getGame(user);
   if(!game) {
     ack([]);
     return;

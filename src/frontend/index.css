@@ -1,0 +1,204 @@
+/* style for game.js */
+.gridrow:after {
+  content: "";
+  display: table;
+}
+
+.gridrow {
+  width: 100%;
+  height: 12.5%;
+}
+
+.squarecontainer {
+  width: 12.5%;
+  min-height: 100%;
+  float: left;
+  position:relative;
+}
+
+.square {
+  pointer-events: none;
+}
+
+.squaretrigger {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.even {
+  background-color: #beaed4;
+}
+
+.odd {
+  background-color: #fdc086;
+}
+
+.select {
+  background-color: #ffffb3;
+}
+
+.premove_init {
+  background-color: #f08080
+}
+
+.premove_dest {
+  background-color: #8b0000
+}
+
+.premove-dest {
+  background-color: #8b0000
+}
+
+.chessboard {
+  width: 64vmin;
+  height: 64vmin;
+}
+
+.chesspiece {
+  width: calc(100% - 6px);
+  height: calc(100% - 6px);
+  margin-left: 3px;
+  margin-right: 3px;
+  margin-top: 1px;
+  margin-bottom: 1px;
+}
+
+.metabox {
+  width: 32vmin;
+  height: 100%;
+  background-color: #386cb0
+}
+
+.gamecontainer {
+  width: 96vmin;
+  height: 70.6vmin;
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.resourcebar {
+  width: 64vmin;
+  height: 6.4vmin;
+  display: flex;
+  background-color: rgba(0, 0, 255, 0.2);
+}
+
+.resource {
+  width: calc(10% - 4px);
+  height: calc(100% - 4px);
+  float: left;
+  border-style: solid;
+  border-width: 2px;
+  border-color: #000000;
+}
+
+.info {
+  width: 90%;
+  height: 2rem;
+  margin: 5%;
+  padding: 2%;
+  box-sizing: border-box;
+  font-size: 1rem;
+}
+
+.infovert {
+  width: 30%;
+  height: 2rem;
+  font-size: 1rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  justify-content: center;
+  display: flex;
+}
+
+.online {
+  background-color: #ccebc5;
+}
+
+.offline {
+  background-color: #fbb4ae;
+}
+
+.ready {
+  width: 90%;
+  height: 4rem;
+  margin-left: 5%;
+  margin-right: 5%;
+  font-size: 1.5rem;
+}
+
+.readyvert {
+  width: 40%;
+  height: 2rem;
+  font-size: 1rem;
+  position:absolute;
+  top: 0;
+  right: 0;
+  border: none;
+}
+
+.console {
+  width: 90%;
+  height: calc(59.4vmin - 16rem);
+  background-color: lightgray;
+  margin: 5%;
+  font-size: 1.5rem;
+  font-style: italic;
+  text-align: center;
+  color: #555;
+  overflow: auto;
+}
+
+.consoleinner {
+  margin: 5px;
+}
+
+.gamectrl {
+  width: 90%;
+  margin: 5%;
+  height: 4rem;
+  display: flex;
+}
+
+.draw {
+  width: 4rem;
+  height: 4rem;
+  background-color: darkgray;
+  margin-left: 5%;
+  font-size: 1.5rem;
+}
+
+.drawhover {
+  background-color: #669922;
+  color: #eee;
+}
+
+.resign {
+  width: 4rem;
+  height: 4rem;
+  background-color: darkgray;
+  margin-left: auto;
+  margin-right: 5%;
+  float: right;
+}
+
+.resignhover {
+  background-color: #ee5511;
+  color: #eee;
+}
+
+.infoRow {
+  width: 90vmin;
+  height: 2rem;
+  margin-top: 1%;
+  margin-bottom: 1%;
+  position: relative;
+}
+
+.ctrlRow {
+  width: 90vmin;
+  height: 4rem;
+}

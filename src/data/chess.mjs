@@ -1,5 +1,5 @@
 
-import {ChessMap, ChessBitMap, LegalMoveMap} from "./maps.mjs";
+import {ChessMap, LegalMoveMap} from "./maps.mjs";
 import {Piece, Color, colorOf, MoveType} from "./enums.mjs";
 
 /**
@@ -558,7 +558,7 @@ function move(state, iRow, iCol, fRow, fCol) {
     modifySquare(output, fRow, fCol, output.board.get(iRow, iCol));
     modifySquare(output, iRow, iCol, Piece.NULL);
   } else {
-    throw "Incomplete case match";
+    throw new Error("Incomplete case match");
   }
   return output;
 }

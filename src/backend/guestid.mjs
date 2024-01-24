@@ -10,4 +10,8 @@ function generateGuestName() {
   return "Guest#" + generateCustomUuid(chars, 8);
 }
 
-export {generateGuestName};
+function isGuest(username) {
+  return username.substring(0, 6) === "Guest#";
+}
+
+export {generateGuestName, isGuest};

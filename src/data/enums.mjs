@@ -37,7 +37,7 @@ function pieceToString(p) {
     case Piece.B_QUEEN: return "q";
     case Piece.B_KING: return "k";
     case Piece.NULL: return " ";
-    default: throw "Incomplete case match: " + p;
+    default: throw new Error("Incomplete case match: " + p);
   }
 }
 

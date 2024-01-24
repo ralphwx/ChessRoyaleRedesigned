@@ -5,4 +5,6 @@ TODO:
 - Implement and test the feature where if two people private challenge each
     other, then they're automatically paired up.
 - Add sound effects and game start animation
+- Future: write tests for spectator mode functionality (where user is requesting
+  game data corresponding to other users)
 - learn SQL?

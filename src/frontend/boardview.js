@@ -1,0 +1,143 @@
+
+import React from "react";
+
+import img_null from "./img/null.png";
+import w_pawn from "./img/w_pawn.png";
+import w_rook from "./img/w_rook.png";
+import w_knight from "./img/w_knight.png";
+import w_bishop from "./img/w_bishop.png";
+import w_queen from "./img/w_queen.png";
+import w_king from "./img/w_king.png";
+import b_pawn from "./img/b_pawn.png";
+import b_rook from "./img/b_rook.png";
+import b_knight from "./img/b_knight.png";
+import b_bishop from "./img/b_bishop.png";
+import b_queen from "./img/b_queen.png";
+import b_king from "./img/b_king.png";
+import "./index.css";
+
+//import Xarrow from "react-xarrows"; TODO: add arrows in v3
+import {colorOf, Color, Piece, DELAY} from "../data/enums.mjs";
+
+function imgSrc(p) {
+  switch(p) {
+    case Piece.NULL: return img_null;
+    case Piece.W_PAWN: return w_pawn;
+    case Piece.W_ROOK: return w_rook;
+    case Piece.W_KNIGHT: return w_knight;
+    case Piece.W_BISHOP: return w_bishop;
+    case Piece.W_QUEEN: return w_queen;
+    case Piece.W_KING: return w_king;
+    case Piece.B_PAWN: return b_pawn;
+    case Piece.B_ROOK: return b_rook;
+    case Piece.B_KNIGHT: return b_knight;
+    case Piece.B_BISHOP: return b_bishop;
+    case Piece.B_QUEEN: return b_queen;
+    case Piece.B_KING: return b_king;
+    default: throw new Error("Incomplete case match");
+  }
+}
+
+function pieceToHTML(p) {
+  let src = imgSrc(p);
+  return <img className="chesspiece" src={src} alt="?"/>;
+}
+
+function computeOpacity(props, r, c, now) {
+  if(colorOf(props.board.pieceAt(r, c)) !== props.color
+    || now - props.delay.get(r, c) >= DELAY) return 1;
+  return 0.2 + 0.5 * (now - props.delay.get(r, c)) / DELAY;
+}
+
+/**
+ * Props is required to have:
+ *   color: Color
+ *   board: ChessBoard
+ *   delay: ChessMap<time>
+ *   squareType: ChessMap<SquareType>
+ *   //controller: Controller
+ *   translate: ChessMap<[dx, dy]>
+ *   arrows: ChessMap<null or [fRow, fCol, time]>
+ */
+function BoardView(props) {
+  let now = Date.now();
+  let squares = [];
+  let squareType = props.squareType;
+  let translate = props.translate;
+  for(let i = 0; i < 8; i++) {
+    let row = [];
+    for(let j = 0; j < 8; j++) {
+      let r = props.color === Color.WHITE ? 7 - i : i;
+      let c = props.color === Color.WHITE ? j : 7 - j;
+      let img = pieceToHTML(props.board.pieceAt(r, c));
+      let opacity = computeOpacity(props, r, c, now);
+      let type = squareType.get(r, c);
+      let [dx, dy] = translate.get(r, c);
+      row.push(<Square 
+        img={img} 
+        type={type} 
+        id={r + "_" + c} 
+        key={r + "_" + c}
+        opacity={opacity}
+        translateX={dx}
+        translateY={dy}
+      />);
+    }
+    squares.push(<div key={i} className="gridrow">{row}</div>);
+  }
+  return <div>{squares}</div>
+}
+
+/**
+ * Props is required to have:
+ *   type: SquareType
+ *   opacity: [0, 1]
+ *   onMouseDown: (pixelX, pixelY, button) => (None)
+ *   onMouseUp: (pixelX, pixelY) => (None)
+ *   onMouseMove: (pixelX, pixelY) => (None)
+ *   img: JSX
+ *   translateX: double
+ *   translateY: double
+ */
+function Square(props) {
+  let translateStyle = {
+    transform: "translate(" + props.translateX + "px, " + props.translateY + "px)",
+    opacity: props.opacity,
+  };
+  let zStyle = {
+    zIndex: props.translateX || props.translateY ? 1 : 0,
+  }
+  /*
+  return <div className={"squarecontainer"} style={zStyle}>
+    <div className={"squaretrigger " + props.type} 
+      style={{opacity: props.opacity}}
+      onContextMenu={e => e.preventDefault()}
+      onMouseDown={e => {
+        e.preventDefault(); 
+        let box = e.currentTarget.getBoundingClientRect();
+        let mx = (box.left + box.right) / 2;
+        let my = (box.top + box.bottom) / 2;
+        props.onMouseDown(mx, my, e.button);
+      }}
+      onMouseUp={e => {
+        e.preventDefault(); 
+        props.onMouseUp(e.clientX, e.clientY)
+      }}
+      onMouseMove={e => {
+        e.preventDefault(); 
+        props.onMouseMove(e.clientX, e.clientY)
+      }}
+    ></div>
+    <div className={"square"} style={translateStyle}>{props.img}</div>
+  </div>
+  */
+  return <div className={"squarecontainer"} style={zStyle}>
+    <div className={"squaretrigger " + props.type} 
+      style={{opacity: props.opacity}}
+      onContextMenu={e => e.preventDefault()}
+    ></div>
+    <div className={"square"} style={translateStyle}>{props.img}</div>
+  </div>
+}
+
+export {BoardView}
