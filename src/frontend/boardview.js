@@ -16,7 +16,7 @@ import b_queen from "./img/b_queen.png";
 import b_king from "./img/b_king.png";
 import "./index.css";
 
-//import Xarrow from "react-xarrows"; TODO: add arrows in v3
+import Xarrow from "react-xarrows";
 import {colorOf, Color, Piece, DELAY} from "../data/enums.mjs";
 
 function imgSrc(p) {
@@ -49,15 +49,26 @@ function computeOpacity(props, r, c, now) {
   return 0.2 + 0.5 * (now - props.delay.get(r, c)) / DELAY;
 }
 
+function colorToHex(color) {
+  switch(color) {
+    case Color.WHITE: return "#fff";
+    case Color.BLACK: return "#aaa";
+    default: throw new Error("Cannot convert null to color");
+  }
+}
+
 /**
  * Props is required to have:
  *   color: Color
  *   board: ChessBoard
  *   delay: ChessMap<time>
  *   squareType: ChessMap<SquareType>
- *   //controller: Controller
+ *   onMouseDown: (row, col, pixelX, pixelY, button) => (None)
+ *   onMouseUp: (row, col, pixelX, pixelY) => (None)
+ *   onMouseMove: (pixelX, pixelY) => (None)
  *   translate: ChessMap<[dx, dy]>
- *   arrows: ChessMap<null or [fRow, fCol, time]>
+ *   moveArrows: list of {iRow, iCol, fRow, fCol, time, color} objects
+ *   userArrows: list of {iRow, iCol, fRow, fCol} objects
  */
 function BoardView(props) {
   let now = Date.now();
@@ -73,19 +84,57 @@ function BoardView(props) {
       let opacity = computeOpacity(props, r, c, now);
       let type = squareType.get(r, c);
       let [dx, dy] = translate.get(r, c);
-      row.push(<Square 
+      row.push(<div key={r + "_" + c}><Square 
         img={img} 
         type={type} 
-        id={r + "_" + c} 
-        key={r + "_" + c}
+        id={r + "_" + c}
         opacity={opacity}
         translateX={dx}
         translateY={dy}
-      />);
+        onMouseDown={(x, y, b) => props.onMouseDown(r, c, x, y, b)}
+        onMouseUp={(x, y) => props.onMouseUp(r, c, x, y)}
+        onMouseMove={(x, y) => props.onMouseMove(x, y)}
+      /></div>);
     }
     squares.push(<div key={i} className="gridrow">{row}</div>);
   }
-  return <div>{squares}</div>
+  let arrows = [];
+  for(let move of props.moveArrows) {
+    //let opacity = (DELAY / 2 - now + move.time) / DELAY * 2;
+    let opacity = 0.7;
+    let start = move.iRow + "_" + move.iCol;
+    let end = move.fRow + "_" + move.fCol;
+    arrows.push(<div style={{opacity: opacity}}>
+      <Xarrow
+        start={start}
+        end={end}
+        path={"straight"}
+        startAnchor={"middle"}
+        endAnchor={"middle"}
+        color={colorToHex(move.color)}
+        strokeWidth={10}
+        headSize={4}
+        zIndex={5}
+      />
+    </div>);
+  }
+  for(let move of props.userArrows) {
+    let start = move.iRow + "_" + move.iCol;
+    let end = move.fRow + "_" + move.fCol;
+    arrows.push(<div key={start+end}><Xarrow
+      start={start}
+      end={end}
+      path={"straight"}
+      startAnchor={"middle"}
+      endAnchor={"middle"}
+      color={"#aef"}
+      strokeWidth={5}
+    /></div>);
+  }
+  return <div>
+    <div>{squares}</div>
+    <div>{arrows}</div>
+  </div>
 }
 
 /**
@@ -107,8 +156,7 @@ function Square(props) {
   let zStyle = {
     zIndex: props.translateX || props.translateY ? 1 : 0,
   }
-  /*
-  return <div className={"squarecontainer"} style={zStyle}>
+  return <div id={props.id} className={"squarecontainer"} style={zStyle}>
     <div className={"squaretrigger " + props.type} 
       style={{opacity: props.opacity}}
       onContextMenu={e => e.preventDefault()}
@@ -127,14 +175,6 @@ function Square(props) {
         e.preventDefault(); 
         props.onMouseMove(e.clientX, e.clientY)
       }}
-    ></div>
-    <div className={"square"} style={translateStyle}>{props.img}</div>
-  </div>
-  */
-  return <div className={"squarecontainer"} style={zStyle}>
-    <div className={"squaretrigger " + props.type} 
-      style={{opacity: props.opacity}}
-      onContextMenu={e => e.preventDefault()}
     ></div>
     <div className={"square"} style={translateStyle}>{props.img}</div>
   </div>

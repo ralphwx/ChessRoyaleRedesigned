@@ -1,4 +1,5 @@
 import {ChessMap} from "../data/maps.mjs";
+
 const GameState = {
   PREPARE: 1,
   PLAY: 2,
@@ -31,6 +32,7 @@ const SquareType = {
   PREMOVE_SRC: "premove_init",
   PREMOVE_DEST: "premove_dest",
   SELECT: "select",
+  HIGHLIGHT: "highlight",
 };
 
 export {GameState, OptionalPair, SquareType};
