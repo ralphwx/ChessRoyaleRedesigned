@@ -104,7 +104,7 @@ function BoardView(props) {
     let opacity = 0.7;
     let start = move.iRow + "_" + move.iCol;
     let end = move.fRow + "_" + move.fCol;
-    arrows.push(<div style={{opacity: opacity}}>
+    arrows.push(<div className={"square"} style={{opacity: opacity, zIndex: 5}}>
       <Xarrow
         start={start}
         end={end}
@@ -114,14 +114,14 @@ function BoardView(props) {
         color={colorToHex(move.color)}
         strokeWidth={10}
         headSize={4}
-        zIndex={5}
       />
     </div>);
   }
   for(let move of props.userArrows) {
     let start = move.iRow + "_" + move.iCol;
     let end = move.fRow + "_" + move.fCol;
-    arrows.push(<div key={start+end}><Xarrow
+    arrows.push(<div className={"square"} style={{zIndex:5}} key={start+end}>
+    <Xarrow
       start={start}
       end={end}
       path={"straight"}

@@ -1,10 +1,14 @@
 
+Currently working on:
+- Update the controller with arrow drawing functionality.
+
 TODO:
 - Write tests for server backend, make sure to include cases where the
     user is logged in, user is guest, and login request was never sent.
 - Implement and test the feature where if two people private challenge each
     other, then they're automatically paired up.
 - Add sound effects and game start animation
+- Make the size of arrows on game screen adapt to chess board size
 - Future: write tests for spectator mode functionality (where user is requesting
   game data corresponding to other users)
 - learn SQL?

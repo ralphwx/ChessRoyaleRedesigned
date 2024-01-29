@@ -81,6 +81,13 @@ class ChessBitMap {
       }
     }
   }
+  toggle(i, j) {
+    if(i >> 2) {
+      this.high = this.high ^ (1 << (((i & 3) << 3) | j));
+    } else {
+      this.low = this.low ^ (1 << ((i << 3) | j));
+    }
+  }
   copy() {
     return new ChessBitMap(this.low, this.high);
   }

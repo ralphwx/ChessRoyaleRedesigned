@@ -14,7 +14,7 @@ class Main extends React.Component {
     super(props);
     this.controller = props.controller;
     this.state = controller.getViewState();
-    this.updateThread = setInterval(() => {this.setState(this.controller.getViewState())}, 100);
+    this.updateThread = setInterval(() => {this.setState({})}, 100);
   }
   render() {
     return <BoardView
