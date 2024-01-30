@@ -1,5 +1,8 @@
 //To run this test, copy this file into src/index.js and run npm start. Test
 //that the board reacts properly to user inputs.
+//This test checks whether mouse inputs to the chessboard are handled properly
+//The movement may be clunky because this test re-renders the board at a fixed
+//framerate of 10 fps.
 
 import React from "react";
 import ReactDOM from "react-dom/client";

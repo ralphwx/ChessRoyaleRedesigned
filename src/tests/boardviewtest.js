@@ -1,5 +1,6 @@
 //To run this test, copy this file into src/index.js and run npm start. Visually
 //verify that the board elements are displayed in a reasonable way.
+//This is for testing the implementation of BoardView
 
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -16,6 +17,7 @@ let squareType = ChessMap.fromInitializer((r, c) => {
   return SquareType.EVEN;
 });
 let translate = ChessMap.fromDefault([0, 0]);
+translate.set(6, 1, [10, -100]);
 let delay = ChessMap.fromDefault(Date.now() - DELAY);
 let board = ChessBoard.startingPosition();
 board = board.move(1, 4, 3, 4);

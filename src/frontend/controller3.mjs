@@ -30,7 +30,6 @@ class Controller {
       highlights: ChessBitMap.empty(),
     }
     this.premoveThread = undefined;
-    this.pendingMove = undefined;
     this.board = ChessBoard.startingPosition();
   }
   /**
@@ -42,9 +41,11 @@ class Controller {
       if((r ^ c) & 1) return SquareType.ODD;
       return SquareType.EVEN;
     });
-    if(this.checkSelect().isPresent()) {
-      let [r, c] = this.checkSelect().get();
-      squareType.set(r, c, SquareType.SELECT);
+    if(this.viewState.select.isPresent()) {
+      let [r, c] = this.viewState.select.get();
+      if(colorOf(this.board.pieceAt(r, c)) === this.color) {
+        squareType.set(r, c, SquareType.SELECT);
+      }
     }
     if(this.viewState.premoveSrc.isPresent()) {
       let [r, c] = this.viewState.premoveSrc.get();
@@ -54,6 +55,12 @@ class Controller {
       let [r, c] = this.viewState.premoveSrc.get();
       squareType.set(r, c, SquareType.PREMOVE_DEST);
     }
+    let translate = ChessMap.fromDefault([0, 0]);
+    let ms = this.mouseState;
+    if(ms.mouseDown && ms.button === 0 
+      && colorOf(this.board.pieceAt(ms.r, ms.c)) === this.color) {
+      translate.set(ms.r, ms.c, [ms.currentX - ms.initX, ms.currentY - ms.initY]);
+    }
     return {
       color: this.color,
       board: this.board,
@@ -62,20 +69,10 @@ class Controller {
       onMouseDown: (r, c, x, y, b) => {this.onMouseDown(r, c, x, y, b)},
       onMouseUp: (r, c, x, y) => {this.onMouseUp(r, c, x, y)},
       onMouseMove: (x, y) => {this.onMouseMove(x, y)},
-      translate: ChessMap.fromDefault([0, 0]),
+      translate: translate,
       moveArrows: [],
       userArrows: this.viewState.userArrows,
     };
-  }
-  checkSelect() {
-    let m = this.pendingMove;
-    if(m && colorOf(this.board.pieceAt(m.fRow, m.fCol)) === this.color) {
-      let output = OptionalPair.create(m.fRow, m.fCol);
-      this.pendingMove = undefined;
-      this.viewState.select = output;
-      return output;
-    }
-    return this.viewState.select;
   }
   onMouseDown(r, c, x, y, b) {
     this.mouseState.mouseDown = true;
@@ -94,19 +91,12 @@ class Controller {
       this.viewState.highlights = ChessBitMap.empty();
       if(colorOf(this.board.pieceAt(r, c)) === this.color) {
         this.viewState.select = OptionalPair.create(r, c);
-        this.pendingMove = undefined;
-        return;
-      }
-      if(this.checkSelect().isPresent()) {
-        let [iRow, iCol] = this.checkSelect().get();
+      } else if(this.viewState.select.isPresent()) {
+        let [iRow, iCol] = this.viewState.select.get();
         this.attemptMove(iRow, iCol, r, c);
-        this.viewState.select = OptionalPair.NONE;
-        return;
       }
     } else if(b === 2) {
       this.viewState.select = OptionalPair.NONE;
-      this.pendingMove = undefined;
-    } else {
     }
   }
   toggleArrow(iRow, iCol, fRow, fCol) {
@@ -130,7 +120,6 @@ class Controller {
     if(this.mouseState.button === 0) {
       if(this.mouseState.r !== r || this.mouseState.c !== c) {
         this.attemptMove(this.mouseState.r, this.mouseState.c, r, c);
-        this.viewState.select = OptionalPair.NONE;
       }
     } else if(this.mouseState.button === 2) {
       if(this.mouseState.r !== r || this.mouseState.c !== c) {
@@ -147,10 +136,11 @@ class Controller {
     }
   }
   attemptMove(iRow, iCol, fRow, fCol) {
-    if(this.board.moveType(iRow, iCol, fRow, fCol) !== MoveType.INVALID) {
+    if(colorOf(this.board.pieceAt(iRow, iCol)) === this.color
+      && this.board.moveType(iRow, iCol, fRow, fCol) !== MoveType.INVALID) {
       this.board = this.board.move(iRow, iCol, fRow, fCol);
-      this.pendingMove = {iRow: iRow, iCol: iCol, fRow: fRow, fCol: fCol};
     }
+    this.viewState.select = OptionalPair.create(fRow, fCol);
   }
 }
 
