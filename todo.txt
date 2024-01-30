@@ -1,6 +1,7 @@
 
 Currently working on:
 - Update the controller with arrow drawing functionality.
+- Bring back movement functionality/integrate with game_model
 
 TODO:
 - Write tests for server backend, make sure to include cases where the

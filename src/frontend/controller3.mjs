@@ -1,7 +1,7 @@
 
 import {OptionalPair, SquareType} from "./view_enums.mjs";
 import {ChessBitMap, ChessMap} from "../data/maps.mjs";
-import {colorOf, Color, DELAY} from "../data/enums.mjs";
+import {MoveType, colorOf, Color, DELAY} from "../data/enums.mjs";
 import {ChessBoard} from "../data/chess.mjs";
 
 /**
@@ -42,8 +42,8 @@ class Controller {
       if((r ^ c) & 1) return SquareType.ODD;
       return SquareType.EVEN;
     });
-    if(this.viewState.select.isPresent()) {
-      let [r, c] = this.viewState.select.get();
+    if(this.checkSelect().isPresent()) {
+      let [r, c] = this.checkSelect().get();
       squareType.set(r, c, SquareType.SELECT);
     }
     if(this.viewState.premoveSrc.isPresent()) {
@@ -56,7 +56,7 @@ class Controller {
     }
     return {
       color: this.color,
-      board: ChessBoard.startingPosition(),
+      board: this.board,
       delay: ChessMap.fromDefault(Date.now() - DELAY),
       squareType: squareType,
       onMouseDown: (r, c, x, y, b) => {this.onMouseDown(r, c, x, y, b)},
@@ -67,6 +67,16 @@ class Controller {
       userArrows: this.viewState.userArrows,
     };
   }
+  checkSelect() {
+    let m = this.pendingMove;
+    if(m && colorOf(this.board.pieceAt(m.fRow, m.fCol)) === this.color) {
+      let output = OptionalPair.create(m.fRow, m.fCol);
+      this.pendingMove = undefined;
+      this.viewState.select = output;
+      return output;
+    }
+    return this.viewState.select;
+  }
   onMouseDown(r, c, x, y, b) {
     this.mouseState.mouseDown = true;
     this.mouseState.button = b;
@@ -76,31 +86,27 @@ class Controller {
     this.mouseState.initY = y;
     this.mouseState.currentX = x;
     this.mouseState.currentY = y;
+    this.viewState.premoveSrc = OptionalPair.NONE;
+    this.viewState.premoveDest = OptionalPair.NONE;
+    this.premoveThread = undefined;
     if(b === 0) {
-      console.log("left mouse button pressed" + r + c);
-      this.viewState.premoveSrc = OptionalPair.NONE;
-      this.viewState.premoveDest = OptionalPair.NONE;
       this.viewState.userArrows = [];
       this.viewState.highlights = ChessBitMap.empty();
-      this.pendingMove = undefined;
-      this.premoveThread = undefined;
       if(colorOf(this.board.pieceAt(r, c)) === this.color) {
         this.viewState.select = OptionalPair.create(r, c);
+        this.pendingMove = undefined;
         return;
       }
-      if(this.viewState.select.isPresent()) {
-        //attempt move
+      if(this.checkSelect().isPresent()) {
+        let [iRow, iCol] = this.checkSelect().get();
+        this.attemptMove(iRow, iCol, r, c);
+        this.viewState.select = OptionalPair.NONE;
         return;
       }
     } else if(b === 2) {
       this.viewState.select = OptionalPair.NONE;
-      this.viewState.premoveSrc = OptionalPair.NONE;
-      this.viewState.premoveDest = OptionalPair.NONE;
-      this.premoveThread = undefined;
       this.pendingMove = undefined;
-      console.log("right mouse button pressed");
     } else {
-      console.log("something else was pressed, idk");
     }
   }
   toggleArrow(iRow, iCol, fRow, fCol) {
@@ -119,14 +125,12 @@ class Controller {
     }
   }
   onMouseUp(r, c, x, y) {
-    console.log("mouse up " + r + c);
     if(!this.mouseState.mouseDown) return;
     this.mouseState.mouseDown = false;
     if(this.mouseState.button === 0) {
-      if(this.viewState.select.isPresent()) {
-        if(this.mouseState.r !== r && this.mouseState.c !== c) {
-          //attempt move
-        }
+      if(this.mouseState.r !== r || this.mouseState.c !== c) {
+        this.attemptMove(this.mouseState.r, this.mouseState.c, r, c);
+        this.viewState.select = OptionalPair.NONE;
       }
     } else if(this.mouseState.button === 2) {
       if(this.mouseState.r !== r || this.mouseState.c !== c) {
@@ -140,6 +144,12 @@ class Controller {
     if(this.mouseState.mouseDown) {
       this.mouseState.currentX = x;
       this.mouseState.currentY = y;
+    }
+  }
+  attemptMove(iRow, iCol, fRow, fCol) {
+    if(this.board.moveType(iRow, iCol, fRow, fCol) !== MoveType.INVALID) {
+      this.board = this.board.move(iRow, iCol, fRow, fCol);
+      this.pendingMove = {iRow: iRow, iCol: iCol, fRow: fRow, fCol: fCol};
     }
   }
 }
