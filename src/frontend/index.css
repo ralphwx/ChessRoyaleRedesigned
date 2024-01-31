@@ -148,10 +148,11 @@
   width: 90%;
   height: calc(59.4vmin - 16rem);
   background-color: lightgray;
-  margin: 5%;
-  font-size: 1.5rem;
+  margin-left: 5%;
+  margin-right: 5%;
+  font-size: 1.3rem;
   font-style: italic;
-  text-align: center;
+  text-align: left;
   color: #555;
   overflow: auto;
 }
@@ -205,4 +206,9 @@
 .ctrlRow {
   width: 90vmin;
   height: 4rem;
+}
+
+.chat_input {
+  width: calc(90% - 5px);
+  font-size: 1.3rem;
 }

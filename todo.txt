@@ -1,7 +1,6 @@
 
 Currently working on:
-- Update the controller with arrow drawing functionality.
-- Bring back movement functionality/integrate with game_model
+- Import the game screen from the original project
 
 TODO:
 - Write tests for server backend, make sure to include cases where the
@@ -10,6 +9,7 @@ TODO:
     other, then they're automatically paired up.
 - Add sound effects and game start animation
 - Make the size of arrows on game screen adapt to chess board size
+- Hyperlink the chess royale logo in the header
 - Future: write tests for spectator mode functionality (where user is requesting
   game data corresponding to other users)
 - learn SQL?

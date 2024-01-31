@@ -3,11 +3,12 @@ import React from "react";
 import "./index.css";
 import {HeaderRow} from "./header.js";
 import {ResourceBar} from "./resourcebar.js";
-import {Color, DELAY} from "../data/enums.mjs";
+import {Color, DELAY, LoginType} from "../data/enums.mjs";
 import {ChessBoard} from "../data/chess.mjs";
 import {ChessMap} from "../data/maps.mjs";
 import {SquareType} from "./view_enums.mjs";
 import {BoardView} from "./boardview.js";
+import {ChatBox} from "./chatbox.js";
 
 function GameDesktop(props) {
   let boardview = <BoardView
@@ -27,7 +28,7 @@ function GameDesktop(props) {
   />
   let elixirAmount = 3.14;
   return <div>
-    <HeaderRow />
+    <HeaderRow username={"devralph"} loginType={LoginType.LOGIN} />
     <div className="gamecontainer">
       <div>
         {boardview}
@@ -36,6 +37,7 @@ function GameDesktop(props) {
         </div>
       </div>
       <div className="metabox">
+        <ChatBox messages={[]} sendMessage={() => {}} />
       </div>
     </div>
   </div>
