@@ -16,6 +16,11 @@
   position:relative;
 }
 
+.arrow {
+  z-index: 5;
+  pointer-events: none;
+}
+
 .square {
   pointer-events: none;
 }
@@ -59,7 +64,7 @@
   height: 64vmin;
 }
 
-.chesspiece {
+.innerimg {
   width: calc(100% - 6px);
   height: calc(100% - 6px);
   margin-left: 3px;
@@ -170,10 +175,13 @@
   display: flex;
 }
 
-.draw {
+.controlbutton {
   width: 4rem;
   height: 4rem;
   background-color: darkgray;
+}
+
+.draw {
   margin-left: 5%;
   font-size: 1.5rem;
 }
@@ -184,12 +192,8 @@
 }
 
 .resign {
-  width: 4rem;
-  height: 4rem;
-  background-color: darkgray;
   margin-left: auto;
   margin-right: 5%;
-  float: right;
 }
 
 .resignhover {
@@ -212,5 +216,10 @@
 
 .chat_input {
   width: calc(90% - 5px);
+  margin-bottom: 5%;
   font-size: 1.3rem;
+}
+
+.text_input_wrapper {
+  text-align: center;
 }

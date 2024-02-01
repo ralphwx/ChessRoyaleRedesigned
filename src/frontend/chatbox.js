@@ -16,7 +16,7 @@ function ChatBox(props) {
         return <div>{msg.sender + ": " + msg.message}</div>
       })}
     </div>
-    <div style={{textAlign: "center"}}>
+    <div className="text_input_wrapper">
       <form onSubmit={(e) => {
         e.preventDefault();
         let element = document.querySelector("#chat_input");

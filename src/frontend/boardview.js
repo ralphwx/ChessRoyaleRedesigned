@@ -40,7 +40,7 @@ function imgSrc(p) {
 
 function pieceToHTML(p) {
   let src = imgSrc(p);
-  return <img className="chesspiece" src={src} alt="?"/>;
+  return <img className="innerimg" src={src} alt="?"/>;
 }
 
 function computeOpacity(props, r, c, now) {
@@ -104,7 +104,7 @@ function BoardView(props) {
     let opacity = 0.7;
     let start = move.iRow + "_" + move.iCol;
     let end = move.fRow + "_" + move.fCol;
-    arrows.push(<div className={"square"} style={{opacity: opacity, zIndex: 5}}>
+    arrows.push(<div className={"arrow"} style={{opacity: opacity}}>
       <Xarrow
         start={start}
         end={end}
@@ -120,7 +120,7 @@ function BoardView(props) {
   for(let move of props.userArrows) {
     let start = move.iRow + "_" + move.iCol;
     let end = move.fRow + "_" + move.fCol;
-    arrows.push(<div className={"square"} style={{zIndex:5}} key={start+end}>
+    arrows.push(<div className={"arrow"} key={start+end}>
     <Xarrow
       start={start}
       end={end}

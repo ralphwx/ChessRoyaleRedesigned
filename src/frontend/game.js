@@ -40,15 +40,15 @@ function GameDesktop(props) {
       <div className="metabox">
         <div className={"info online"}>{"Opponent (elo)"}</div>
         <button className={"ready online"}>Ready!</button>
-        <div style={{marginBottom: "5%"}}>
+        <div>
           <ChatBox messages={[{sender: "[system]", message:"hi"}]} sendMessage={() => {}} />
         </div>
         <button className={"ready offline"}>Start the game</button>
         <div className={"info online"}>{"Username (elo)"}</div>
         <div className={"gamectrl"}>
-          <button className={"draw"}>1/2</button>
-          <button className={"resign"}>
-            <img className={"chesspiece"} src={abort} alt={"?"}/>
+          <button className={"controlbutton draw"}>1/2</button>
+          <button className={"controlbutton resign"}>
+            <img className={"innerimg"} src={abort} alt={"?"}/>
           </button>
         </div>
       </div>
