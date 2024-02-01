@@ -55,10 +55,6 @@
   background-color: #8b0000
 }
 
-.premove-dest {
-  background-color: #8b0000
-}
-
 .chessboard {
   width: 64vmin;
   height: 64vmin;
@@ -112,17 +108,6 @@
   font-size: 1rem;
 }
 
-.infovert {
-  width: 30%;
-  height: 2rem;
-  font-size: 1rem;
-  position: absolute;
-  top: 0;
-  left: 0;
-  justify-content: center;
-  display: flex;
-}
-
 .online {
   background-color: #ccebc5;
 }
@@ -137,16 +122,6 @@
   margin-left: 5%;
   margin-right: 5%;
   font-size: 1.5rem;
-}
-
-.readyvert {
-  width: 40%;
-  height: 2rem;
-  font-size: 1rem;
-  position:absolute;
-  top: 0;
-  right: 0;
-  border: none;
 }
 
 .console {
