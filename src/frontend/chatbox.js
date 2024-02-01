@@ -12,11 +12,9 @@ import "./index.css";
 function ChatBox(props) {
   return <div>
     <div className="console">
-      <div style={{margin:"1%"}}>
-        {props.messages.map((msg) => {
-          return <div>{msg.sender + ": " + msg.message}</div>
-        })}
-      </div>
+      {props.messages.map((msg) => {
+        return <div>{msg.sender + ": " + msg.message}</div>
+      })}
     </div>
     <div style={{textAlign: "center"}}>
       <form onSubmit={(e) => {

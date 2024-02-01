@@ -9,6 +9,7 @@ import {ChessMap} from "../data/maps.mjs";
 import {SquareType} from "./view_enums.mjs";
 import {BoardView} from "./boardview.js";
 import {ChatBox} from "./chatbox.js";
+import abort from "./img/abort.png";
 
 function GameDesktop(props) {
   let boardview = <BoardView
@@ -37,7 +38,19 @@ function GameDesktop(props) {
         </div>
       </div>
       <div className="metabox">
-        <ChatBox messages={[]} sendMessage={() => {}} />
+        <div className={"info online"}>{"Opponent (elo)"}</div>
+        <button className={"ready online"}>Ready!</button>
+        <div style={{marginBottom: "5%"}}>
+          <ChatBox messages={[{sender: "[system]", message:"hi"}]} sendMessage={() => {}} />
+        </div>
+        <button className={"ready offline"}>Start the game</button>
+        <div className={"info online"}>{"Username (elo)"}</div>
+        <div className={"gamectrl"}>
+          <button className={"draw"}>1/2</button>
+          <button className={"resign"}>
+            <img className={"chesspiece"} src={abort} alt={"?"}/>
+          </button>
+        </div>
       </div>
     </div>
   </div>

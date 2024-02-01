@@ -145,11 +145,13 @@
 }
 
 .console {
-  width: 90%;
-  height: calc(59.4vmin - 16rem);
+  width: 88%;
+  height: calc(58.4vmin - 17.5rem);
   background-color: lightgray;
   margin-left: 5%;
   margin-right: 5%;
+  margin-top: 5%;
+  padding: 1%;
   font-size: 1.3rem;
   font-style: italic;
   text-align: left;
