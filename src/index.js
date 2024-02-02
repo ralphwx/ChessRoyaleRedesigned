@@ -1,41 +1,35 @@
-//To run this test, copy this file into src/index.js and run npm start. Test
-//that the board reacts properly to user inputs.
-//This test checks whether mouse inputs to the chessboard are handled properly
-//The movement may be clunky because this test re-renders the board at a fixed
-//framerate of 10 fps.
-
-import React from "react";
 import ReactDOM from "react-dom/client";
 
-import {Controller} from "./frontend/controller3.mjs";
-import {BoardView} from "./frontend/boardview.js";
+import {GameDesktop} from "./frontend/game.js";
+import {GameData, Move} from "./data/gamedata.mjs";
+import {Color, LoginType, ELIXIR, DELAY} from "./data/enums.mjs";
 
-let controller = new Controller();
-
-class Main extends React.Component {
-  constructor(props) {
-    super(props);
-    this.controller = props.controller;
-    this.state = controller.getViewState();
-    this.updateThread = setInterval(() => {this.setState(controller.getViewState())}, 100);
-  }
-  render() {
-    return <BoardView
-      color={this.state.color}
-      board={this.state.board}
-      delay={this.state.delay}
-      squareType={this.state.squareType}
-      onMouseDown={this.state.onMouseDown}
-      onMouseUp={this.state.onMouseUp}
-      onMouseMove={this.state.onMouseMove}
-      translate={this.state.translate}
-      moveArrows={this.state.moveArrows}
-      userArrows={this.state.userArrows}
-    />
-  }
-}
+let now = Date.now()
+let gamedata = new GameData(now - 2 * ELIXIR);
+gamedata.move(new Move(Color.WHITE, now - 0.3 * DELAY, 1, 4, 3, 4));
+gamedata.move(new Move(Color.BLACK, now - 0.3 * DELAY, 6, 2, 4, 2));
+let user = "devralph";
+let userElo = 900;
+let loginType = LoginType.LOGIN;
+let chat = [
+  {sender: "devralph", message: "glhf"},
+  {sender: "[system]", message: "Game started"},
+];
+let opponent = "opponent";
+let opponentElo = 900;
+let userReady = true;
+let opponentReady = true;
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<div style={{width: "50%", height: "50%"}}>
-  <Main controller={controller} />
-</div>);
+root.render(<GameDesktop 
+  color={Color.WHITE}
+  gamedata={gamedata}
+  user={user}
+  userElo={userElo}
+  loginType={loginType}
+  chat={chat}
+  opponent={opponent}
+  opponentElo={opponentElo}
+  userReady={userReady}
+  opponentReady={opponentReady}
+/>);

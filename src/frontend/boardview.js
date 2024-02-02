@@ -17,7 +17,7 @@ import b_king from "./img/b_king.png";
 import "./index.css";
 
 import Xarrow from "react-xarrows";
-import {colorOf, Color, Piece, DELAY} from "../data/enums.mjs";
+import {colorOf, Color, Piece, DELAY, ARROW_TIME} from "../data/enums.mjs";
 
 function imgSrc(p) {
   switch(p) {
@@ -100,11 +100,11 @@ function BoardView(props) {
   }
   let arrows = [];
   for(let move of props.moveArrows) {
-    //let opacity = (DELAY / 2 - now + move.time) / DELAY * 2;
-    let opacity = 0.7;
+    let opacity = (ARROW_TIME - now + move.time) / ARROW_TIME;
     let start = move.iRow + "_" + move.iCol;
     let end = move.fRow + "_" + move.fCol;
-    arrows.push(<div className={"arrow"} style={{opacity: opacity}}>
+    arrows.push(<div className={"arrow"} style={{opacity: opacity}}
+      onContextMenu={(e) => {e.preventDefault()}}>
       <Xarrow
         start={start}
         end={end}

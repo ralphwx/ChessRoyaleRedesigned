@@ -84,6 +84,7 @@ const URL = "http://localhost:8080";
 const DELAY = 2000;
 const ELIXIR = 4000;
 const BAR_MAX = 10;
+const ARROW_TIME = DELAY / 2;
 
 /**
  * Enum representing types of logins
@@ -112,4 +113,4 @@ const Location = {
   GAME: 1,
 }
 
-export {Piece, pieceToString, Color, colorOf, MoveType, URL, DELAY, ELIXIR, BAR_MAX, LoginType, GameOverCause, Location};
+export {Piece, pieceToString, Color, colorOf, MoveType, URL, DELAY, ELIXIR, BAR_MAX, ARROW_TIME, LoginType, GameOverCause, Location};
