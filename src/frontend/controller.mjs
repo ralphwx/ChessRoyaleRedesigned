@@ -61,7 +61,7 @@ class Controller {
     }, 500);
   }
   /**
-   *
+   * Attempts to make a move.
    */
   attemptMove(iRow, iCol, fRow, fCol) {
     let board = this.repackageBoardData(this.model.getBoardData());

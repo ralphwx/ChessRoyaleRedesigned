@@ -100,11 +100,14 @@ function BoardView(props) {
   }
   let arrows = [];
   for(let move of props.moveArrows) {
-    let opacity = (ARROW_TIME - now + move.time) / ARROW_TIME;
+    let opacity = 0.7 * (ARROW_TIME - now + move.time) / ARROW_TIME;
     let start = move.iRow + "_" + move.iCol;
     let end = move.fRow + "_" + move.fCol;
-    arrows.push(<div className={"arrow"} style={{opacity: opacity}}
-      onContextMenu={(e) => {e.preventDefault()}}>
+    arrows.push(<div className={"arrow"} 
+      style={{opacity: opacity}}
+      onContextMenu={(e) => {e.preventDefault()}}
+      key={"move" + start + end}
+    >
       <Xarrow
         start={start}
         end={end}
@@ -120,7 +123,7 @@ function BoardView(props) {
   for(let move of props.userArrows) {
     let start = move.iRow + "_" + move.iCol;
     let end = move.fRow + "_" + move.fCol;
-    arrows.push(<div className={"arrow"} key={start+end}>
+    arrows.push(<div className={"arrow"} key={"user" + start + end}>
     <Xarrow
       start={start}
       end={end}

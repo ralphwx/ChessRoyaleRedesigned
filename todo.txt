@@ -13,3 +13,5 @@ TODO:
 - Future: write tests for spectator mode functionality (where user is requesting
   game data corresponding to other users)
 - learn SQL?
+- Add rules of fair play to the site somewhere, eg, do not use alt accounts to
+  spy on opponents
