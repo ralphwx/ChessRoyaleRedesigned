@@ -1,6 +1,7 @@
 
 Currently working on:
-- Import the game screen from the original project
+- Implement pop-up windows
+- Import GameMobile view from original project
 
 TODO:
 - Write tests for server backend, make sure to include cases where the
