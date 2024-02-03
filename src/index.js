@@ -1,43 +1,62 @@
-
 import ReactDOM from "react-dom/client";
-import "./frontend/popup.css";
 
-function PopUp(props) {
-  return <div className="popup" style={{
-    width: "50%",
-    height: "50%",
-    backgroundColor: "#aaa",
-  }}>
-    <div style={{
-      fontSize: "max(5vw, 2rem)",
-      position: "absolute",
-      top: "50%",
-      left: "50%",
-      transform: "translate(-50%, -50%)",
-      backgroundColor: "yellow",
-    }}>
-      Hello World!
-    </div>
-    <div style={{
-      position: "absolute",
-      bottom: "0",
-      width: "100%",
-      height: "max(3.5vw, 3.5rem)",
-      backgroundColor: "#777",
-      display: "flex",
-    }}>
-      <button style={{
-        fontSize: "max(2vw, 2rem)",
-        margin: "max(0.5vw, 0.5rem)",
-        marginLeft: "auto",
-      }}>Okay</button>
-      <button style={{
-        fontSize: "max(2vw, 2rem)",
-        margin: "max(0.5vw, 0.5rem)",
-      }}>Cancel</button>
-    </div>
-  </div>
-}
+import {GameDesktop} from "./frontend/game.js";
+import {GameData, Move} from "./data/gamedata.mjs";
+import {Color, LoginType, ELIXIR, DELAY} from "./data/enums.mjs";
+import {ChessMap} from "./data/maps.mjs";
+import {SquareType} from "./frontend/view_enums.mjs";
+import {renderPopUp} from "./frontend/popup.js";
+
+let now = Date.now()
+let gamedata = new GameData(now - 2.5 * ELIXIR);
+gamedata.move(new Move(Color.WHITE, now - 1, 1, 4, 3, 4));
+gamedata.move(new Move(Color.BLACK, now - 1, 6, 2, 4, 2));
+let user = "devralph";
+let userElo = 900;
+let loginType = LoginType.LOGIN;
+let chat = [
+  {sender: "devralph", message: "glhf"},
+  {sender: "[system]", message: "Game started"},
+];
+let opponent = "opponent";
+let opponentElo = 900;
+let userReady = true;
+let opponentReady = true;
+
+let squareType = ChessMap.fromInitializer((r, c) => {
+  if((r + c) & 1) return SquareType.ODD;
+  return SquareType.EVEN;
+});
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<PopUp />);
+root.render(<GameDesktop 
+  color={Color.WHITE}
+  gamedata={gamedata}
+  user={user}
+  userElo={userElo}
+  loginType={loginType}
+  chat={chat}
+  opponent={opponent}
+  opponentElo={opponentElo}
+  userReady={userReady}
+  opponentReady={opponentReady}
+  userRematch={undefined}
+  opponentRematch={undefined}
+  gameOver={false}
+  squareType={squareType}
+  onMouseDown={(r, c, x, y, b) => console.log("Mouse down " + r + c)}
+  onMouseUp={(r, c, x, y) => console.log("Mouse up " + r + c)}
+  onMouseMove={(x, y) => {}}
+  translate={ChessMap.fromDefault([0, 0])}
+  userArrows={[{iRow: 6, iCol: 4, fRow: 5, fCol: 4}]}
+  sendMessage={(message) => console.log(message)}
+  onReady={() => console.log("ready!")}
+/>);
+
+
+renderPopUp(<h1>White wins by resignation</h1>, [
+  {
+    inner: "Okay",
+    onClick: () => {},
+  }
+]);

@@ -20,7 +20,31 @@
   position: absolute;
   top: 50%;
   left: 50%;
+  width: 50%;
+  height: 50%;
+  background-color: #bbbe;
   animation-name: expand;
   animation-duration: 0.5s;
   transform: translate(-50%, -50%);
+}
+
+.optionrow {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  height: max(3.5vw, 3.5rem);
+  display: flex;
+}
+
+.optionbutton {
+  font-size: max(2vw, 2rem);
+  margin: max(0.5vw, 0.5rem);
+}
+
+.optionbutton:hover {
+  opacity: 0.5;
+}
+
+.first {
+  margin-left: auto;
 }
