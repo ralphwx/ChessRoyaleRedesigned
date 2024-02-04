@@ -117,6 +117,7 @@ function BoardView(props) {
         color={colorToHex(move.color)}
         strokeWidth={10}
         headSize={4}
+        passProps={{pointerEvents: "none"}}
       />
     </div>);
   }
@@ -132,6 +133,7 @@ function BoardView(props) {
       endAnchor={"middle"}
       color={"#aef"}
       strokeWidth={5}
+      passProps={{pointerEvents: "none"}}
     /></div>);
   }
   return <div>

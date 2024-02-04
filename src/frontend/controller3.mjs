@@ -140,6 +140,7 @@ class Controller {
     };
   }
   onMouseDown(r, c, x, y, b) {
+    console.log("on mouse down");
     this.mouseState.mouseDown = true;
     this.mouseState.button = b;
     this.mouseState.r = r;
@@ -183,6 +184,7 @@ class Controller {
     }
   }
   onMouseUp(r, c, x, y) {
+    console.log("on mouse up");
     if(!this.mouseState.mouseDown) return;
     this.mouseState.mouseDown = false;
     if(this.mouseState.button === 0) {
