@@ -1,11 +1,12 @@
 
 Currently working on:
-- Implement pop-up windows
 - Import GameMobile view from original project
+- Clean up game.js code, add functionality for playing as guest
+- Import list of game.js tests from original project
 
 TODO:
-- Write tests for server backend, make sure to include cases where the
-    user is logged in, user is guest, and login request was never sent.
+- Modify the login request such that if logging in as guest, but the username
+  is supplied, then that username gets assigned.
 - Implement and test the feature where if two people private challenge each
     other, then they're automatically paired up.
 - Add sound effects and game start animation
@@ -16,3 +17,4 @@ TODO:
 - learn SQL?
 - Add rules of fair play to the site somewhere, eg, do not use alt accounts to
   spy on opponents
+- Begin self-hacking attempts

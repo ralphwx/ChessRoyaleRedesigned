@@ -20,13 +20,15 @@ const root = ReactDOM.createRoot(document.getElementById("popup_window"));
 function PopUp(props) {
   let button_row = [];
   let options = props.options;
-  for(let {inner, onClick} of props.options) {
+  console.log("options: ");
+  console.log(options);
+  for(let settings of props.options) {
     let className = button_row.length ? "optionbutton" : "optionbutton first";
     button_row.push(<button
       className={className}
-      onClick={() => {onClick(); hidePopUp();}}
+      onClick={() => {settings.onClick(); hidePopUp();}}
     >
-      {inner}
+      {settings.inner}
     </button>);
   }
   return <div className="popup">

@@ -1,7 +1,7 @@
 
 import {OptionalPair, SquareType} from "./view_enums.mjs";
 import {ChessBitMap, ChessMap} from "../data/maps.mjs";
-import {MoveType, colorOf, Color, DELAY} from "../data/enums.mjs";
+import {MoveType, colorOf, Color, ELIXIR, DELAY} from "../data/enums.mjs";
 import {ChessBoard} from "../data/chess.mjs";
 
 /**
@@ -10,8 +10,10 @@ import {ChessBoard} from "../data/chess.mjs";
  * requests to the server.
  */
 class Controller {
-  constructor() {
-    this.color = Color.WHITE;
+  constructor(model, loginType) {
+    this.model = model;
+    this.loginType = loginType;
+    this.model.addListener(this);
     this.mouseState = {
       mouseDown: false,
       button: 0,
@@ -30,12 +32,52 @@ class Controller {
       highlights: ChessBitMap.empty(),
     }
     this.premoveThread = undefined;
-    this.board = ChessBoard.startingPosition();
+    this.listeners = [];
+  }
+  /**
+   * [listener] should be an object with the same signature as the input to
+   * GameModel.addListener();
+   */
+  addListener(listener) {
+    this.listeners.push(listener);
+  }
+  boardUpdated() {
+    for(let listener of this.listeners) listener.boardUpdated();
+  }
+  chatUpdated() {
+    for(let listener of this.listeners) listener.chatUpdated();
+  }
+  metaUpdated() {
+    for(let listener of this.listeners) listener.metaUpdated();
+  }
+  gameOver() {
+    for(let listener of this.listeners) listener.gameOver();
+  }
+  gameStarted() {
+    for(let listener of this.listeners) listener.gameStarted();
+  }
+  /**
+   * Returns the user's color
+   */
+  getColor() {
+    if(this.model.user === this.model.metadata.black) return Color.BLACK;
+    //if(this.model.user === this.model.metadata.white) return Color.WHITE;
+    return Color.WHITE;
+  }
+  /**
+   * Returns the current board state
+   */
+  getBoard() {
+    if(!this.model.gamedata) {
+      return ChessBoard.startingPosition();
+    }
+    return this.model.gamedata.getBoard();
   }
   /**
    * Returns an object whose properties are supplied to BoardView
    */
   getViewState() {
+    let color = this.getColor();
     let squareType = ChessMap.fromInitializer((r, c) => {
       if(this.viewState.highlights.get(r, c)) return SquareType.HIGHLIGHT;
       if((r ^ c) & 1) return SquareType.ODD;
@@ -43,7 +85,7 @@ class Controller {
     });
     if(this.viewState.select.isPresent()) {
       let [r, c] = this.viewState.select.get();
-      if(colorOf(this.board.pieceAt(r, c)) === this.color) {
+      if(colorOf(this.getBoard().pieceAt(r, c)) === color) {
         squareType.set(r, c, SquareType.SELECT);
       }
     }
@@ -52,26 +94,49 @@ class Controller {
       squareType.set(r, c, SquareType.PREMOVE_SRC);
     }
     if(this.viewState.premoveDest.isPresent()) {
-      let [r, c] = this.viewState.premoveSrc.get();
+      let [r, c] = this.viewState.premoveDest.get();
       squareType.set(r, c, SquareType.PREMOVE_DEST);
     }
     let translate = ChessMap.fromDefault([0, 0]);
     let ms = this.mouseState;
     if(ms.mouseDown && ms.button === 0 
-      && colorOf(this.board.pieceAt(ms.r, ms.c)) === this.color) {
+      && colorOf(this.getBoard().pieceAt(ms.r, ms.c)) === this.getColor()) {
       translate.set(ms.r, ms.c, [ms.currentX - ms.initX, ms.currentY - ms.initY]);
     }
+    let opponent = color === Color.WHITE ? 
+      this.model.metadata.black : this.model.metadata.white;
+    let userReady = color === Color.WHITE ?
+      this.model.metadata.wready : this.model.metadata.bready;
+    let opponentReady = color === Color.WHITE ? 
+      this.model.metadata.bready : this.model.metadata.wready;
     return {
-      color: this.color,
-      board: this.board,
-      delay: ChessMap.fromDefault(Date.now() - DELAY),
+      color: this.getColor(),
+      gamedata: this.model.gamedata,
+      user: this.model.user,
+      userElo: "????",
+      loginType: this.loginType,
+      chat: this.model.chat,
+      opponent: opponent,
+      opponentElo: "????",
+      userReady: userReady,
+      opponentReady: opponentReady,
+      userRematch: false,
+      opponentRematch: false,
+      gameOver: this.model.gameResult !== undefined,
       squareType: squareType,
       onMouseDown: (r, c, x, y, b) => {this.onMouseDown(r, c, x, y, b)},
       onMouseUp: (r, c, x, y) => {this.onMouseUp(r, c, x, y)},
       onMouseMove: (x, y) => {this.onMouseMove(x, y)},
       translate: translate,
-      moveArrows: [],
       userArrows: this.viewState.userArrows,
+      sendMessage: (msg) => {this.model.sendMessage(msg)},
+      abort: () => {this.model.abort()},
+      resign: () => {this.model.resign()},
+      draw: () => {this.model.offerDraw()},
+      exit: () => {console.log("redirect")},
+      offerRematch: () => {this.model.offerRematch()},
+      cancelRematch: () => {this.model.cancelRematch()},
+      onReady: () => {this.model.declareReady()},
     };
   }
   onMouseDown(r, c, x, y, b) {
@@ -89,7 +154,7 @@ class Controller {
     if(b === 0) {
       this.viewState.userArrows = [];
       this.viewState.highlights = ChessBitMap.empty();
-      if(colorOf(this.board.pieceAt(r, c)) === this.color) {
+      if(colorOf(this.getBoard().pieceAt(r, c)) === this.getColor()) {
         this.viewState.select = OptionalPair.create(r, c);
       } else if(this.viewState.select.isPresent()) {
         let [iRow, iCol] = this.viewState.select.get();
@@ -97,6 +162,9 @@ class Controller {
       }
     } else if(b === 2) {
       this.viewState.select = OptionalPair.NONE;
+    }
+    for(let listener of this.listeners) {
+      listener.boardUpdated();
     }
   }
   toggleArrow(iRow, iCol, fRow, fCol) {
@@ -128,19 +196,42 @@ class Controller {
         this.viewState.highlights.toggle(r, c);
       }
     }
+    for(let listener of this.listeners) {
+      listener.boardUpdated();
+    }
   }
   onMouseMove(x, y) {
     if(this.mouseState.mouseDown) {
       this.mouseState.currentX = x;
       this.mouseState.currentY = y;
+      for(let listener of this.listeners) {
+        listener.boardUpdated();
+      }
     }
   }
   attemptMove(iRow, iCol, fRow, fCol) {
-    if(colorOf(this.board.pieceAt(iRow, iCol)) === this.color
-      && this.board.moveType(iRow, iCol, fRow, fCol) !== MoveType.INVALID) {
-      this.board = this.board.move(iRow, iCol, fRow, fCol);
+    //check timing
+    if(this.model.gamedata === undefined) return;
+    let now = Date.now();
+    let gamestate = this.model.gamedata.history.head;
+    let elixirStart = this.getColor() === Color.WHITE ? 
+      gamestate.wStart : gamestate.bStart;
+    let delayWaitTime = DELAY - now + gamestate.delay.get(iRow, iCol);
+    let elixirWaitTime = ELIXIR - now + elixirStart;
+    let premoveWaitTime = Math.max(delayWaitTime, elixirWaitTime);
+    if(premoveWaitTime > 0) {
+      this.premoveThread = setTimeout(() => {
+        this.viewState.premoveSrc = OptionalPair.NONE;
+        this.viewState.premoveDest = OptionalPair.NONE;
+        this.attemptMove(iRow, iCol, fRow, fCol)
+      }, premoveWaitTime);
+      this.viewState.select = OptionalPair.NONE;
+      this.viewState.premoveSrc = OptionalPair.create(iRow, iCol);
+      this.viewState.premoveDest = OptionalPair.create(fRow, fCol);
+    } else {
+      this.model.sendMove(iRow, iCol, fRow, fCol);
+      this.viewState.select = OptionalPair.create(fRow, fCol);
     }
-    this.viewState.select = OptionalPair.create(fRow, fCol);
   }
 }
 

@@ -1,4 +1,6 @@
 
+import {GameData} from "../data/gamedata.mjs";
+
 /**
  * Client side object that interacts with the server and keeps track of the
  * game state and metadata. Calling classes can use this objects properties
@@ -18,6 +20,20 @@ class GameModel {
     this.gameResult = undefined;
     this.cause = undefined;
     this.initializeSocket();
+    this.listeners = [];
+  }
+  /**
+   * [listener] objects should contain the functions:
+   *   [metaUpdated] (() => (None)): a function to call when the metadata is 
+   *     updated
+   *   [boardUpdated] (() => (None)): a function to call when the board state is
+   *     updated
+   *   [chatUpdated] (() => (None)): a function to call when the chat is updated
+   *   [gameOver] (() => (None)): a function to call when the game ends
+   *   [gameStarted] (() => (None)): a function to call when the game starts
+   */
+  addListener(listener) {
+    this.listeners.push(listener);
   }
   initializeSocket() {
     this.socket.addEventHandler("boardUpdate", (meta, args) => {
@@ -26,27 +42,33 @@ class GameModel {
       } else {
         this.refreshGameData();
       }
+      for(let listener of this.listeners) listener.boardUpdated();
     });
     this.socket.addEventHandler("chatUpdate", (meta, args) => {
-      if(args.i === chat.length) {
-        for(let message of args.messages) chat.push(message);
+      if(args.i === this.chat.length) {
+        for(let message of args.messages) this.chat.push(message);
       } else {
-        refreshChat();
+        this.refreshChat();
       }
+      for(let listener of this.listeners) listener.chatUpdated();
     });
     this.socket.addEventHandler("metaUpdate", (meta, args) => {
-      this.metadata = args;
+      this.metadata = args.data;
+      for(let listener of this.listeners) listener.metaUpdated();
     });
     this.socket.addEventHandler("gameOver", (meta, args) => {
       this.gameResult = args.data.gameOverResult;
       this.cause = args.data.gameOverCause;
+      for(let listener of this.listeners) listener.gameOver();
     });
     this.socket.addEventHandler("gameStarted", (meta, args) => {
-      this.gamedata = new GameData(args);
+      this.gamedata = new GameData(args.now);
+      for(let listener of this.listeners) listener.gameStarted();
     });
   }
   refreshGameData() {
-    let startIndex = this.gamedata === undefined ? 0 : gamedata.history.length - 1;
+    let startIndex = this.gamedata === undefined ? 
+      0 : this.gamedata.history.length - 1;
     this.socket.notify("getGameData", {user: this.user, i: startIndex}, 
       (meta, args) => {
         if(args.startTime === undefined) {
@@ -54,22 +76,66 @@ class GameModel {
           return;
         }
         if(!this.gamedata) this.gamedata = new GameData(args.startTime);
-        for(let move of args.moves) gamedata.move(move);
+        for(let move of args.moves) this.gamedata.move(move);
+        for(let listener of this.listeners) listener.boardUpdated();
       }
     );
   }
   refreshMetaData() {
     this.socket.notify("getMetaData", this.user, (meta, args) => {
       this.metadata = args;
+      for(let listener of this.listeners) listener.metaUpdated();
     });
   }
   refreshChat() {
     this.socket.notify("getChat", {i: this.chat.length, user: this.user},
       (meta, args) => {
         for(let message of args) {
-          chat.push(message);
+          this.chat.push(message);
         }
+        for(let listener of this.listeners) listener.chatUpdated();
       }
     );
   }
+  /** 
+   * Attempts to make a move.
+   */
+  sendMove(iRow, iCol, fRow, fCol) {
+    this.socket.notify("move", {iRow: iRow, iCol: iCol, fRow: fRow, fCol: fCol},
+      (meta, args) => {});
+  }
+  /**
+   * Attempts to send a chat message
+   */
+  sendMessage(msg) {
+    this.socket.notify("message", msg, (meta, args) => {});
+  }
+  /**
+   * Attempts to abort the game
+   */
+  abort() {
+    this.socket.notify("abort", {}, () => {});
+  }
+  /** 
+   * Attempts to resign the game
+   */
+  resign() {
+    this.socket.notify("resign", {}, () => {});
+  }
+  offerDraw() {
+    this.socket.notify("offerDraw", {}, () => {});
+  }
+  offerRematch() {
+    let opponent = this.metadata.white === this.user ?
+      this.metadata.black : this.metadata.white;
+    this.socket.notify("createPrivateChallenge", opponent, () => {});
+  }
+  cancelRematch() {
+    this.socket.notify("cancelChallenge", {}, () => {});
+  }
+  declareReady() {
+    this.socket.notify("declareReady", {}, () => {});
+  }
 }
+
+export {GameModel}
