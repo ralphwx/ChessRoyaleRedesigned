@@ -42,7 +42,10 @@ class Game extends React.Component {
       gameStarted: refreshView,
       gameOver: () => {
         refreshView();
-        renderPopUp(<div>Game over</div>, [{inner: "Okay", onClick:() => {}}]);
+        setTimeout(() => {
+          renderPopUp(<div>Game over</div>, 
+          [{inner: "Okay", onClick:() => {}}]);
+        }, 500);
       }
     });
     setInterval(() => {this.setState({});}, 100);
