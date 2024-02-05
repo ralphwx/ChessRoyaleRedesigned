@@ -20,8 +20,6 @@ const root = ReactDOM.createRoot(document.getElementById("popup_window"));
 function PopUp(props) {
   let button_row = [];
   let options = props.options;
-  console.log("options: ");
-  console.log(options);
   for(let settings of props.options) {
     let className = button_row.length ? "optionbutton" : "optionbutton first";
     button_row.push(<button

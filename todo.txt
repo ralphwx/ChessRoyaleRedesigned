@@ -3,9 +3,14 @@ Currently working on:
 - Import GameMobile view from original project
 - Clean up game.js code, add functionality for playing as guest
 - Import list of game.js tests from original project
+- Fix elo display on game.js
 
 TODO:
+- Implement login popup
+- Implement lobby
+- Add redirect features
 - Add a test for ensuring the user can't interact with the arrows
+- Add a test for ensuring that premoves are correctly cancelled
 - Modify the login request such that if logging in as guest, but the username
   is supplied, then that username gets assigned.
 - Implement and test the feature where if two people private challenge each

@@ -198,3 +198,10 @@
 .text_input_wrapper {
   text-align: center;
 }
+
+.gameOverMessage {
+  font-size: max(6vh, 1rem);
+  color: #a61c00;
+  text-align: center;
+  padding-top: 10vh;
+}

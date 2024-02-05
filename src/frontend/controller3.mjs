@@ -31,12 +31,14 @@ class Controller {
       userArrows: [],
       highlights: ChessBitMap.empty(),
     }
+    if(this.premoveThread) clearTimeout(this.premoveThread);
     this.premoveThread = undefined;
     this.listeners = [];
   }
   /**
    * [listener] should be an object with the same signature as the input to
-   * GameModel.addListener();
+   * GameModel.addListener().
+   * except gameOver, which takes gameResult and cause as inputs
    */
   addListener(listener) {
     this.listeners.push(listener);
@@ -51,7 +53,9 @@ class Controller {
     for(let listener of this.listeners) listener.metaUpdated();
   }
   gameOver() {
-    for(let listener of this.listeners) listener.gameOver();
+    for(let listener of this.listeners) {
+      listener.gameOver(this.model.gameResult, this.model.cause);
+    }
   }
   gameStarted() {
     for(let listener of this.listeners) listener.gameStarted();
@@ -140,7 +144,6 @@ class Controller {
     };
   }
   onMouseDown(r, c, x, y, b) {
-    console.log("on mouse down");
     this.mouseState.mouseDown = true;
     this.mouseState.button = b;
     this.mouseState.r = r;
@@ -151,6 +154,7 @@ class Controller {
     this.mouseState.currentY = y;
     this.viewState.premoveSrc = OptionalPair.NONE;
     this.viewState.premoveDest = OptionalPair.NONE;
+    if(this.premoveThread) clearTimeout(this.premoveThread);
     this.premoveThread = undefined;
     if(b === 0) {
       this.viewState.userArrows = [];
@@ -184,7 +188,6 @@ class Controller {
     }
   }
   onMouseUp(r, c, x, y) {
-    console.log("on mouse up");
     if(!this.mouseState.mouseDown) return;
     this.mouseState.mouseDown = false;
     if(this.mouseState.button === 0) {

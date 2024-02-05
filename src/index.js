@@ -4,9 +4,11 @@ import ReactDOM from "react-dom/client";
 import {Controller} from "./frontend/controller3.mjs";
 import {GameModel} from "./frontend/game_model.mjs";
 import {connect} from "./frontend/metaauthclient.mjs";
-import {URL, LoginType} from "./data/enums.mjs";
+import {URL, LoginType, GameOverCause, Color} from "./data/enums.mjs";
 import {GameDesktop} from "./frontend/game_desktop.js";
 import {renderPopUp} from "./frontend/popup.js";
+
+import "./frontend/index.css";
 
 //let user = JSON.parse(localStorage.getItem("username"));
 //let psw = JSON.parse(localStorage.getItem("password"));
@@ -26,6 +28,36 @@ if(loginType === LoginType.GUEST) {
 
 //assert loginType === LoginType.LOGIN
 
+function getMessage(result, cause) {
+  if(cause === GameOverCause.ABORT) {
+    return "Game aborted";
+  }
+  if(cause === GameOverCause.AGREE) {
+    return "Drawn by agreement";
+  }
+  let messagePrefix;
+  if(result === Color.WHITE) messagePrefix = "White wins by ";
+  else if(result === Color.BLACK) messagePrefix = "Black wins by ";
+  else throw new Error("What else could cause a draw?");
+  
+  if(cause === GameOverCause.KING) {
+    return messagePrefix + "king capture";
+  }
+  return messagePrefix + "resignation";
+}
+
+/**
+ * Component displaying the game over message. Props should have properties:
+ *   [gameOverResult] (Color): describes which side won the game
+ *   [gameOverCause] (GameOverCause): describes how the game ended
+ */
+function GameOverMessage(props) {
+  let message = getMessage(props.gameOverResult, props.gameOverCause);
+  return <div className={"gameOverMessage"}>
+    {message}
+  </div>
+}
+
 class Game extends React.Component {
   constructor(props) {
     super(props);
@@ -40,18 +72,18 @@ class Game extends React.Component {
       chatUpdated: refreshView,
       metaUpdated: refreshView,
       gameStarted: refreshView,
-      gameOver: () => {
+      gameOver: (result, cause) => {
         refreshView();
         setTimeout(() => {
-          renderPopUp(<div>Game over</div>, 
+          renderPopUp(<GameOverMessage 
+            gameOverResult={result} 
+            gameOverCause={cause} 
+          />,
           [{inner: "Okay", onClick:() => {}}]);
         }, 500);
       }
     });
     setInterval(() => {this.setState({});}, 100);
-  }
-  forceRerender(state) {
-    this.setState(state);
   }
   render() {
     return <GameDesktop {...this.state} />
