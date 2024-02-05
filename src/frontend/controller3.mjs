@@ -215,10 +215,15 @@ class Controller {
     }
   }
   attemptMove(iRow, iCol, fRow, fCol) {
-    //check timing
     if(this.model.gamedata === undefined) return;
     let now = Date.now();
     let gamestate = this.model.gamedata.history.head;
+    //first check that you're moving your own piece
+    if(colorOf(gamestate.boardHistory.head.pieceAt(iRow, iCol)) 
+      !== this.getColor()) {
+      return;
+    }
+    //check timing
     let elixirStart = this.getColor() === Color.WHITE ? 
       gamestate.wStart : gamestate.bStart;
     let delayWaitTime = DELAY - now + gamestate.delay.get(iRow, iCol);
