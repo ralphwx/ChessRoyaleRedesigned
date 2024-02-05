@@ -21,6 +21,8 @@ class GameModel {
     this.cause = undefined;
     this.initializeSocket();
     this.listeners = [];
+    this.userElo = "????";
+    this.opponentElo = "????";
   }
   /**
    * [listener] objects should contain the functions:
@@ -60,6 +62,7 @@ class GameModel {
       this.gameResult = args.data.gameOverResult;
       this.cause = args.data.gameOverCause;
       for(let listener of this.listeners) listener.gameOver();
+      this.refreshMetaData();
     });
     this.socket.addEventHandler("gameStarted", (meta, args) => {
       this.gamedata = new GameData(args.now);
@@ -84,7 +87,14 @@ class GameModel {
   refreshMetaData() {
     this.socket.notify("getMetaData", this.user, (meta, args) => {
       this.metadata = args;
-      for(let listener of this.listeners) listener.metaUpdated();
+      let opponent = args.white === this.user ? args.black : args.white;
+      this.socket.notify("getUserInfo", {user: this.user}, (meta, args) => {
+        this.userElo = args.elo;
+        this.socket.notify("getUserInfo", {user: opponent}, (meta, args) => {
+          this.opponentElo = args.elo;
+          for(let listener of this.listeners) listener.metaUpdated();
+        });
+      });
     });
   }
   refreshChat() {

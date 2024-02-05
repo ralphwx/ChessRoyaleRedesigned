@@ -105,7 +105,7 @@ authserver.addEventHandler("redirect?", (meta, args, ack) => {
 });
 
 /**
- * Returns a user's profile info. [args] be an object with a propert [user].
+ * Returns a user's profile info. [args] be an object with a property [user].
  * Currently, [ack] returns an object with the property [elo], but more
  * properties may be added later. If the user does not exist, then an empty
  * object is returned.
