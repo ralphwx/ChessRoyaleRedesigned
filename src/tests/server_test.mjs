@@ -200,7 +200,16 @@ let main = async () => {
       && args4.open.length === 1
       && args4.open.includes(socket3.user);
   });
-
+  
+  //Test auto-matchmaking when two players private challenge each other
+  await send(socket1, "createPrivateChallenge", socket2.user);
+  await send(socket2, "createPrivateChallenge", socket1.user);
+  args1 = await send(socket1, "redirect?");
+  args2 = await send(socket2, "redirect?");
+  test("private challenge auto matchmaking", () => {
+    return args1 === Location.GAME
+      && args2 === Location.GAME;
+  });
   printResults();
 };
 
