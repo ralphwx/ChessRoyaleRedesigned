@@ -1,20 +1,25 @@
 
 Currently working on:
-- Import GameMobile view from original project
 - Clean up game.js code, add functionality for playing as guest
-- Import list of game.js tests from original project
+- Modify the login request such that if logging in as guest, but the username
+  is supplied, then that username gets assigned.
 
 TODO:
 - Implement login popup
 - Implement lobby
+- Import list of game.js tests from original project
 - Add redirect features
 - Add a test for ensuring the user can't interact with the arrows
 - Add a test for ensuring that premoves are correctly cancelled
 - Add tests for premoves are only allowed for "plausible moves"
-- Modify the login request such that if logging in as guest, but the username
-  is supplied, then that username gets assigned.
+- Add tests for right click cancelling premove and select
+- Add tests for left click cancelling arrows
+- Add tests for right click toggles highlight and arrows
 - Add sound effects and game start animation
+- Import GameMobile view from original project
 - Make the size of arrows on game screen adapt to chess board size
+- Implement a settings screen
+- Remove bots code from tests folder, import bots from original project
 - Hyperlink the chess royale logo in the header
 - Future: write tests for spectator mode functionality (where user is requesting
   game data corresponding to other users)

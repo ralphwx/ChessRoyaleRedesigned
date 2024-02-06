@@ -1,6 +1,6 @@
 
 import {connect} from "../frontend/metaauthclient.mjs";
-import {LoginType, Location} from "../data/enums.mjs";
+import {LoginType, Location, URL} from "../data/enums.mjs";
 import {test, printResults} from "./test_framework.mjs";
 
 //Two test users, devralph1 and devralph2, are already created. Both users
@@ -8,7 +8,7 @@ import {test, printResults} from "./test_framework.mjs";
 
 function promiseConnect(username, password) {
   return new Promise((resolve, reject) => {
-    connect("http://localhost:8080", username, password, LoginType.LOGIN,
+    connect(URL, username, password, LoginType.LOGIN,
       (socket) => {
         resolve(socket);
       }, (msg) => {
@@ -20,7 +20,18 @@ function promiseConnect(username, password) {
 
 function guestConnect() {
   return new Promise((resolve, reject) => {
-    connect("http://localhost:8080", undefined, undefined, LoginType.GUEST,
+    connect(URL, undefined, undefined, LoginType.GUEST,
+      (socket) => {
+        resolve(socket);
+      }, (msg) => {
+        reject(msg);
+      });
+  });
+}
+
+function returningGuestConnect(username) {
+  return new Promise((resolve, reject) => {
+    connect(URL, username, undefined, LoginType.GUEST,
       (socket) => {
         resolve(socket);
       }, (msg) => {
@@ -209,6 +220,12 @@ let main = async () => {
   test("private challenge auto matchmaking", () => {
     return args1 === Location.GAME
       && args2 === Location.GAME;
+  });
+
+  //Test self-enforced guest username
+  let returningGuestSocket = await returningGuestConnect("Guest#21");
+  test("returning guest username", () => {
+    return returningGuestSocket.user === "Guest#21";
   });
   printResults();
 };
