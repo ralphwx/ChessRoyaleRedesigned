@@ -91,6 +91,9 @@ class Game extends React.Component {
 }
 
 connect(URL, user, psw, LoginType.LOGIN, (socket) => {
+  socket.addEventHandler("joined", (meta, args) => {
+    window.location.reload(true);
+  });
   socket.notify("redirect?", {}, (meta, args) => {
     if(args !== Location.GAME) {
       //redirect

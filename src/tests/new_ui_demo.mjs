@@ -1,6 +1,6 @@
 
 import {connect} from "../frontend/metaauthclient.mjs";
-import {Color, URL, LoginType, ELIXIR} from "../data/enums.mjs";
+import {Color, URL, LoginType, Location, ELIXIR} from "../data/enums.mjs";
 import {GameModel} from "../frontend/game_model.mjs";
 import {DemoBot} from "./demo_bot.mjs";
 
@@ -33,7 +33,6 @@ function sleep(ms) {
 let main = async () => {
   let model;
   async function newGame() {
-    await sleep(10000);
     await send(socket1, "createOpenChallenge");
     await send(socket2, "acceptChallenge", socket1.user);
     await send(socket2, "declareReady");
@@ -44,9 +43,15 @@ let main = async () => {
   let socket1 = await promiseConnect("devralph1", "password");
   let socket2 = await promiseConnect("devralph2", "password");
   let bot_socket = await promiseConnect("devralph2", "password");
-  newGame();
-  socket2.addEventHandler("gameOver", (meta, args) => {
+  let loc = await send(socket1, "redirect?");
+  if(loc === Location.LOBBY) {
     newGame();
+  }
+  socket2.addEventHandler("gameOver", (meta, args) => {
+    send(socket2, "createPrivateChallenge", socket1.user);
+  });
+  socket2.addEventHandler("joined", (meta, args) => {
+    send(socket2, "declareReady");
   });
   model = new GameModel("devralph2", bot_socket);
   let bot = new DemoBot();

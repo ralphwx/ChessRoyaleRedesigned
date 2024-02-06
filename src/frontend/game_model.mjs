@@ -23,6 +23,8 @@ class GameModel {
     this.listeners = [];
     this.userElo = "????";
     this.opponentElo = "????";
+    this.userRematch = false;
+    this.opponentRematch = false;
   }
   /**
    * [listener] objects should contain the functions:
@@ -63,6 +65,7 @@ class GameModel {
       this.cause = args.data.gameOverCause;
       for(let listener of this.listeners) listener.gameOver();
       this.refreshMetaData();
+      setInterval(() => {this.refreshLobby()}, 1000);
     });
     this.socket.addEventHandler("gameStarted", (meta, args) => {
       this.gamedata = new GameData(args.now);
@@ -106,6 +109,23 @@ class GameModel {
         for(let listener of this.listeners) listener.chatUpdated();
       }
     );
+  }
+  refreshLobby() {
+    let opponent = this.metadata.white === this.user ? this.metadata.black
+      : this.metadata.white;
+    this.socket.notify("lobbyData", {}, (meta, args) => {
+      let opponentRematch = args.incoming.includes(opponent);
+      let userRematch = args.outgoing.includes(opponent);
+      let notifyListeners = this.opponentRematch !== opponentRematch
+        || this.userRematch !== userRematch;
+      this.opponentRematch = opponentRematch;
+      this.userRematch = userRematch;
+      if(notifyListeners) {
+        for(let listener of this.listeners) {
+          listener.metaUpdated();
+        }
+      }
+    });
   }
   /** 
    * Attempts to make a move.

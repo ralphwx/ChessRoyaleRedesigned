@@ -1,7 +1,5 @@
 
 Currently working on:
-- Implement auto-matching when two players challenge each other
-- Fix rematch display on game.js
 - Import GameMobile view from original project
 - Clean up game.js code, add functionality for playing as guest
 - Import list of game.js tests from original project
@@ -15,8 +13,6 @@ TODO:
 - Add tests for premoves are only allowed for "plausible moves"
 - Modify the login request such that if logging in as guest, but the username
   is supplied, then that username gets assigned.
-- Implement and test the feature where if two people private challenge each
-    other, then they're automatically paired up.
 - Add sound effects and game start animation
 - Make the size of arrows on game screen adapt to chess board size
 - Hyperlink the chess royale logo in the header

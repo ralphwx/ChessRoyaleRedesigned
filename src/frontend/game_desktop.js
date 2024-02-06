@@ -120,6 +120,7 @@ function UserReadyButton(props) {
  */
 function OpponentReadyButton(props) {
   if(props.gameOver) {
+    console.log("Opponent rematch: " + props.opponentRematch);
     if(props.opponentRematch) {
       return <button className={"ready online"}>{"Rematch offered"}</button>
     } else {
