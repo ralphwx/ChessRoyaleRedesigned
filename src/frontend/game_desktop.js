@@ -98,7 +98,7 @@ function UserReadyButton(props) {
         innerHTMLHover={"Offer rematch?"}
         className={"ready offline"}
         classNameHover={"ready online"}
-        onClick={() => {console.log("rematch offered");}}
+        onClick={props.offerRematch}
       />
     }
   }
@@ -120,7 +120,6 @@ function UserReadyButton(props) {
  */
 function OpponentReadyButton(props) {
   if(props.gameOver) {
-    console.log("Opponent rematch: " + props.opponentRematch);
     if(props.opponentRematch) {
       return <button className={"ready online"}>{"Rematch offered"}</button>
     } else {
