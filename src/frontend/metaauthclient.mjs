@@ -64,8 +64,13 @@ class MetaAuthClient {
 
 /**
  * Attempts to log in to [url], with login type [type]. [type] is an object
- * of type [LoginType]. If [type] is [LoginType.GUEST], then [username] and
- * [password] can be anything. [success] is a callback function taking
+ * of type [LoginType]. 
+ * 
+ * If [type] is [LoginType.GUEST], then [password] can be anything. If 
+ * [username] is specified, and is a valid guest username, then that username 
+ * will be assigned.
+ * 
+ * [success] is a callback function taking
  * the resultant MetaAuthClient connector as an argument, if the login was
  * successful; otherwise, [failure] is called instead, using the error essage
  * as the argument.

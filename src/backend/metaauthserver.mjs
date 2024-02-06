@@ -3,7 +3,7 @@ import {UserManager} from "./users.mjs";
 import {MultiMap} from "../data/maps.mjs";
 import {Server} from "socket.io";
 import {LoginType} from "../data/enums.mjs";
-import {generateGuestName} from "./guestid.mjs";
+import {generateGuestName, isGuest as isValidGuestName} from "./guestid.mjs";
 
 /**
  * MetaAuthServer is a wrapper around socket.io server on the backend. The
@@ -62,7 +62,9 @@ class MetaAuthServer {
        * a string identifier. [username] and [password] are self-explanatory.
        * [type] is a [LoginType] object representing whether the user wants
        * to log in, create an account, or play as guest. If playing as guest,
-       * the [username] and [password] fields are ignored.
+       * then the [password] field is ignored; if the provided [username] is a
+       * valid guest username, then that username will be assigned, otherwise,
+       * a new guest username will be generated and assigned.
        * 
        * [ack] is an acknowledgement function that takes three arguments. The
        * first is a bool for whether the login attempt was successful. If the
@@ -118,8 +120,9 @@ class MetaAuthServer {
             }
             ack(false, "Incorrect password");
           }
-        } else {
-          user = generateGuestName();
+        } else if(type === LoginType.GUEST) {
+          if(isValidGuestName(username)) user = username;
+          else user = generateGuestName();
           isGuest = true;
           this.socketmap.add(user, socket);
           let times = {
@@ -127,6 +130,10 @@ class MetaAuthServer {
             serverSendTime: Date.now(),
           };
           ack(true, user, times);
+        } else {
+          this.receivedBadRequest("login", {serverReceiveTime: receiveTime},
+            {username: username, password: password, type: type},
+            "Illegal logintype");
         }
       });
       socket.on("disconnect", () => {

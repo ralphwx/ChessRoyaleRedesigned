@@ -11,7 +11,7 @@ function generateGuestName() {
 }
 
 function isGuest(username) {
-  return username.substring(0, 6) === "Guest#";
+  return typeof username === "string" && username.substring(0, 6) === "Guest#";
 }
 
 export {generateGuestName, isGuest};

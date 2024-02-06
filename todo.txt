@@ -1,8 +1,6 @@
 
 Currently working on:
 - Clean up game.js code, add functionality for playing as guest
-- Modify the login request such that if logging in as guest, but the username
-  is supplied, then that username gets assigned.
 
 TODO:
 - Implement login popup
@@ -21,6 +19,7 @@ TODO:
 - Implement a settings screen
 - Remove bots code from tests folder, import bots from original project
 - Hyperlink the chess royale logo in the header
+- Make a proper test server for testing code ...
 - Future: write tests for spectator mode functionality (where user is requesting
   game data corresponding to other users)
 - learn SQL?
