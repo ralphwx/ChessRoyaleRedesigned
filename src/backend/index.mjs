@@ -153,6 +153,12 @@ authserver.addEventHandler("createPrivateChallenge", (meta, args, ack) => {
       result: false,
       message: "Cannot create a challenge while playing a game",
     });
+  } else if(userslobby.outgoingChallenges(args).includes(meta.user)) {
+    userslobby.makePrivateChallenge(meta.user, args);
+    userslobby.attemptJoin(meta.user, args);
+    ack({
+      result: true,
+    });
   } else {
     userslobby.makePrivateChallenge(meta.user, args);
     ack({
