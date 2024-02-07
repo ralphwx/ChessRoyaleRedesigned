@@ -30,7 +30,9 @@ function PopUp(props) {
     </button>);
   }
   return <div className="popup">
+    <div className="popupcontent">
     {props.inner}
+    </div>
     <div className="optionrow">
       {button_row}
     </div>

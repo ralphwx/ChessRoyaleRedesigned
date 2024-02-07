@@ -1,5 +1,6 @@
 
 Currently working on:
+- Import bots from original project
 - Clean up game.js code, add functionality for playing as guest
 
 TODO:
@@ -17,9 +18,11 @@ TODO:
 - Import GameMobile view from original project
 - Make the size of arrows on game screen adapt to chess board size
 - Implement a settings screen
-- Remove bots code from tests folder, import bots from original project
 - Hyperlink the chess royale logo in the header
 - Make a proper test server for testing code ...
+- Improve chess royale bots, add tests for computeFeatures? Add benchmarks for
+  the bots (eg, recaptures piece, successful king capture, etc)
+- Add a list of tasks for sending code to production
 - Future: write tests for spectator mode functionality (where user is requesting
   game data corresponding to other users)
 - learn SQL?

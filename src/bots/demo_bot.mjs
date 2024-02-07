@@ -7,12 +7,9 @@ class DemoBot {
   elixirValue(e) {
     return 2.5 / e;
   }
-  moveValue(iRow, iCol, fRow, fCol, gamedata) {
-    let board = gamedata.getBoard();
+  moveValue(iRow, iCol, fRow, fCol, board) {
     let color = colorOf(board.pieceAt(iRow, iCol));
-    let move = new Move(color, Date.now(), iRow, iCol, fRow, fCol);
-    if(!gamedata.isLegalMove(move)) return -100;
-    let features = computeFeatures(iRow, iCol, fRow, fCol, gamedata.getBoard());
+    let features = computeFeatures(iRow, iCol, fRow, fCol, board);
     let output = 0;
     output += 2 * features.is_capture;
     output += 1 * features.capture_up;
@@ -23,8 +20,5 @@ class DemoBot {
     return output;
   }
 }
-
-let data = new GameData(Date.now() - 8000);
-console.log((new DemoBot()).moveValue(1, 4, 3, 4, data));
 
 export {DemoBot}

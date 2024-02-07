@@ -19,12 +19,15 @@ class GameModel {
     this.metadata = {};
     this.gameResult = undefined;
     this.cause = undefined;
-    this.initializeSocket();
     this.listeners = [];
     this.userElo = "????";
     this.opponentElo = "????";
     this.userRematch = false;
     this.opponentRematch = false;
+    this.initializeSocket();
+    this.refreshGameData();
+    this.refreshMetaData();
+    this.refreshChat();
   }
   /**
    * [listener] objects should contain the functions:
@@ -101,7 +104,8 @@ class GameModel {
     });
   }
   refreshChat() {
-    this.socket.notify("getChat", {i: this.chat.length, user: this.user},
+    let i = this.chat.length;
+    this.socket.notify("getChat", {i: i, user: this.user},
       (meta, args) => {
         for(let message of args) {
           this.chat.push(message);

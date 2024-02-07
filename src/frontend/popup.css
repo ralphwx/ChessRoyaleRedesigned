@@ -20,20 +20,22 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 50%;
-  height: 50%;
   background-color: #bbbe;
   animation-name: expand;
   animation-duration: 0.5s;
   transform: translate(-50%, -50%);
 }
 
+.popupcontent {
+  padding: 5vh;
+}
+
 .optionrow {
-  position: absolute;
-  bottom: 0px;
+  position:absolute;
   width: 100%;
   height: max(3.5vw, 3.5rem);
   display: flex;
+  background-color: #bbbe
 }
 
 .optionbutton {
