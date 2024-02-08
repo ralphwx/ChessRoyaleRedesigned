@@ -10,21 +10,6 @@ import {renderPopUp} from "./frontend/popup.js";
 
 import "./frontend/index.css";
 
-//let user = JSON.parse(localStorage.getItem("username"));
-//let psw = JSON.parse(localStorage.getItem("password"));
-//let loginType = JSON.parse(localStorage.getItem("loginType"));
-
-let user = "devralph1";
-let psw = "password";
-let loginType = LoginType.LOGIN;
-
-if(loginType === undefined) {
-  //redirect
-}
-
-if(loginType === LoginType.GUEST) {
-  throw new Error("Unimplemented");
-}
 
 //assert loginType === LoginType.LOGIN
 
@@ -90,7 +75,15 @@ class Game extends React.Component {
   }
 }
 
-connect(URL, user, psw, LoginType.LOGIN, (socket) => {
+let user = "Guest#1";
+let psw = undefined;
+let loginType = LoginType.GUEST;
+
+if(loginType === undefined) {
+  //redirect
+}
+
+connect(URL, user, psw, loginType, (socket) => {
   socket.addEventHandler("joined", (meta, args) => {
     window.location.reload(true);
   });
@@ -101,9 +94,6 @@ connect(URL, user, psw, LoginType.LOGIN, (socket) => {
   });
   let user = socket.user;
   let model = new GameModel(user, socket);
-  model.refreshGameData();
-  model.refreshMetaData();
-  model.refreshChat();
   let controller = new Controller(model);
   let view = <Game {...controller.getViewState()} controller={controller} />
   const root = ReactDOM.createRoot(document.getElementById("root"));

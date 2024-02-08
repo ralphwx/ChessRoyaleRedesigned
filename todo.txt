@@ -15,6 +15,10 @@ TODO:
 - Add tests for left click cancelling arrows
 - Add tests for right click toggles highlight and arrows
 - Add sound effects and game start animation
+- Add tests for things user screwing things up via JS console (eg, username
+    or password)
+- Add thread safety features to all data structures
+- Ensure "Offer rematch" button is not available for guest user
 - Import GameMobile view from original project
 - Make the size of arrows on game screen adapt to chess board size
 - Implement a settings screen
