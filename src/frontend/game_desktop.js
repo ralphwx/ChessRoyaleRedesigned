@@ -89,7 +89,7 @@ function UserReadyButton(props) {
         innerHTML={"Accept rematch?"}
         innerHTMLHover={"Accept rematch?"}
         className={"ready offline"}
-        classNameHover={"ready offline"}
+        classNameHover={"ready online"}
         onClick={props.offerRematch}
       />
     } else {
