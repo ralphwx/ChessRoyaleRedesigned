@@ -67,7 +67,7 @@ class Game extends React.Component {
         }, 500);
       }
     });
-    setInterval(() => {this.setState({});}, 100);
+    //setInterval(() => {this.setState({});}, 100);
   }
   render() {
     return <GameDesktop {...this.state} />

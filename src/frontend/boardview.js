@@ -43,10 +43,10 @@ function pieceToHTML(p) {
   return <img className="innerimg" src={src} alt="?"/>;
 }
 
-function computeOpacity(props, r, c, now) {
+function computeDelay(props, r, c, now) {
   if(colorOf(props.board.pieceAt(r, c)) !== props.color
-    || now - props.delay.get(r, c) >= DELAY) return 1;
-  return 0.2 + 0.5 * (now - props.delay.get(r, c)) / DELAY;
+    || now - props.delay.get(r, c) >= DELAY) return -DELAY;
+  return props.delay.get(r, c) - now;
 }
 
 function colorToHex(color) {
@@ -81,14 +81,13 @@ function BoardView(props) {
       let r = props.color === Color.WHITE ? 7 - i : i;
       let c = props.color === Color.WHITE ? j : 7 - j;
       let img = pieceToHTML(props.board.pieceAt(r, c));
-      let opacity = computeOpacity(props, r, c, now);
       let type = squareType.get(r, c);
       let [dx, dy] = translate.get(r, c);
       row.push(<div key={r + "_" + c}><Square 
         img={img} 
         type={type} 
         id={r + "_" + c}
-        opacity={opacity}
+        animationDelay={computeDelay(props, r, c, now)}
         translateX={dx}
         translateY={dy}
         onMouseDown={(x, y, b) => props.onMouseDown(r, c, x, y, b)}
@@ -147,7 +146,8 @@ function BoardView(props) {
 /**
  * Props is required to have:
  *   type: SquareType
- *   opacity: [0, 1]
+ *   animationDelay: negative the amount of time since piece on the square last
+ *     moved, if relevant, -DELAY otherwise
  *   onMouseDown: (pixelX, pixelY, button) => (None)
  *   onMouseUp: (pixelX, pixelY) => (None)
  *   onMouseMove: (pixelX, pixelY) => (None)
@@ -158,14 +158,18 @@ function BoardView(props) {
 function Square(props) {
   let translateStyle = {
     transform: "translate(" + props.translateX + "px, " + props.translateY + "px)",
-    opacity: props.opacity,
+    animationDelay: props.animationDelay + "ms",
+    animationDuration: DELAY + "ms",
   };
   let zStyle = {
     zIndex: props.translateX || props.translateY ? 1 : 0,
   }
   return <div id={props.id} className={"squarecontainer"} style={zStyle}>
-    <div className={"squaretrigger " + props.type} 
-      style={{opacity: props.opacity}}
+    <div key={props.animationDelay} className={"squaretrigger " + props.type} 
+      style={{
+        animationDelay: props.animationDelay + "ms",
+        animationDuration: DELAY + "ms",
+      }}
       onContextMenu={e => e.preventDefault()}
       onMouseDown={e => {
         e.preventDefault(); 
@@ -183,7 +187,7 @@ function Square(props) {
         props.onMouseMove(e.clientX, e.clientY)
       }}
     ></div>
-    <div className={"square"} style={translateStyle}>{props.img}</div>
+    <div key={props.animationDelay} className={"square"} style={translateStyle}>{props.img}</div>
   </div>
 }
 
