@@ -237,7 +237,10 @@ function GameDesktop(props) {
       <div>
         {boardview}
         <div className={"resourcebar"}>
-          <ResourceBar amount={elixirAmount} />
+          <ResourceBar 
+            amount={elixirAmount}
+            animate={props.userReady && props.opponentReady && !props.gameOver}
+          />
         </div>
       </div>
       <div className="metabox">

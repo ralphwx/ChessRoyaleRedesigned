@@ -51,7 +51,6 @@ class Game extends React.Component {
       let state = props.controller.getViewState();
       this.setState(state);
     };
-    
     props.controller.addListener({
       boardUpdated: refreshView,
       chatUpdated: refreshView,
@@ -75,9 +74,12 @@ class Game extends React.Component {
   }
 }
 
-let user = "Guest#1";
-let psw = undefined;
-let loginType = LoginType.GUEST;
+//let user = "Guest#1";
+//let psw = undefined;
+//let loginType = LoginType.GUEST;
+let user = "devralph1";
+let psw = "password";
+let loginType = LoginType.LOGIN;
 
 if(loginType === undefined) {
   //redirect
@@ -94,7 +96,7 @@ connect(URL, user, psw, loginType, (socket) => {
   });
   let user = socket.user;
   let model = new GameModel(user, socket);
-  let controller = new Controller(model);
+  let controller = new Controller(model, loginType);
   let view = <Game {...controller.getViewState()} controller={controller} />
   const root = ReactDOM.createRoot(document.getElementById("root"));
   root.render(view);

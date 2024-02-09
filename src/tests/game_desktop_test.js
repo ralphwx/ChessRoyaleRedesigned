@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom/client";
 
-import {GameDesktop} from "./frontend/game.js";
+import {GameDesktop} from "./frontend/game_desktop.js";
 import {GameData, Move} from "./data/gamedata.mjs";
 import {Color, LoginType, ELIXIR, DELAY} from "./data/enums.mjs";
 import {ChessMap} from "./data/maps.mjs";
