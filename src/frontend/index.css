@@ -13,12 +13,18 @@
   width: 12.5%;
   min-height: 100%;
   float: left;
-  position:relative;
+  position: relative;
 }
 
 .arrow {
   z-index: 5;
-  pointer-events: none;
+}
+
+.fadearrow {
+  z-index: 5;
+  animation-name: fadeout;
+  animation-fill-mode: both;
+  animation-timing-function: linear;
 }
 
 .square {
@@ -105,6 +111,7 @@
   background-color: #a0a;
   animation-name: fadein;
   animation-fill-mode: both;
+  animation-timing-function: linear;
 }
 
 .info {
@@ -222,5 +229,14 @@
   }
   100% {
     opacity: 1;
+  }
+}
+
+@keyframes fadeout {
+  0% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
   }
 }

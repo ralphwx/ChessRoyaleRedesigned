@@ -100,13 +100,15 @@ function BoardView(props) {
   }
   let arrows = [];
   for(let move of props.moveArrows) {
-    let opacity = 0.7 * (ARROW_TIME - now + move.time) / ARROW_TIME;
     let start = move.iRow + "_" + move.iCol;
     let end = move.fRow + "_" + move.fCol;
-    arrows.push(<div className={"arrow"} 
-      style={{opacity: opacity}}
+    arrows.push(<div className={"fadearrow"} 
       onContextMenu={(e) => {e.preventDefault()}}
-      key={"move" + start + end}
+      key={"move" + start + end + now}
+      style={{
+        animationDuration: ARROW_TIME + "ms",
+        animationDelay: (move.time - now) + "ms",
+      }}
     >
       <Xarrow
         start={start}
