@@ -56,6 +56,7 @@ function selectMove(gamedata, color, moveValue, elixirValue, temperature) {
   let now = Date.now();
   let board = gamedata.getBoard();
   let moves = board.listLegalMoves(color);
+  if(moves.length === 0) return undefined;
   let values = [];
   let max_value = -100;
   for(let [iRow, iCol, fRow, fCol] of moves) {
@@ -148,4 +149,26 @@ function runBot(moveValue, elixirValue, interval, reactionTime, socket) {
   });
 }
 
-export {runBot}
+function runBotLocal(moveValue, elixirValue, interval, reactionTime, 
+  servergame, username) {
+  let moveLoop = () => {
+    let color = servergame.white === username ? 
+      Color.WHITE : Color.BLACK;
+    let move = selectMove(servergame.gameState, color, moveValue, elixirValue, 1);
+    if(move) {
+      let {iRow, iCol, fRow, fCol} = move;
+      servergame.move(iRow, iCol, fRow, fCol, color, Date.now());
+    }
+  }
+  let scheduler = new Scheduler(moveLoop, interval, reactionTime);
+  servergame.addListener({
+    metaUpdate: () => {},
+    boardUpdate: () => {scheduler.react()},
+    chatUpdate: () => {},
+    gameOver: () => {scheduler.stop();},
+    gameStarted: () => {scheduler.start();},
+  });
+  servergame.setReady(username);
+}
+
+export {runBot, runBotLocal}

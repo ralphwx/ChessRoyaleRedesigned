@@ -13,7 +13,8 @@ function ChatBox(props) {
   return <div>
     <div className="console">
       {props.messages.map((msg) => {
-        return <div>{msg.sender + ": " + msg.message}</div>
+        let text = msg.sender + ": " + msg.message;
+        return <div key={text}>{text}</div>
       })}
     </div>
     <div className="text_input_wrapper">

@@ -5,7 +5,6 @@ import {GameModel} from "../frontend/game_model.mjs";
 import {DemoBot} from "../bots/demo_bot.mjs";
 import {runBot} from "../bots/bot_frame.mjs";
 
-
 function promiseConnect(username, password) {
   return new Promise((resolve, reject) => {
     connect(URL, username, password, LoginType.LOGIN,

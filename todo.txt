@@ -1,6 +1,6 @@
 
 Currently working on:
-- Implementing local bots
+- Fix some issues with the resolution of premoves
 
 TODO:
 - Implement login popup

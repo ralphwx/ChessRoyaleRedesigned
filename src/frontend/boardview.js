@@ -165,7 +165,8 @@ function Square(props) {
     zIndex: props.translateX || props.translateY ? 1 : 0,
   }
   return <div id={props.id} className={"squarecontainer"} style={zStyle}>
-    <div key={props.animationDelay} className={"squaretrigger " + props.type} 
+    <div key={props.key + props.animationDelay} 
+      className={"squaretrigger " + props.type} 
       style={{
         animationDelay: props.animationDelay + "ms",
         animationDuration: DELAY + "ms",
