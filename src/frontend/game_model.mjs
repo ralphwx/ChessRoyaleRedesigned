@@ -16,7 +16,8 @@ class GameModel {
     this.socket = socket;
     this.gamedata = undefined;
     this.chat = [];
-    this.metadata = {};
+    this.metadata = {}; //this.metadata has the same type as the return from
+                        //this.socket.notify("getMetaData")
     this.gameResult = undefined;
     this.cause = undefined;
     this.listeners = [];

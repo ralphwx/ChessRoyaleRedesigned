@@ -1,0 +1,38 @@
+
+These tests are to be performed by hand
+
+- Play normally against the bot
+- no moves before both players are ready
+- basic moves
+- basic highlight and arrow drawing
+- moves without elixir --> premove
+- moves while motion sick --> premove
+- elixir bar animation works correctly
+- arrow animations work correctly
+- chat messages send
+- chat messages render
+- correct elixir amount across OS
+- correct buttons depending on game state
+- tooltips show up on buttons
+- test rematch and draw offer
+- Test resign, abort, return to lobby
+- Mouse mechanics:
+  - click + click movement
+  - click + drag movement
+  - click + drag, but same square
+  - piece isn't hidden while dragging
+  - clicking on friendly piece always selects
+  - clicking cancels premove
+  - left-click cancels highlights and arrows
+  - right-click toggles highlights and arrows
+  - arrows don't absorb mouse input
+  - premove is allowed only for "plausible" moves
+  - 
+- Window mechanics:
+  - loading in the middle of a game
+  - multiple windows are synchronized (moves + elixir + delay highlight + chat)
+  - check that redirecting works correctly
+  - check that smaller window and vertical window display correctly
+- Guest mechanics:
+  - check that elo is hidden for guest
+  - check that offer rematch is not allowed for guest

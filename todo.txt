@@ -1,35 +1,31 @@
 
 Currently working on:
-- Import bots from original project
-- Clean up game.js code, add functionality for playing as guest
+- Implementing local bots
 
 TODO:
 - Implement login popup
 - Implement lobby
-- Import list of game.js tests from original project
 - Add redirect features
-- Add a test for ensuring the user can't interact with the arrows
-- Add a test for ensuring that premoves are correctly cancelled
-- Add tests for premoves are only allowed for "plausible moves"
-- Add tests for right click cancelling premove and select
-- Add tests for left click cancelling arrows
-- Add tests for right click toggles highlight and arrows
 - Add sound effects and game start animation
 - Add tests for things user screwing things up via JS console (eg, username
-    or password)
+    or password) (I mean, technically that's cheating/hacking ...)
 - Add thread safety features to all data structures
 - Ensure "Offer rematch" button is not available for guest user
 - Import GameMobile view from original project
-- Make the size of arrows on game screen adapt to chess board size
 - Implement a settings screen
 - Hyperlink the chess royale logo in the header
 - Make a proper test server for testing code ...
-- Improve chess royale bots, add tests for computeFeatures? Add benchmarks for
-  the bots (eg, recaptures piece, successful king capture, etc)
 - Add a list of tasks for sending code to production
 - Future: write tests for spectator mode functionality (where user is requesting
   game data corresponding to other users)
 - learn SQL?
 - Add rules of fair play to the site somewhere, eg, do not use alt accounts to
   spy on opponents
-- Begin self-hacking attempts
+
+Tasks for interns if I ever get any:
+- Improve the bots and write bot benchmarks
+- Attempt to hack my server, as is. Make a test suite of attempted hacks
+- Make arrows size adapt to window size
+- Make the rules of the game page look pretty, include diagrams, etc. Add fair
+  play rules to "how to play" page
+- Make lobby page
