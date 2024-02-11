@@ -64,18 +64,18 @@ class Controller {
    * Returns the user's color
    */
   getColor() {
-    if(this.model.user === this.model.metadata.black) return Color.BLACK;
-    //if(this.model.user === this.model.metadata.white) return Color.WHITE;
+    if(this.model.user === this.model.getMetaData().black) return Color.BLACK;
     return Color.WHITE;
   }
   /**
    * Returns the current board state
    */
   getBoard() {
-    if(!this.model.gamedata) {
+    let gamedata = this.model.getGameData();
+    if(!gamedata) {
       return ChessBoard.startingPosition();
     }
-    return this.model.gamedata.getBoard();
+    return gamedata.getBoard();
   }
   /**
    * Returns an object whose properties are supplied to BoardView
@@ -107,19 +107,20 @@ class Controller {
       && colorOf(this.getBoard().pieceAt(ms.r, ms.c)) === this.getColor()) {
       translate.set(ms.r, ms.c, [ms.currentX - ms.initX, ms.currentY - ms.initY]);
     }
+    let metadata = this.model.getMetaData();
     let opponent = color === Color.WHITE ? 
-      this.model.metadata.black : this.model.metadata.white;
+      metadata.black : metadata.white;
     let userReady = color === Color.WHITE ?
-      this.model.metadata.wready : this.model.metadata.bready;
+      metadata.wready : metadata.bready;
     let opponentReady = color === Color.WHITE ? 
-      this.model.metadata.bready : this.model.metadata.wready;
+      metadata.bready : metadata.wready;
     return {
       color: this.getColor(),
-      gamedata: this.model.gamedata,
+      gamedata: this.model.getGameData(),
       user: this.model.user,
       userElo: this.model.userElo,
       loginType: this.loginType,
-      chat: this.model.chat,
+      chat: this.model.getChat(),
       opponent: opponent,
       opponentElo: this.model.opponentElo,
       userReady: userReady,
@@ -215,9 +216,10 @@ class Controller {
     }
   }
   attemptMove(iRow, iCol, fRow, fCol) {
-    if(this.model.gamedata === undefined) return;
+    let gamedata = this.model.getGameData();
+    if(gamedata === undefined) return;
     let now = Date.now();
-    let gamestate = this.model.gamedata.history.head;
+    let gamestate = gamedata.history.head;
     //first check that you're moving your own piece
     if(colorOf(gamestate.boardHistory.head.pieceAt(iRow, iCol)) 
       !== this.getColor()) {

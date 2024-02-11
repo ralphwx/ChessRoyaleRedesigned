@@ -1,41 +1,105 @@
-//To run this test, copy this file into src/index.js and run npm start. Test
-//that the board reacts properly to user inputs.
-//This test checks whether mouse inputs to the chessboard are handled properly
-//The movement may be clunky because this test re-renders the board at a fixed
-//framerate of 10 fps.
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-
 import {Controller} from "./frontend/controller3.mjs";
-import {BoardView} from "./frontend/boardview.js";
+import {GameModel} from "./frontend/game_model.mjs";
+import {connect} from "./frontend/metaauthclient.mjs";
+import {URL, LoginType, GameOverCause, Color} from "./data/enums.mjs";
+import {GameDesktop} from "./frontend/game_desktop.js";
+import {renderPopUp} from "./frontend/popup.js";
 
-let controller = new Controller();
+import "./frontend/index.css";
 
-class Main extends React.Component {
+
+//assert loginType === LoginType.LOGIN
+
+function getMessage(result, cause) {
+  if(cause === GameOverCause.ABORT) {
+    return "Game aborted";
+  }
+  if(cause === GameOverCause.AGREE) {
+    return "Drawn by agreement";
+  }
+  let messagePrefix;
+  if(result === Color.WHITE) messagePrefix = "White wins by ";
+  else if(result === Color.BLACK) messagePrefix = "Black wins by ";
+  else throw new Error("What else could cause a draw?");
+  
+  if(cause === GameOverCause.KING) {
+    return messagePrefix + "king capture";
+  }
+  return messagePrefix + "resignation";
+}
+
+/**
+ * Component displaying the game over message. Props should have properties:
+ *   [gameOverResult] (Color): describes which side won the game
+ *   [gameOverCause] (GameOverCause): describes how the game ended
+ */
+function GameOverMessage(props) {
+  let message = getMessage(props.gameOverResult, props.gameOverCause);
+  return <div className={"gameOverMessage"}>
+    {message}
+  </div>
+}
+
+class Game extends React.Component {
   constructor(props) {
     super(props);
-    this.controller = props.controller;
-    this.state = controller.getViewState();
-    this.updateThread = setInterval(() => {this.setState(controller.getViewState())}, 100);
+    this.state = {...props};
+    let refreshView = () => {
+      let state = props.controller.getViewState();
+      this.setState(state);
+    };
+    props.controller.addListener({
+      boardUpdated: refreshView,
+      chatUpdated: refreshView,
+      metaUpdated: refreshView,
+      gameStarted: refreshView,
+      gameOver: (result, cause) => {
+        refreshView();
+        setTimeout(() => {
+          renderPopUp(<GameOverMessage 
+            gameOverResult={result} 
+            gameOverCause={cause} 
+          />,
+          [{inner: "Okay", onClick:() => {}}]);
+        }, 500);
+      }
+    });
+    //setInterval(() => {this.setState({});}, 100);
   }
   render() {
-    return <BoardView
-      color={this.state.color}
-      board={this.state.board}
-      delay={this.state.delay}
-      squareType={this.state.squareType}
-      onMouseDown={this.state.onMouseDown}
-      onMouseUp={this.state.onMouseUp}
-      onMouseMove={this.state.onMouseMove}
-      translate={this.state.translate}
-      moveArrows={this.state.moveArrows}
-      userArrows={this.state.userArrows}
-    />
+    return <GameDesktop {...this.state} />
   }
 }
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<div style={{width: "50%", height: "50%"}}>
-  <Main controller={controller} />
-</div>);
+//let user = "Guest#1";
+//let psw = undefined;
+//let loginType = LoginType.GUEST;
+let user = "devralph1";
+let psw = "password";
+let loginType = LoginType.LOGIN;
+
+if(loginType === undefined) {
+  //redirect
+}
+
+connect(URL, user, psw, loginType, (socket) => {
+  socket.addEventHandler("joined", (meta, args) => {
+    window.location.reload(true);
+  });
+  socket.notify("redirect?", {}, (meta, args) => {
+    if(args !== Location.GAME) {
+      //redirect
+    }
+  });
+  let user = socket.user;
+  let model = new GameModel(user, socket);
+  let controller = new Controller(model, loginType);
+  let view = <Game {...controller.getViewState()} controller={controller} />
+  const root = ReactDOM.createRoot(document.getElementById("root"));
+  root.render(view);
+}, (msg) => {
+  //redirect
+});

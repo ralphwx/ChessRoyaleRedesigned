@@ -31,6 +31,18 @@ class GameModel {
     this.refreshChat();
   }
   /**
+   * Some getter functions
+   */
+  getGameData() {
+    return this.gamedata;
+  }
+  getChat() {
+    return this.chat;
+  }
+  getMetaData() {
+    return this.metadata;
+  }
+  /**
    * [listener] objects should contain the functions:
    *   [metaUpdated] (() => (None)): a function to call when the metadata is 
    *     updated
