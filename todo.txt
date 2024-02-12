@@ -1,6 +1,6 @@
 
 Currently working on:
-- Fix some issues with the resolution of premoves
+- Implement spectator mode
 
 TODO:
 - Implement login popup
@@ -29,3 +29,5 @@ Tasks for interns if I ever get any:
 - Make the rules of the game page look pretty, include diagrams, etc. Add fair
   play rules to "how to play" page
 - Make lobby page
+- Implement countdown circle for move cooldown
+- Change elixir bar opacity display to opacity + width

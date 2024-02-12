@@ -5,6 +5,8 @@ These tests are to be performed by hand
 - no moves before both players are ready
 - basic moves
 - basic highlight and arrow drawing
+- test castling and premove castles
+- test en passant and premove en passant
 - moves without elixir --> premove
 - moves while motion sick --> premove
 - elixir bar animation works correctly

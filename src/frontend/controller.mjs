@@ -1,8 +1,39 @@
 
 import {OptionalPair, SquareType} from "./view_enums.mjs";
 import {ChessBitMap, ChessMap} from "../data/maps.mjs";
-import {MoveType, colorOf, Color, ELIXIR, DELAY} from "../data/enums.mjs";
+import {MoveType, colorOf, Color, Piece, ELIXIR, DELAY} from "../data/enums.mjs";
 import {ChessBoard} from "../data/chess.mjs";
+
+function isPlausibleMove(board, iRow, iCol, fRow, fCol) {
+  let dr = fRow - iRow;
+  let dc = fCol - iCol;
+  switch(board.pieceAt(iRow, iCol)) {
+    case Piece.NONE: return false;
+    case Piece.W_PAWN:
+      return (dr === 1 && Math.abs(dc) <= 1)
+        || (dc === 0 && iRow === 1 && fRow === 3)
+    case Piece.B_PAWN:
+      return (dr === -1 && Math.abs(dc) <= 1)
+        || (dc === 0 && iRow === 6 && fRow === 4)
+    case Piece.W_BISHOP:
+    case Piece.B_BISHOP:
+      return Math.abs(dr) === Math.abs(dc);
+    case Piece.W_ROOK:
+    case Piece.B_ROOK:
+      return dr === 0 || dc === 0
+    case Piece.W_QUEEN:
+    case Piece.B_QUEEN:
+      return Math.abs(dr) === Math.abs(dc) || dr === 0 || dc === 0
+    case Piece.W_KING:
+    case Piece.B_KING:
+      return (Math.abs(dr) <= 1 && Math.abs(dc) <= 1)
+        || (Math.abs(dr) === 0 && Math.abs(dc) === 2);
+    case Piece.B_KNIGHT:
+    case Piece.W_KNIGHT:
+      return Math.abs(dr) + Math.abs(dc) === 3 && dr !== 0 && dc !== 0;
+    default: throw new Error("Incomplete case match");
+  }
+}
 
 /**
  * Controller processes user input and model updates. It alerts the user
@@ -220,9 +251,15 @@ class Controller {
     if(gamedata === undefined) return;
     let now = Date.now();
     let gamestate = gamedata.history.head;
+    this.viewState.premoveSrc = OptionalPair.NONE;
+    this.viewState.premoveDest = OptionalPair.NONE;
     //first check that you're moving your own piece
     if(colorOf(gamestate.boardHistory.head.pieceAt(iRow, iCol)) 
       !== this.getColor()) {
+      return;
+    }
+    //check whether the move is plausible
+    if(!isPlausibleMove(gamestate.boardHistory.head, iRow, iCol, fRow, fCol)) {
       return;
     }
     //check timing
