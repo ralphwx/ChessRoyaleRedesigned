@@ -10,7 +10,7 @@ import {ChatLog} from "../data/chat_log.mjs";
 
 function promiseConnect(username, password) {
   return new Promise((resolve, reject) => {
-    connect("http://localhost:8080", username, password, LoginType.LOGIN, 
+    connect("http://localhost:8080", username, password, LoginType.LOGIN, undefined,
       (socket) => {
         resolve(socket);
       }, (msg) => {

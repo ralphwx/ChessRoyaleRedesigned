@@ -93,6 +93,7 @@ const LoginType = {
   CREATE: 0,
   LOGIN: 1,
   GUEST: 2,
+  SPECTATE: 3,
 }
 
 /**

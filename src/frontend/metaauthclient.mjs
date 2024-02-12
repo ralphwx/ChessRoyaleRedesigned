@@ -75,12 +75,12 @@ class MetaAuthClient {
  * successful; otherwise, [failure] is called instead, using the error essage
  * as the argument.
  */
-function connect(url, username, password, type, success, failure) {
+function connect(url, username, password, type, target, success, failure) {
   let socket = io(url, {transports:["websocket"]});
   let timeMeta = {
     clientSendTime: Date.now(),
   };
-  socket.emit("login", username, password, type, (result, msg, times) => {
+  socket.emit("login", username, password, type, target, (result, msg, times) => {
     if(result) {
       timeMeta.clientReceiveTime = Date.now();
       let output = new MetaAuthClient(socket, msg);

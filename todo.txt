@@ -1,6 +1,6 @@
 
 Currently working on:
-- Implement spectator mode
+- Fix "logged in as" display in upper right corner
 
 TODO:
 - Implement login popup
@@ -24,8 +24,9 @@ TODO:
 
 Tasks for interns if I ever get any:
 - Improve the bots and write bot benchmarks
-- Attempt to hack my server, as is. Make a test suite of attempted hacks
 - Make arrows size adapt to window size
+- Add functionality for elo updates when games end
+- Attempt to hack my server, as is. Make a test suite of attempted hacks
 - Make the rules of the game page look pretty, include diagrams, etc. Add fair
   play rules to "how to play" page
 - Make lobby page

@@ -29,11 +29,13 @@ class MetaAuthServer {
     this.io = new Server(server);
     this.eventHandlers = [];
     this.users = users;
-    this.socketmap = new MultiMap();
-
+    this.socketmap = new MultiMap(); //maps from users to sockets
+    this.spectatormap = new MultiMap(); //maps from user to their spectator's 
+                                        //sockets
     this.io.on("connection", (socket) => {
       let user = null;
       let isGuest = false;
+      let spectating = undefined;
       for(let eventPair of this.eventHandlers) {
         let [name, code] = eventPair
         socket.on(name, (meta, args, ack) => {
@@ -65,6 +67,8 @@ class MetaAuthServer {
        * then the [password] field is ignored; if the provided [username] is a
        * valid guest username, then that username will be assigned, otherwise,
        * a new guest username will be generated and assigned.
+       * [target] is an additional field; if the user logs in as a spectator,
+       * [target] is the username of the player they wish to spectate.
        * 
        * [ack] is an acknowledgement function that takes three arguments. The
        * first is a bool for whether the login attempt was successful. If the
@@ -75,7 +79,7 @@ class MetaAuthServer {
        * The third argument is an object with properties [serverReceiveTime]
        * and [serverSendTime], but it is sent only on successful login.
        */
-      socket.on("login", (username, password, type, ack) => {
+      socket.on("login", (username, password, type, target, ack) => {
         let receiveTime = Date.now();
         if(user !== null) ack(false);
         if(type === LoginType.CREATE) {
@@ -130,6 +134,28 @@ class MetaAuthServer {
             serverSendTime: Date.now(),
           };
           ack(true, user, times);
+        } else if(type === LoginType.SPECTATE) {
+          if(this.users.authenticate(username, password)) {
+            user = username;
+            spectating = target;
+            if(!this.users.userExists(target)) {
+              ack(false, "User " + target + " does not exist");
+              return;
+            }
+            this.socketmap.add(user, socket);
+            this.spectatormap.add(target, socket);
+            let times = {
+              serverReceiveTime: receiveTime,
+              serverSendTime: Date.now(),
+            }
+            ack(true, user, times);
+          } else {
+            if(!this.users.userExists(username)) {
+              ack(false, "User '" + username + "' does not exist");
+              return;
+            }
+            ack(false, "Incorrect password");
+          }
         } else {
           this.receivedBadRequest("login", {serverReceiveTime: receiveTime},
             {username: username, password: password, type: type},
@@ -169,6 +195,9 @@ class MetaAuthServer {
    */
   notify(user, eventName, data) {
     for(let socket of this.socketmap.get(user)) {
+      socket.emit(eventName, data);
+    }
+    for(let socket of this.spectatormap.get(user)) {
       socket.emit(eventName, data);
     }
   }

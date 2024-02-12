@@ -22,7 +22,7 @@ if(loginType === undefined) {
   //redirect
 }
 
-connect(URL, user, psw, loginType, (socket) => {
+connect(URL, user, psw, loginType, undefined, (socket) => {
   socket.addEventHandler("joined", (meta, args) => {
     window.location.reload(true);
   });

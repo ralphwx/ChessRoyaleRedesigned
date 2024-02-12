@@ -37,6 +37,7 @@ let main = async () => {
   }
   let socket1 = await promiseConnect("devralph1", "password");
   let socket2 = await promiseConnect("devralph2", "password");
+  let bot_socket1 = await promiseConnect("devralph1", "password");
   let bot_socket = await promiseConnect("devralph2", "password");
   let loc = await send(socket1, "redirect?");
   if(loc === Location.LOBBY) {
@@ -45,8 +46,12 @@ let main = async () => {
   socket2.addEventHandler("gameOver", (meta, args) => {
     send(socket2, "createPrivateChallenge", socket1.user);
   });
+  socket1.addEventHandler("gameOver", (meta, args) => {
+    send(socket1, "createPrivateChallenge", socket1.user);
+  });
   let bot = new DemoBot();
   runBot(bot.moveValue, bot.elixirValue, 1000, 300, bot_socket);
+  runBot(bot.moveValue, bot.elixirValue, 1000, 300, bot_socket1);
 };
 
 main();

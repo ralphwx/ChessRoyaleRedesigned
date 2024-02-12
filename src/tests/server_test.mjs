@@ -8,7 +8,7 @@ import {test, printResults} from "./test_framework.mjs";
 
 function promiseConnect(username, password) {
   return new Promise((resolve, reject) => {
-    connect(URL, username, password, LoginType.LOGIN,
+    connect(URL, username, password, LoginType.LOGIN, undefined,
       (socket) => {
         resolve(socket);
       }, (msg) => {
@@ -20,7 +20,7 @@ function promiseConnect(username, password) {
 
 function guestConnect() {
   return new Promise((resolve, reject) => {
-    connect(URL, undefined, undefined, LoginType.GUEST,
+    connect(URL, undefined, undefined, LoginType.GUEST, undefined,
       (socket) => {
         resolve(socket);
       }, (msg) => {
@@ -31,7 +31,7 @@ function guestConnect() {
 
 function returningGuestConnect(username) {
   return new Promise((resolve, reject) => {
-    connect(URL, username, undefined, LoginType.GUEST,
+    connect(URL, username, undefined, LoginType.GUEST, undefined,
       (socket) => {
         resolve(socket);
       }, (msg) => {
