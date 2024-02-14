@@ -10,7 +10,8 @@ import {ChessBoard} from "../data/chess.mjs";
  * inputs.
  */
 class SpectatorController {
-  constructor(model) {
+  constructor(model, user) {
+    this.user = user;
     this.model = model;
     this.model.addListener(this);
     this.mouseState = {
@@ -104,9 +105,10 @@ class SpectatorController {
     return {
       color: this.getColor(),
       gamedata: this.model.getGameData(),
+      loginUser: this.user,
       user: this.model.user,
       userElo: this.model.userElo,
-      loginType: LoginType.LOGIN,
+      loginType: LoginType.SPECTATE,
       chat: this.model.getChat(),
       opponent: opponent,
       opponentElo: this.model.opponentElo,

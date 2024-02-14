@@ -41,7 +41,8 @@ function isPlausibleMove(board, iRow, iCol, fRow, fCol) {
  * requests to the server.
  */
 class Controller {
-  constructor(model, loginType) {
+  constructor(model, user, loginType) {
+    this.user = user;
     this.model = model;
     this.loginType = loginType;
     this.model.addListener(this);
@@ -148,6 +149,7 @@ class Controller {
     return {
       color: this.getColor(),
       gamedata: this.model.getGameData(),
+      loginUser: this.user,
       user: this.model.user,
       userElo: this.model.userElo,
       loginType: this.loginType,

@@ -183,7 +183,9 @@ function LowerRightControl(props) {
  *   - color (Color): which side to view the board from
  *   - gamedata (GameData): a GameData object that represents the current state
  *     of the game
- *   - user (string): the current user's username
+ *   - loginUser (string): the current user's username
+ *   - user (string): the current user's username, if playing as yourself,
+ *       or the username of the person you're watching, if spectating.
  *   - userElo (optional int): the current user's elo, or undefined if playing
  *       as guest
  *   - loginType (LoginType): whether the user is logged in, guest, or 
@@ -232,7 +234,7 @@ function GameDesktop(props) {
   />
   let elixirAmount = computeElixirAmount(props, now);
   return <div>
-    <HeaderRow username={props.user} loginType={props.loginType} />
+    <HeaderRow username={props.loginUser} loginType={props.loginType} />
     <div className="gamecontainer">
       <div>
         {boardview}

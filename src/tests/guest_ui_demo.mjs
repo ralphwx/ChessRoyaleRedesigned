@@ -8,7 +8,7 @@ import {runBot} from "../bots/bot_frame.mjs";
 
 function promiseConnect(username) {
   return new Promise((resolve, reject) => {
-    connect(URL, username, undefined, LoginType.GUEST,
+    connect(URL, username, undefined, LoginType.GUEST, undefined,
       (socket) => {
         resolve(socket);
       }, (msg) => {

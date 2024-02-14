@@ -1,10 +1,9 @@
 
 Currently working on:
-- Fix "logged in as" display in upper right corner
+- Implement login pop
+- Implement lobby page (needs open challenges, practice, spectate tabs)
 
 TODO:
-- Implement login popup
-- Implement lobby
 - Add redirect features
 - Add sound effects and game start animation
 - Add tests for things user screwing things up via JS console (eg, username

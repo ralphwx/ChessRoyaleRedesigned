@@ -18,6 +18,7 @@ function loginTypeToString(username, loginType) {
     case LoginType.CREATE: return "";
     case LoginType.LOGIN: return "Logged in as " + username;
     case LoginType.GUEST: return "Playing as " + username;
+    case LoginType.SPECTATE: return "Spectating as " + username;
     default: throw new Error("Incomplete case match");
   }
 }

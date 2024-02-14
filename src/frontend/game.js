@@ -11,12 +11,12 @@ import {Game} from "./frontend/game_screen.js";
 
 import "./frontend/index.css";
 
-//let user = "Guest#1";
-//let psw = undefined;
-//let loginType = LoginType.GUEST;
-let user = "devralph1";
-let psw = "password";
-let loginType = LoginType.LOGIN;
+let user = "Guest#1";
+let psw = undefined;
+let loginType = LoginType.GUEST;
+//let user = "devralph1";
+//let psw = "password";
+//let loginType = LoginType.LOGIN;
 
 if(loginType === undefined) {
   //redirect
@@ -33,7 +33,7 @@ connect(URL, user, psw, loginType, undefined, (socket) => {
   });
   let user = socket.user;
   let model = new GameModel(user, socket);
-  let controller = new Controller(model, loginType);
+  let controller = new Controller(model, user, loginType);
   let view = <Game controller={controller} />
   const root = ReactDOM.createRoot(document.getElementById("root"));
   root.render(view);
