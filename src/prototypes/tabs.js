@@ -37,10 +37,10 @@ class Tabs extends React.Component {
   }
   render() {
     return <div style={{backgroundColor: "lightgray"}}>
-      <div className={"tabs"} style={{marginLeft: "auto", marginRight: "auto"}}>
+      <div className={"tabs"}>
         {this.renderLabels()}
       </div>
-      <div className={"tabwindow"} style={{marginLeft: "auto", marginRight: "auto"}}>{this.renderWindow()}</div>
+      <div className={"tabwindow"}>{this.renderWindow()}</div>
     </div>
   }
 }
