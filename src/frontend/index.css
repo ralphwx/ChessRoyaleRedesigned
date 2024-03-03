@@ -252,8 +252,7 @@
 
 .tabs {
   display: flex;
-  width: 500px;
-  height: 100px;
+  height: 50px;
   align-items: stretch;
   background-color: gray;
   justify-content: space-evenly;
@@ -271,7 +270,7 @@
   font-size: 2rem;
   border-top: 2px solid black;
   border-left: 2px solid black;
-  border-bottom: 2px solid black;
+  border-bottom: 4px solid black;
 }
 
 .tab:hover {

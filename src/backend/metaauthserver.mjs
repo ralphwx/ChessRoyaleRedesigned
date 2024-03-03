@@ -55,6 +55,7 @@ class MetaAuthServer {
               ack(meta, data);
             });
           } catch(error) {
+            console.trace();
             this.receivedBadRequest(name, meta, args, error);
           }
         });

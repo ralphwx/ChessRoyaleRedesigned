@@ -2,6 +2,9 @@
 Currently working on:
 - Implement login pop
 - Implement lobby page (needs open challenges, practice, spectate tabs)
+- Updated lobbydata request specification on server side, need to update tests 
+  accordingly
+- Update lobbydata request implementation
 
 TODO:
 - Add redirect features

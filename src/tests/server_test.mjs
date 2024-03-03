@@ -80,9 +80,9 @@ let main = async () => {
   let args2 = await send(socket2, "lobbyData");
   test("open challenge 1", () => {
     return args1.open.length === 1
-      && args1.open.includes("devralph1")
+      && args1.open[0].user === "devralph1"
       && args2.open.length === 1
-      && args2.open.includes("devralph1")
+      && args2.open[0].user === "devralph1"
       && args1.incoming.length === 0
       && args1.outgoing.length === 0
       && args2.incoming.length === 0
@@ -95,15 +95,15 @@ let main = async () => {
   args2 = await send(socket2, "lobbyData");
   test("private challenge 1", () => {
     return args1.open.length === 1
-      && args1.open.includes("devralph1")
+      && args1.open[0].user === "devralph1"
       && args2.open.length === 1
-      && args2.open.includes("devralph1")
+      && args2.open[0].user === "devralph1"
       && args1.incoming.length === 1
-      && args1.incoming.includes("devralph2")
+      && args1.incoming[0].user === "devralph2"
       && args2.incoming.length === 0
       && args1.outgoing.length === 0
       && args2.outgoing.length === 1
-      && args2.outgoing.includes("devralph1");
+      && args2.outgoing[0].user === "devralph1";
   });
 
   //Test cancelChallenge
@@ -166,11 +166,11 @@ let main = async () => {
   args2 = await send(socket2, "lobbyData");
   test("lobby order", () => {
     return args1.open.length === 2
-      && args1.open[0] === "devralph1"
-      && args1.open[1] === "devralph2"
+      && args1.open[0].user === "devralph1"
+      && args1.open[1].user === "devralph2"
       && args2.open.length === 2
-      && args2.open[0] === "devralph1"
-      && args2.open[1] === "devralph2";
+      && args2.open[0].user === "devralph1"
+      && args2.open[1].user === "devralph2";
   });
   await send(socket2, "acceptChallenge", "devralph1");
   loc1 = await send(socket1, "redirect?");
@@ -207,9 +207,9 @@ let main = async () => {
   let args4 = await send(socket4, "lobbyData");
   test("separate lobbies", () => {
     return args2.open.length === 1
-      && args2.open.includes("devralph1")
+      && args2.open[0].user === "devralph1"
       && args4.open.length === 1
-      && args4.open.includes(socket3.user);
+      && args4.open[0].user === socket3.user;
   });
   
   //Test auto-matchmaking when two players private challenge each other
@@ -226,6 +226,25 @@ let main = async () => {
   let returningGuestSocket = await returningGuestConnect("Guest#21");
   test("returning guest username", () => {
     return returningGuestSocket.user === "Guest#21";
+  });
+  //Test the correct listing of ongoing games
+  await send(socket1, "createPrivateChallenge", socket2.user);
+  await send(socket2, "acceptChallenge", socket1.user);
+  args1 = await send(socket1, "lobbyData");
+  test("ongoing games list 1", () => {
+    console.log(args1.ongoing.length);
+    console.log(args1.ongoing[0][0].user);
+    console.log(args1.ongoing[0][1].user);
+    return args1.ongoing.length === 1
+      && ((args1.ongoing[0][0].user === socket1.user 
+        && args1.ongoing[0][1].user === socket2.user)
+        || (args1.ongoing[0][0].user === socket2.user
+        && args1.ongoing[0][1].user === socket1.user));
+  });
+  await send(socket1, "abort");
+  args1 = await send(socket1, "lobbyData");
+  test("ongoing games list 2", () => {
+    return args1.ongoing.length === 0;
   });
   printResults();
 };

@@ -195,21 +195,41 @@ authserver.addEventHandler("cancelChallenge", (meta, args, ack) => {
 /**
  * Handles a request for lobbyData. [args] is not used. [ack] returns an object
  * containing the properties:
- *   [open]: a list of users who submitted open challenges
- *   [incoming]: a list of users who submitted private challenges to the user
- *   [outgoing]: a list of users to whom the user submitted a private challenge
+ *   [open]: a list of {user, elo} objects representing users who submitted open
+ *     challenges
+ *   [incoming]: a list of {user, elo} objects representing users who submitted
+ *     private challenges to the user
+ *   [outgoing]: a list of {user, elo} objects representing users to whom the 
+ *     user submitted a private challenge
+ *   [ongoing]: a list of [{user, elo}, {user, elo}] pairs representing ongoing
+ *     games.
+ * If the request comes from a guest user, the elo's will be set to empty string
  */
 authserver.addEventHandler("lobbyData", (meta, args, ack) => {
   let lobby;
   if(meta.isGuest) lobby = guestlobby;
   else lobby = userslobby;
-  let open = lobby.publicChallenges();
-  let incoming = lobby.privateChallenges(meta.user);
-  let outgoing = lobby.outgoingChallenges(meta.user);
+  let open = lobby.publicChallenges().map(x => {
+    return {user: x, elo: (meta.isGuest ? "" : users.getElo(x))}
+  });
+  let incoming = lobby.privateChallenges(meta.user).map(x => {
+    return {user: x, elo: (meta.isGuest ? "" : users.getElo(x))}
+  });
+  let outgoing = lobby.outgoingChallenges(meta.user).map(x => {
+    return {user: x, elo: (meta.isGuest ? "" : users.getElo(x))}
+  });
+  let ongoing_raw = lobby.listOngoing();
+  let ongoing = ongoing_raw.map(x => {
+    let whiteElo = meta.isGuest ? "" : users.getElo(x[0]);
+    let blackElo = meta.isGuest ? "" : users.getElo(x[1]);
+    return [{user: x[0], elo: whiteElo}, 
+      {user: x[1], elo: blackElo}];
+  });
   ack({
     open: open,
     incoming: incoming,
     outgoing: outgoing,
+    ongoing: ongoing,
   });
 });
 

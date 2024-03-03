@@ -70,6 +70,24 @@ class LobbyData {
     return [];
   }
 
+  /**
+   * Returns a list of [user, user] pairs
+   */
+  listOngoing() {
+    let white = [];
+    let black = [];
+    for(let [user, [opponent, game]] of this.games) {
+      if(game.gameOver || white.includes(game.white)) continue;
+      white.push(game.white);
+      black.push(game.black);
+    }
+    let output = [];
+    for(let i = 0; i < white.length; i++) {
+      output.push([white[i], black[i]]);
+    }
+    return output;
+  }
+
   makeOpenChallenge(user) {
     if(this.isInGame(user)) return;
     if(this.openChallenges.indexOf(user) !== -1) return;
