@@ -3,6 +3,12 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./frontend/index.css";
 
+/**
+ * Tabs provides tabs, oriented at the top, that displays any number of
+ * windows. Takes [labels] and [windows] as inputs, where
+ *   - [labels] is a list of display elements for the tabs
+ *   - [windows] is a list of corresponding display windows
+ */
 class Tabs extends React.Component {
   constructor(props) {
     super(props);
@@ -45,6 +51,7 @@ class Tabs extends React.Component {
   }
 }
 
+
 let labels = [
   "red",
   "green",
@@ -52,9 +59,9 @@ let labels = [
 ];
 
 let windows = [
-  <div style={{width:"100%", height: "100%", backgroundColor: "red"}}></div>,
-  <div style={{width:"100%", height: "100%", backgroundColor: "green"}}></div>,
-  <div style={{width:"100%", height: "100%", backgroundColor: "blue"}}></div>,
+  <div style={{width:"100%", height: "500px", backgroundColor: "red"}}></div>,
+  <div style={{width:"100%", height: "500px", backgroundColor: "green"}}></div>,
+  <div style={{width:"100%", height: "500px", backgroundColor: "blue"}}></div>,
 ];
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

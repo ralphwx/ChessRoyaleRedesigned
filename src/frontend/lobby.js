@@ -64,7 +64,6 @@ function LobbyRow(props) {
   return <div className={"roomli " + props.type + "_border"}
     onClick={() => {props.onClick()}}
   >
-    <div className={"floater background " + props.type + "_background"}></div>
     <div className={"descriptor"}>
       <div className={"challenger"}>
         {challengerDescription}
@@ -73,6 +72,7 @@ function LobbyRow(props) {
         {description}
       </div>
     </div>
+    <div className={"floater background " + props.type + "_background"}></div>
     <div className={"floater action"}>
       {floaterContent}
     </div>
