@@ -1,7 +1,8 @@
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./frontend/index.css";
+import "./index.css";
+//import "./frontend/index.css";
 
 /**
  * Tabs provides tabs, oriented at the top, that displays any number of
@@ -42,7 +43,7 @@ class Tabs extends React.Component {
     return this.windows[this.state.i];
   }
   render() {
-    return <div style={{backgroundColor: "lightgray"}}>
+    return <div>
       <div className={"tabs"}>
         {this.renderLabels()}
       </div>
@@ -64,5 +65,7 @@ let windows = [
   <div style={{width:"100%", height: "500px", backgroundColor: "blue"}}></div>,
 ];
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<Tabs labels={labels} windows={windows} />);
+//const root = ReactDOM.createRoot(document.getElementById("root"));
+//root.render(<Tabs labels={labels} windows={windows} />);
+
+export {Tabs}

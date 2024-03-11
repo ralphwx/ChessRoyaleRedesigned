@@ -253,31 +253,35 @@
 .tabs {
   display: flex;
   align-items: stretch;
-  background-color: gray;
   justify-content: space-evenly;
-  width: 100%;
 }
 
 .tabwindow {
-  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .tab {
   flex: 1;
   text-align: center;
   font-size: 2rem;
+  color: #777;
   border-top: 2px solid black;
   border-left: 2px solid black;
   border-bottom: 4px solid black;
+  background-color: lightgray;
 }
 
 .tab:hover {
   background-color: darkgray;
+  color: #000;
 }
 
 .tabselect {
   border-bottom: 0;
   background-color: darkgray;
+  color: #000;
+  font-weight: bold;
 }
 
 .tab:last-child {
@@ -289,8 +293,11 @@
   font-size: 1.4rem;
   margin: 5px;
   position: relative;
-  display: flex;
   border: 2px solid;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-evenly;
+
 }
 
 .empty_border {
@@ -314,7 +321,7 @@
 }
 
 .practice_border {
-  border-color: lightgray;
+  border-color: gray;
 }
 
 .outgoing_public_background {
@@ -334,7 +341,7 @@
 }
 
 .practice_background {
-  background-color: lightgray;
+  background-color: gray;
 }
 
 .floater {
@@ -381,4 +388,27 @@
 .subdescription {
   float:right;
   margin: 2px;
+}
+
+.main_display {
+  width: 50%;
+  height: 50vh;
+  min-width: min(28rem, 90vh);
+  max-width: 750px;
+  border: 3px solid gray;
+  overflow: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.spectate_border {
+  border-color: gray;
+}
+
+.spectate_white {
+  background-color: red;
+}
+
+.spectate_black {
+  background-color: green;
 }
