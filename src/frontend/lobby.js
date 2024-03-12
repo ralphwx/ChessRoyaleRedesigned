@@ -101,17 +101,19 @@ function SpectateRow(props) {
   let blackDescription = props.black;
   if(props.blackElo) blackDescription += " (" + props.blackElo + ")";
   return <div className={"roomli"}>
-    <div style={{
-      flex: 1,
-    }}>
-      {whiteDescription}
+    <div className={"descriptor_left"}>
+      <div className={"spectate_white"}></div>
+      <div className={"descriptor_user_left"}
+        onClick={() => console.log("spectate white")}>{whiteDescription}</div>
+      <div className={"action_white"}>Watch as white</div>
     </div>
-    <div style={{
-      flex: 1,
-      textAlign: "right",
-    }}>
-      {blackDescription}
+    <div className={"descriptor_right"}>
+      <div className="spectate_black"></div>
+      <div className="descriptor_user_right"
+        onClick={() => console.log("spectate black")}>{blackDescription}</div>
+      <div className={"action_black"}>Watch as black</div>
     </div>
+    <div className={"versus"}>VS</div>
   </div>
 //  return <div className={"roomli spectate_border"}>
 //    <div className={"descriptor"}>

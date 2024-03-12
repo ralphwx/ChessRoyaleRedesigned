@@ -405,10 +405,92 @@
   border-color: gray;
 }
 
-.spectate_white {
-  background-color: red;
+.descriptor_left {
+  flex: 1;
+}
+
+.descriptor_left:hover > .spectate_white {
+  opacity: 1;
+}
+
+.descriptor_user_left {
+  z-index: 2;
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  padding: 2px;
+}
+
+.descriptor_right {
+  flex: 1;
+  text-align: right;
 }
 
 .spectate_black {
-  background-color: green;
+  background-color: #beaed4;
+  opacity: 0.4;
+  width: 100%;
+  height: 100%;
+}
+
+.spectate_white {
+  background-color: #fdc086;
+  opacity: 0.4;
+  width: 100%;
+  height: 100%;
+}
+
+.descriptor_right:hover > .spectate_black {
+  opacity: 1;
+}
+
+.descriptor_user_right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  padding: 2px;
+  z-index: 2;
+}
+
+.versus {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-size: 1.8rem;
+  z-index: 0;
+}
+
+.action_white {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(50% - 1.8rem);
+  height: 100%;
+  text-align: right;
+  opacity: 0;
+}
+
+.descriptor_left:hover > .action_white {
+  opacity: 0.5;
+}
+
+.action_black {
+  position:absolute;
+  top: 0;
+  right: 0;
+  width: calc(50% - 1.8rem);
+  height: 100%;
+  text-align: left;
+  opacity: 0;
+}
+
+.descriptor_right:hover > .action_black {
+  opacity: 0.5;
 }
