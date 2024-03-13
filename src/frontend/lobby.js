@@ -1,287 +1,124 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./frontend/index.css";
-import {Tabs} from "./frontend/tabs.js";
-import {HeaderRow} from "./frontend/header.js";
+import {connect} from "./metaauthclient.mjs";
+import {URL, LoginType} from "../data/enums.mjs";
+import {renderPopUp} from "./popup.js";
+import {LobbyDisplay} from "./lobby_display.js";
+import "./index.css";
 
-const RowType = {
-  NO_CHALLENGES: "empty",
-  OUTGOING_PUBLIC: "outgoing_public",
-  OUTGOING_PRIVATE: "outgoing_private",
-  INCOMING_PUBLIC: "incoming_public",
-  INCOMING_PRIVATE: "incoming_private",
-  LOADING: "loading",
-  PRACTICE: "practice",
-}
+let username = window.localStorage.getItem("username");
+let password = window.localStorage.getItem("password");
+let loginType = JSON.parse(window.localStorage.getItem("loginType"));
 
-function getDescription(props) {
-  switch(props.type) {
-    case RowType.OUTGOING_PRIVATE: return "Challenging " + props.opponent;
-    case RowType.OUTGOING_PUBLIC: return "Outgoing challenge";
-    case RowType.INCOMING_PRIVATE: return "Private Challenge";
-    case RowType.INCOMING_PUBLIC: return "Public Challenge";
-    case RowType.PRACTICE: return "Practice vs Bot";
-    default: throw "Incomplete case match: " + props.type;
-  }
-}
-
-function getFloaterContent(props) {
-  switch(props.type) {
-    case RowType.OUTGOING_PRIVATE:
-    case RowType.OUTGOING_PUBLIC:
-      return "Cancel";
-    case RowType.INCOMING_PRIVATE:
-    case RowType.INCOMING_PUBLIC:
-    case RowType.PRACTICE:
-      return "Accept";
-    default: throw "Incomplete case match: " + props.type;
-  }
-}
-
-/**
- * Renders a single row in a play lobby. Props is required to have props:
- *   - type (RowType): the type of challenge represented
- *   - challenger (str): the username of the player sending the challenge
- *   - challengerElo (str or int): the elo of the player sending the challenge,
- *     or empty string if guest
- *   - opponent (str or undefined): the username of the player the challenge is
- *     sent to, or undefined if it's a public challenge
- *   - onClick () => (None): function to be called when the user clicks on this
- */
-function LobbyRow(props) {
-  console.log("Render lobbyrow: ");
-  console.log("    " + props.type);
-  console.log("    " + props.challenger);
-  console.log("    " + props.challengerElo);
-  console.log("    " + props.opponent);
-  if(props.type === RowType.NO_CHALLENGES) {
-    return <div className={"roomli empty"}>
-      <div className={"floater"}>{"<No open challenges>"}</div>
-    </div>
-  }
-  if(props.type === RowType.LOADING) {
-    return <div className={"roomli empty"}>
-      <div className={"floater"}>{"Loading ..."}</div>
-    </div>;
-  }
-  let challengerDescription = props.challenger;
-  if(props.challengerElo) challengerDescription += " (" + props.challengerElo + ")";
-  let description = getDescription(props);
-  let floaterContent = getFloaterContent(props);
-  return <div className={"roomli " + props.type + "_border"}
-    onClick={() => {props.onClick()}}
-  >
-    <div className={"descriptor"}>
-      <div className={"challenger"}>
-        {challengerDescription}
-      </div>
-      <div className={"subdescription"}>
-        {description}
-      </div>
-    </div>
-    <div className={"floater background " + props.type + "_background"}></div>
-    <div className={"floater action"}>
-      {floaterContent}
-    </div>
-  </div>
-}
-
-/** 
- * Renders a single row in the spectate lobby. Props is required to have props:
- *   - white (string): username of the player playing white
- *   - black (string): username of the player playing black
- *   - whiteElo (int or empty string): elo of the player playing white, or empty
- *     string if they're a guest
- *   - blackElo (int or empty string): elo of the player playing black, or empty
- *     string if they're a guest
- */
-function SpectateRow(props) {
-  let whiteDescription = props.white;
-  if(props.whiteElo) whiteDescription += " (" + props.whiteElo + ")";
-  let blackDescription = props.black;
-  if(props.blackElo) blackDescription += " (" + props.blackElo + ")";
-  return <div className={"roomli"}>
-    <div className={"descriptor_left"}>
-      <div className={"spectate_white"}></div>
-      <div className={"descriptor_user_left"}
-        onClick={() => console.log("spectate white")}>{whiteDescription}</div>
-      <div className={"action_white"}>Watch as white</div>
-    </div>
-    <div className={"descriptor_right"}>
-      <div className="spectate_black"></div>
-      <div className="descriptor_user_right"
-        onClick={() => console.log("spectate black")}>{blackDescription}</div>
-      <div className={"action_black"}>Watch as black</div>
-    </div>
-    <div className={"versus"}>VS</div>
-  </div>
-//  return <div className={"roomli spectate_border"}>
-//    <div className={"descriptor"}>
-//      <div className={"challenger"}>
-//        {whiteDescription}
-//      </div>
-//      <div className={"subdescription"}>
-//        {blackDescription}
-//      </div>
-//    </div>
-//    <div className={"floater background"}>
-//      <div className={"spectate_white"}>
-//        <div className={"action"}
-//          onClick={() => console.log("spectate white")}>
-//            Watch {props.white}
-//        </div>
-//      </div>
-//      <div className={"spectate_black"}>
-//        <div className={"action"}
-//          onClick={() => console.log("spectate black")}>
-//            Watch {props.black}
-//        </div>
-//      </div>
-//    </div>
-//  </div>
-}
-
-function practiceLobby(props) {
-  let output = [
-    <LobbyRow
-      key={"practice1"}
-      challenger={"PracticeBotLV1"}
-      challengerElo={200}
-      type={RowType.PRACTICE}
-      opponent={undefined}
-      onClick={() => {console.log("practice 1")}}
-    />,
-    <LobbyRow
-      key={"practice2"}
-      challenger={"PracticeBotLV2"}
-      challengerElo={500}
-      type={RowType.PRACTICE}
-      opponent={undefined}
-      onClick={() => {console.log("practice 2")}}
-    />,
-    <LobbyRow
-      key={"practice3"}
-      challenger={"PracticeBotLV3"}
-      challengerElo={900}
-      type={RowType.PRACTICE}
-      opponent={undefined}
-      onClick={() => {console.log("practice 3")}}
-    />,
-  ];
-  return output;
-}
-/**
- * Converts [data] to a list of LobbyRow objects.
- * By convention: outgoing challenges go first, then private incoming challenges
- * then incoming open challenges
- */
-function playersLobby(props) {
-  let data = props.data;
-  if(!data) return [<LobbyRow key={"#loading"} type={RowType.LOADING} />];
-  let priority_list = [];
-  for(let {user, elo} of data.outgoing) {
-    priority_list.push(<LobbyRow
-      key={user + RowType.OUTGOING_PRIVATE}
-      challenger={props.user}
-      challengerElo={props.userElo}
-      type={RowType.OUTGOING_PRIVATE}
-      opponent={user}
-      onClick={() => props.cancelChallenge()}
-    />);
-  }
-  for(let {user, elo} of data.incoming) {
-    priority_list.push(<LobbyRow
-      key={user + RowType.INCOMING_PRIVATE}
-      challenger={user}
-      challengerElo={elo}
-      type={RowType.INCOMING_PRIVATE}
-      opponent={props.user}
-      onClick={() => props.acceptChallenge(user)}
-    />);
-  }
-  let open_list = [];
-  for(let {user, elo} of data.open) {
-    if(user === props.user) {
-      priority_list.push(<LobbyRow
-        key={user + RowType.OUTGOING_PUBLIC}
-        challenger={props.user}
-        challengerElo={props.userElo}
-        type={RowType.OUTGOING_PUBLIC}
-        opponent={undefined}
-        onClick={() => props.cancelChallenge()}
-      />);
-    } else {
-      open_list.push(<LobbyRow
-        key={user + RowType.INCOMING_PUBLIC}
-        challenger={user}
-        challengerElo={elo}
-        type={RowType.INCOMING_PUBLIC}
-        opponent={undefined}
-        onClick={() => props.acceptChallenge(user)}
-      />);
+class Lobby extends React.Component {
+  constructor(props) {
+    super(props);
+    this.socket = props.socket;
+    this.state = {
+      user: props.user,
+      userElo: undefined,
+      data: undefined,
+    }
+    this.loginType = loginType;
+    if(this.socket) {
+      this.socket.notify("getUserInfo", {user: this.state.user}, (meta, args) => {
+        this.setState({userElo: args.elo});
+      });
+      setInterval(() => {
+        this.socket.notify("lobbyData", {}, (meta, args) => {
+          this.setState({data: args});
+        });
+      }, 1000);
     }
   }
-  return priority_list.concat(open_list);
+  render() {
+    return <LobbyDisplay 
+      user={this.state.user} 
+      userElo={this.state.userElo}
+      data={this.state.data}
+      loginType={this.loginType}
+    />
+  }
 }
 
-/** 
- * Lobby screen display. Props is required to have props:
- *   - user (string): the user's username.
- *   - userElo (int or string): the user's elo, if logged in, or empty string
- *     if playing as guest.
- *   - data ({open, incoming, outgoing, ongoing} or undefined): an object 
- *     containing lobby data to be displayed, or undefined if no data is 
- *     available
- *   - createOpenChallenge () => (None): a function to be called when
- *     user attempts to create an open challenge
- *   - createPrivateChallenge (str) => (None): a function to be called when
- *     the user attempts to create a private challenge, where the input is
- *     the username of the opponent
- *   - cancelChallenge () => (None): a function to be called when the user
- *     attempts to cancel any outgoing challenges
- *   - acceptChallenge (string) => (None): a function to be called when the
- *     user attempts to accept another user's challenge. The input is the
- *     opponent's username
- */
-function LobbyDisplay(props) {
-  let labels = ["Play", "Practice", "Spectate"];
-  let windows = [
-    <div>{playersLobby(props)}</div>,
-    <div>{practiceLobby(props)}</div>,
-    <div>{props.data.ongoing.map(pair => {
-      let white = pair[0];
-      let black = pair[1];
-      return <SpectateRow
-        key={white.user}
-        white={white.user}
-        black={black.user}
-        whiteElo={white.elo}
-        blackElo={black.elo}
-      />})}
-    </div>,
-  ];
+function LoginPopUp(props) {
   return <div>
-    <HeaderRow />
-    <div className={"main_display"}>
-      <Tabs labels={labels} windows={windows} />
+    <h2>Welcome to Chess Royale! Please log in or select 'Play as Guest'</h2>
+    <div>
+      <form onSubmit={handleLogin}>
+        <div>
+          <div className="entry">
+            <label>Username:</label>
+            <input className="text_input" type="text" id="username-input"/>
+            <br />
+          </div>
+          <div className="entry">
+            <label>Password:</label>
+            <input className="text_input" type="password" id="password-input"/>
+            <br />
+          </div>
+        </div>
+      </form>
     </div>
-    </div>
+  </div>
 }
 
-let data = {
-  open: [{user: "BOT_RANDY", elo: 1200}],
-  incoming: [{user: "tiny25", elo: 1000}],
-  outgoing: [{user: "Arturo", elo: 9999}],
-  ongoing: [[{user: "nicecream18", elo: 1100}, {user: "slimkey", elo: 1200}]],
-};
+function handleLogin() {
+  let username = document.querySelector("#username-input").value;
+  let password = document.querySelector("#password-input").value;
+  connect(URL, username, password, LoginType.LOGIN, undefined, (socket) => {
+    localStorage.setItem("username", username);
+    localStorage.setItem("password", password);
+    localStorage.setItem("loginType", JSON.stringify(LoginType.LOGIN));
+    window.location.reload(true);
+  }, (msg) => {
+    renderPopUp(<h2>{msg}</h2>, [{inner: "Okay", 
+      onClick: () => window.location.replace(URL + "/login")}]);
+  });
+}
+
+function handleCreate() {
+  window.location.replace(URL + "/create");
+}
+
+function handleGuest() {
+  connect(URL, undefined, undefined, LoginType.GUEST, undefined, (socket) => {
+    localStorage.setItem("username", socket.user);
+    localStorage.setItem("password", undefined);
+    localStorage.setItem("loginType", JSON.stringify(LoginType.GUEST));
+    window.location.reload(true);
+  }, (msg) => {
+    renderPopUp(<h2>{msg}</h2> [{inner: "Okay",
+      onClick: () => window.location.reload(true)}]);
+  });
+}
+
+function requestAuthentication() {
+  root.render(<Lobby user={""} socket={undefined} />);
+  renderPopUp(<LoginPopUp />, [
+    {
+      inner: "Log in",
+      onClick: handleLogin,
+    },
+    {
+      inner: "Create account",
+      onClick: handleCreate,
+    },
+    {
+      inner: "Play as Guest",
+      onClick: handleGuest,
+    },
+  ]);
+}
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<LobbyDisplay 
-  user={"ralphwx"}
-  userElo={"1100"}
-  data={data}
-  createOpenChallenge={() => {console.log("create open")}}
-  createPrivateChallenge={(username) => {console.log("private challenge: " + username)}}
-  cancelChallenge={() => {console.log("cancel challenge")}}
-  acceptChallenge={(username) => {console.log("accept challenge from " + username)}}
-/>);
+if(loginType !== null) {
+  connect(URL, username, password, loginType, undefined, (socket) => {
+    root.render(<Lobby user={username} loginType={loginType} socket={socket} />);
+  }, (msg) => {
+    requestAuthentication();
+  });
+} else {
+  requestAuthentication();
+}
+

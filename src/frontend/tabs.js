@@ -11,36 +11,47 @@ import "./index.css";
  *   - [windows] is a list of corresponding display windows
  */
 class Tabs extends React.Component {
+  static getDerivedStateFromProps(props, state) {
+    if(props.labels === state.labels
+      && props.windows === state.windows) {
+      return null;
+    }
+    return {
+      labels: props.labels,
+      windows: props.windows,
+    };
+
+  }
   constructor(props) {
     super(props);
     this.state = {
       i: 0,
+      labels: props.labels,
+      windows: props.windows,
     }
-    this.labels = props.labels;
-    this.windows = props.windows;
   }
   renderLabels() {
     let output = [];
     let borderStyle = {
       borderBottom: "2px solid black",
     };
-    for(let i = 0; i < this.labels.length; i++) {
+    for(let i = 0; i < this.state.labels.length; i++) {
       if(i === this.state.i) {
         output.push(<div 
           className={"tab tabselect"} 
           onClick={() => {this.setState({i: i})}}
-        >{this.labels[i]}</div>);
+        >{this.state.labels[i]}</div>);
       } else {
         output.push(<div 
           className={"tab"} 
           onClick={() => {this.setState({i: i})}}
-        >{this.labels[i]}</div>);
+        >{this.state.labels[i]}</div>);
       }
     }
     return output;
   }
   renderWindow() {
-    return this.windows[this.state.i];
+    return this.state.windows[this.state.i];
   }
   render() {
     return <div>

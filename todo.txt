@@ -1,25 +1,22 @@
 
 Currently working on:
-- Implement login pop
-- Implement lobby page (needs open challenges, practice, spectate tabs)
+- Connect lobby display with server request
+- Import build script and fill in missing links (integration time!)
+- Import GameMobile view from original project
 
 TODO:
-- Add redirect features
 - Add sound effects and game start animation
 - Add tests for things user screwing things up via JS console (eg, username
     or password) (I mean, technically that's cheating/hacking ...)
 - Add thread safety features to all data structures
 - Ensure "Offer rematch" button is not available for guest user
-- Import GameMobile view from original project
 - Implement a settings screen
 - Hyperlink the chess royale logo in the header
 - Make a proper test server for testing code ...
 - Add a list of tasks for sending code to production
-- Future: write tests for spectator mode functionality (where user is requesting
+- Write tests for spectator mode functionality (where user is requesting
   game data corresponding to other users)
 - learn SQL?
-- Add rules of fair play to the site somewhere, eg, do not use alt accounts to
-  spy on opponents
 
 Tasks for interns if I ever get any:
 - Improve the bots and write bot benchmarks
@@ -28,6 +25,5 @@ Tasks for interns if I ever get any:
 - Attempt to hack my server, as is. Make a test suite of attempted hacks
 - Make the rules of the game page look pretty, include diagrams, etc. Add fair
   play rules to "how to play" page
-- Make lobby page
 - Implement countdown circle for move cooldown
 - Change elixir bar opacity display to opacity + width

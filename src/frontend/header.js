@@ -8,11 +8,12 @@ import "./header.css";
 function logout() {
   localStorage.removeItem("username");
   localStorage.removeItem("password");
-  window.location.replace(URL + "/login");
+  localStorage.removeItem("loginType");
+  window.location.replace(URL);
 }
 
 function loginTypeToString(username, loginType) {
-  if(loginType === undefined) return "";
+  if(!loginType) return "";
   switch(loginType) {
     case undefined:
     case LoginType.CREATE: return "";

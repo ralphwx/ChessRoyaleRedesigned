@@ -90,10 +90,10 @@ const ARROW_TIME = DELAY / 2;
  * Enum representing types of logins
  */
 const LoginType = {
-  CREATE: 0,
-  LOGIN: 1,
-  GUEST: 2,
-  SPECTATE: 3,
+  CREATE: 1,
+  LOGIN: 2,
+  GUEST: 3,
+  SPECTATE: 4,
 }
 
 /**

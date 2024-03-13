@@ -24,10 +24,13 @@
   animation-name: expand;
   animation-duration: 0.5s;
   transform: translate(-50%, -50%);
+  white-space: nowrap;
 }
 
 .popupcontent {
+  display: flex;
   padding: 5vh;
+  white-space: normal;
 }
 
 .optionrow {
@@ -35,12 +38,17 @@
   width: 100%;
   height: max(3.5vw, 3.5rem);
   display: flex;
-  background-color: #bbbe
+  flex-wrap: wrap;
+  justify-content: right;
+  background-color: #bbbe;
+  white-space: nowrap;
+  width: 100%;
 }
 
 .optionbutton {
-  font-size: max(2vw, 2rem);
+  font-size: 1.5rem;
   margin: max(0.5vw, 0.5rem);
+  white-space: nowrap;
 }
 
 .optionbutton:hover {
