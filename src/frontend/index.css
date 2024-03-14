@@ -498,6 +498,11 @@
 #loginBox {
   margin-left:auto;
   margin-right:auto;
+  width: 50%;
+  height: 50vh;
+  min-width: 350px;
+  max-width: 400px;
+  background-color: lightgray;
 }
 
 .entry {
@@ -513,3 +518,14 @@
   padding-bottom: 10px;
 }
 
+.button_input_row {
+  height: 4rem;
+  display: flex;
+  margin-top: auto;
+}
+
+.button_input {
+  flex: 1;
+  font-size: 1rem;
+  margin: 0.5rem;
+}

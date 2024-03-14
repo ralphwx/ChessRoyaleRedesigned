@@ -1,1 +1,1 @@
-import "./frontend/local_bot.js";
+import "./frontend/create.js";

@@ -15,8 +15,9 @@ if "main" not in os.listdir("."): os.mkdir("main")
 
 outdir = ""
 if l == 3:
-    outdir = sys.argv[2] + "/"
+    outdir = sys.argv[2]
     if outdir not in os.listdir("main/"): os.mkdir("main/" + outdir)
+    outdir += "/"
 
 #Write the appropriate index.js file
 with open("./src/index.js", "w") as f:
@@ -25,3 +26,9 @@ with open("./src/index.js", "w") as f:
 os.system("npm run build")
 os.system("cp -r ./build/* ./main/" + outdir)
 
+with open("./main/" + outdir + "index.html") as f:
+    original_html = f.read()
+
+new_html = original_html.replace("/static", "./static")
+with open("./main/" + outdir + "index.html", "w") as f:
+    f.write(new_html)
