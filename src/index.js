@@ -1,2 +1,1 @@
-
-import "./frontend/lobby.js";
+import "./frontend/local_bot.js";

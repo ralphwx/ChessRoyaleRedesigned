@@ -1,13 +1,13 @@
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-import {Controller} from "./frontend/controller.mjs";
-import {LocalModel} from "./frontend/local_model.mjs";
-import {ServerGame} from "./backend/servergame.mjs";
-import {Game} from "./frontend/game_screen.js";
-import {runBotLocal} from "./bots/bot_frame.mjs";
-import {DemoBot} from "./bots/demo_bot.mjs";
-import {LoginType} from "./data/enums.mjs";
+import {Controller} from "./controller.mjs";
+import {LocalModel} from "./local_model.mjs";
+import {ServerGame} from "../backend/servergame.mjs";
+import {Game} from "./game_screen.js";
+import {runBotLocal} from "../bots/bot_frame.mjs";
+import {DemoBot} from "../bots/demo_bot.mjs";
+import {LoginType} from "../data/enums.mjs";
 
 let user = "devralph1";
 let loginType = LoginType.LOGIN;

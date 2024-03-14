@@ -21,8 +21,13 @@
  *   time [now].
  *
  */
+
+import express from "express";
+const app = express();
 import {createServer} from "http";
-const server = createServer();
+const server = createServer(app);
+
+app.use(express.static("../../main"));
 
 import {MetaAuthServer} from "./metaauthserver.mjs";
 import {LobbyData} from "./lobbydata.mjs";
