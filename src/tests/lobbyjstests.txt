@@ -11,7 +11,10 @@ Tests for lobby.js
 - Check that lobby starts out empty
 - Check that create open challenge shows up on your own device
 - Check that other people's create open challenge shows up
+- Check cancelling open challenge
+- Check cancelling private challenge
 - Test create private challenge
+  - with your own username
   - with invalid username
   - with incorrect username
   - with a guest username

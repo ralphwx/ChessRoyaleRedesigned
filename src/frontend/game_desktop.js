@@ -37,7 +37,7 @@ function InfoBar(props) {
  * {board, delay, squareType, moveArrows}
  */
 function getBoardProps(props, now) {
-  if(!props.userReady || !props.opponentReady) {
+  if(!props.gamedata || !props.userReady || !props.opponentReady) {
     return {
       board: ChessBoard.startingPosition(),
       delay: ChessMap.fromDefault(0),

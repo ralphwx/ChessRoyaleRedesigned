@@ -24,7 +24,10 @@ function PopUp(props) {
     let className = button_row.length ? "optionbutton" : "optionbutton first";
     button_row.push(<button
       className={className}
-      onClick={() => {settings.onClick(); hidePopUp();}}
+      onClick={() => {
+        settings.onClick(); 
+        if(!settings.preventDefault) hidePopUp();
+      }}
     >
       {settings.inner}
     </button>);

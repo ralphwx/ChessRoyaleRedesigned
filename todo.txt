@@ -2,13 +2,13 @@
 Currently working on:
 - Fill in missing links (integration time!)
 - Import GameMobile view from original project
+- Fix the screen white-out bug when game starts
 
 TODO:
 - Import how to play screen from original project
 - Disable chat for spectators
 - Disable buttons for spectators
 - Add tooltip for buttons on game display
-- Fix the screen white-out bug when game starts
 - Fix "cannot remove" error on backend for spectator mode
 - Add functionality for elo updates when games end
 - Add tests for things user screwing things up via JS console (eg, username

@@ -154,6 +154,11 @@ authserver.addEventHandler("createPrivateChallenge", (meta, args, ack) => {
       result: false,
       message: "User " + args + " does not exist",
     });
+  } else if(meta.user === args) {
+    ack({
+      result: false,
+      message: "You may not challenge yourself",
+    });
   } else if(userslobby.isInGame(meta.user)) {
     ack({
       result: false,

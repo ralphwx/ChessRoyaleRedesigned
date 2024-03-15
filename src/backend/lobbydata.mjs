@@ -162,6 +162,7 @@ class LobbyData {
   attemptJoin(user, sender) {
     if(this.isInGame(user)) return;
     if(this.isInGame(sender)) return;
+    if(user === sender) return;
     if(this.privateSenders.get(sender) === user
       || this.openChallenges.indexOf(sender) !== -1) {
       this.cancelChallenge(user);

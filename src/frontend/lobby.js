@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import {connect} from "./metaauthclient.mjs";
-import {URL, LoginType} from "../data/enums.mjs";
+import {URL, LoginType, Location} from "../data/enums.mjs";
 import {renderPopUp} from "./popup.js";
 import {LobbyDisplay} from "./lobby_display.js";
 import "./index.css";
@@ -97,8 +97,11 @@ function handleLogin() {
     localStorage.setItem("loginType", JSON.stringify(LoginType.LOGIN));
     window.location.reload(true);
   }, (msg) => {
-    renderPopUp(<h2>{msg}</h2>, [{inner: "Okay", 
-      onClick: () => window.location.replace(URL + "/login")}]);
+    renderPopUp(<h2>{msg}</h2>, [{
+      inner: "Okay", 
+      onClick: requestAuthentication,
+      preventDefault: true,
+    }]);
   });
 }
 
@@ -145,7 +148,8 @@ if(loginType !== null) {
     socket.addEventHandler("started", (meta, args) => {
       window.location.replace(URL + "/game");
     });
-    socket.notify("redirect?", (meta, args) => {
+    socket.notify("redirect?", {}, (meta, args) => {
+      console.log("redirect to: " + args);
       if(args === Location.GAME) {
         window.location.replace(URL + "/game");
       }

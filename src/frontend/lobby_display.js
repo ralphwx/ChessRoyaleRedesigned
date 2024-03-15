@@ -5,7 +5,7 @@ import "./popup.css";
 import {Tabs} from "./tabs.js";
 import {HeaderRow} from "./header.js";
 import {renderPopUp} from "./popup.js";
-import {URL} from "../data/enums.mjs";
+import {URL, LoginType} from "../data/enums.mjs";
 
 const RowType = {
   NO_CHALLENGES: "empty",
@@ -238,12 +238,19 @@ function PrivateChallengePopUp(props) {
   </div>
 }
 
-function handlePrivateChallenge(createPrivateChallenge) {
+function handlePrivateChallenge(props) {
+  if(props.loginType !== LoginType.LOGIN) {
+    renderPopUp(<h2>Private challenges are for logged in users only</h2>, [{
+      inner: "Okay",
+      onClick: () => {},
+    }]);
+    return;
+  }
   renderPopUp(<PrivateChallengePopUp />, [{
     inner: "Send challenge!",
     onClick: () => {
       let username = document.querySelector("#opponent-input").value;
-      createPrivateChallenge(username);
+      props.createPrivateChallenge(username);
     }
   }, {
     inner: "Cancel",
@@ -272,12 +279,15 @@ function handlePrivateChallenge(createPrivateChallenge) {
  *     opponent's username
  */
 function LobbyDisplay(props) {
-  let labels = ["Play", "Practice", "Spectate"];
+  let labels = ["Play", "Practice"];
   let windows = [
     <div>{playersLobby(props)}</div>,
     <div>{practiceLobby(props)}</div>,
-    <div>{spectateLobby(props)}</div>,
   ];
+  if(props.loginType === LoginType.LOGIN) {
+    labels.push("Spectate");
+    windows.push(<div>{spectateLobby(props)}</div>);
+  }
   return <div>
     <HeaderRow username={props.user} loginType={props.loginType} />
     <div className={"main_display"}>
@@ -288,7 +298,7 @@ function LobbyDisplay(props) {
         Create open challenge
       </button>
       <button className={"optionbutton"} 
-        onClick={() => {handlePrivateChallenge(props.createPrivateChallenge)}}>
+        onClick={() => {handlePrivateChallenge(props)}}>
         Create private challenge
       </button>
       <button className={"optionbutton"}
