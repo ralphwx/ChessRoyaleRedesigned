@@ -1,0 +1,21 @@
+/* Style for howto.js */
+.maintext {
+  margin-left: auto;
+  margin-right: auto;
+  width: 80vw;
+  overflow: scroll;
+}
+
+.goplaybutton {
+  margin-left: 25vw;
+  margin-right: auto;
+  width: 50vw;
+  height: 4rem;
+  background-color: lightblue;
+  font-size: 2rem;
+}
+
+.goplayhover {
+  background-color: darkblue;
+  color: white;
+}

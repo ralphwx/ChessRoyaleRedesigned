@@ -5,12 +5,14 @@ Currently working on:
 - Fix the screen white-out bug when game starts
 
 TODO:
+- Make sure other pop-ups don't cover login popup from lobby
 - Import how to play screen from original project
 - Disable chat for spectators
 - Disable buttons for spectators
 - Add tooltip for buttons on game display
 - Fix "cannot remove" error on backend for spectator mode
 - Add functionality for elo updates when games end
+- Clean up CSS!!!!
 - Add tests for things user screwing things up via JS console (eg, username
     or password) (I mean, technically that's cheating/hacking ...)
 - Add thread safety features to all data structures

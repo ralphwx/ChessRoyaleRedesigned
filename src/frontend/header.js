@@ -34,11 +34,13 @@ function loginTypeToString(username, loginType) {
 function HeaderRow(props) {
   let userbox_message = loginTypeToString(props.username, props.loginType);
   let userbox = <div></div>;
+  let logout_message = "Log in/Register";
+  if(props.loginType === LoginType.LOGIN) logout_message = "Log out";
   if(userbox_message.length > 0) {
     userbox = <div>
       {userbox_message}
       <br/>
-      <button id="logout" onClick={() => logout()}>Log out</button>
+      <button id="logout" onClick={() => logout()}>{logout_message}</button>
     </div>
   }
   return <div id="header_row">

@@ -134,7 +134,7 @@ function practiceLobby(props) {
       challengerElo={200}
       type={RowType.PRACTICE}
       opponent={undefined}
-      onClick={() => {console.log("practice 1")}}
+      onClick={() => {window.location.replace(URL + "/target_dummy")}}
     />,
     <LobbyRow
       key={"practice2"}
@@ -142,7 +142,7 @@ function practiceLobby(props) {
       challengerElo={500}
       type={RowType.PRACTICE}
       opponent={undefined}
-      onClick={() => {console.log("practice 2")}}
+      onClick={() => {window.location.replace(URL + "/angry_chicken")}}
     />,
     <LobbyRow
       key={"practice3"}
@@ -150,7 +150,7 @@ function practiceLobby(props) {
       challengerElo={900}
       type={RowType.PRACTICE}
       opponent={undefined}
-      onClick={() => {console.log("practice 3")}}
+      onClick={() => {window.location.replace(URL + "/mad_scientist")}}
     />,
   ];
   return output;

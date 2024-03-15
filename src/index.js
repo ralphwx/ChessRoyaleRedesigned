@@ -1,1 +1,1 @@
-import "./frontend/lobby.js";
+import "./frontend/mad_scientist.js";

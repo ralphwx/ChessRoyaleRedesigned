@@ -23,7 +23,10 @@ if l == 3:
 with open("./src/index.js", "w") as f:
     f.write("import \"./" + sys.argv[1] + "\";")
 
-os.system("npm run build")
+exit_code = os.system("npm run build")
+print("Exit code: ", exit_code)
+if exit_code != 0: sys.exit(exit_code)
+
 os.system("cp -r ./build/* ./main/" + outdir)
 
 with open("./main/" + outdir + "index.html") as f:

@@ -27,3 +27,4 @@ Tests for lobby.js
 - Check that spectator mode is not allowed for guest
 - Check that header displays correctly for both logged in and guest users
 - Check that the user redirects if in a game
+- Check that interacting with other buttons doesn't cover up login popup

@@ -38,4 +38,3 @@ These tests are to be performed by hand
   - check that smaller window and vertical window display correctly
 - Guest mechanics:
   - check that elo is hidden for guest
-  - check that offer rematch is not allowed for guest

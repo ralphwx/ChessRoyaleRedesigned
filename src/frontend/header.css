@@ -16,11 +16,8 @@
 }
 
 #logout {
-  max-width: 110px;
   max-height: 34px;
-  min-width: 75px;
   min-height: 28px;
-  width: 18vh;
   height: 4vh;
   font-size: max(1.7vh, 1rem);
   opacity: 0.7;

@@ -22,7 +22,7 @@ const resign_img = <img className="innerimg" src={resign} alt="?" />
  * Sub-component of GameDesktop
  */
 function InfoBar(props) {
-  if(props.elo !== undefined) {
+  if(props.elo) {
     return <div className={"info online"}>
       {props.user + " (" + props.elo + ")"}
     </div>
@@ -75,7 +75,7 @@ function computeElixirAmount(props, now) {
  * Renders the UserReady button
  */
 function UserReadyButton(props) {
-  if(props.gameOver && props.loginType === LoginType.LOGIN) {
+  if(props.gameOver) {
     if(props.userRematch) {
       return <HoverButton
         innerHTML={"Rematch offered"}
@@ -119,7 +119,7 @@ function UserReadyButton(props) {
  * Renders the opponent ready button
  */
 function OpponentReadyButton(props) {
-  if(props.gameOver && props.loginType === LoginType.LOGIN) {
+  if(props.gameOver) {
     if(props.opponentRematch) {
       return <button className={"ready online"}>{"Rematch offered"}</button>
     } else {
