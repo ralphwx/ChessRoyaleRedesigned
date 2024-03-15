@@ -1,25 +1,22 @@
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-import {Controller} from "./frontend/controller.mjs";
-import {GameModel} from "./frontend/game_model.mjs";
-import {connect} from "./frontend/metaauthclient.mjs";
-import {URL, LoginType, GameOverCause, Color} from "./data/enums.mjs";
-import {GameDesktop} from "./frontend/game_desktop.js";
-import {renderPopUp} from "./frontend/popup.js";
-import {Game} from "./frontend/game_screen.js";
+import {Controller} from "./controller.mjs";
+import {GameModel} from "./game_model.mjs";
+import {connect} from "./metaauthclient.mjs";
+import {URL, LoginType, GameOverCause, Color, Location} from "../data/enums.mjs";
+import {GameDesktop} from "./game_desktop.js";
+import {renderPopUp} from "./popup.js";
+import {Game} from "./game_screen.js";
 
-import "./frontend/index.css";
+import "./index.css";
 
-let user = "Guest#1";
-let psw = undefined;
-let loginType = LoginType.GUEST;
-//let user = "devralph1";
-//let psw = "password";
-//let loginType = LoginType.LOGIN;
+let user = localStorage.getItem("username");
+let psw = localStorage.getItem("password");
+let loginType = JSON.parse(localStorage.getItem("loginType"));
 
-if(loginType === undefined) {
-  //redirect
+if(!loginType) {
+  window.location.replace(URL);
 }
 
 connect(URL, user, psw, loginType, undefined, (socket) => {
@@ -27,8 +24,11 @@ connect(URL, user, psw, loginType, undefined, (socket) => {
     window.location.reload(true);
   });
   socket.notify("redirect?", {}, (meta, args) => {
-    if(args !== Location.GAME) {
-      //redirect
+    console.log("redirect to? ");
+    console.log(args);
+    console.log(args === Location.LOBBY);
+    if(args === Location.LOBBY) {
+      window.location.replace(URL);
     }
   });
   let user = socket.user;
@@ -38,5 +38,5 @@ connect(URL, user, psw, loginType, undefined, (socket) => {
   const root = ReactDOM.createRoot(document.getElementById("root"));
   root.render(view);
 }, (msg) => {
-  //redirect
+  window.location.replace(URL);
 });

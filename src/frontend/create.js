@@ -13,7 +13,7 @@ function handleCreate() {
     renderPopUp(<h2>{"Passwords must match"}</h2>, [{inner: "Okay,", 
       onClick: () => window.location.reload(true)}]);
   }
-  connect(URL, username, password, LoginType.LOGIN, undefined, (socket) => {
+  connect(URL, username, password, LoginType.CREATE, undefined, (socket) => {
     localStorage.setItem("username", username);
     localStorage.setItem("password", password);
     localStorage.setItem("loginType", JSON.stringify(LoginType.LOGIN));

@@ -5,6 +5,7 @@ import "./popup.css";
 import {Tabs} from "./tabs.js";
 import {HeaderRow} from "./header.js";
 import {renderPopUp} from "./popup.js";
+import {URL} from "../data/enums.mjs";
 
 const RowType = {
   NO_CHALLENGES: "empty",
@@ -89,6 +90,10 @@ function LobbyRow(props) {
   </div>
 }
 
+function goSpectate(user) {
+  window.location.replace(URL + "/spectate?user=" + user);
+}
+
 /** 
  * Renders a single row in the spectate lobby. Props is required to have props:
  *   - white (string): username of the player playing white
@@ -107,41 +112,17 @@ function SpectateRow(props) {
     <div className={"descriptor_left"}>
       <div className={"spectate_white"}></div>
       <div className={"descriptor_user_left"}
-        onClick={() => console.log("spectate white")}>{whiteDescription}</div>
+        onClick={() => goSpectate(props.white)}>{whiteDescription}</div>
       <div className={"action_white"}>Watch as white</div>
     </div>
     <div className={"descriptor_right"}>
       <div className="spectate_black"></div>
       <div className="descriptor_user_right"
-        onClick={() => console.log("spectate black")}>{blackDescription}</div>
+        onClick={() => goSpectate(props.black)}>{blackDescription}</div>
       <div className={"action_black"}>Watch as black</div>
     </div>
     <div className={"versus"}>VS</div>
   </div>
-//  return <div className={"roomli spectate_border"}>
-//    <div className={"descriptor"}>
-//      <div className={"challenger"}>
-//        {whiteDescription}
-//      </div>
-//      <div className={"subdescription"}>
-//        {blackDescription}
-//      </div>
-//    </div>
-//    <div className={"floater background"}>
-//      <div className={"spectate_white"}>
-//        <div className={"action"}
-//          onClick={() => console.log("spectate white")}>
-//            Watch {props.white}
-//        </div>
-//      </div>
-//      <div className={"spectate_black"}>
-//        <div className={"action"}
-//          onClick={() => console.log("spectate black")}>
-//            Watch {props.black}
-//        </div>
-//      </div>
-//    </div>
-//  </div>
 }
 
 function practiceLobby(props) {

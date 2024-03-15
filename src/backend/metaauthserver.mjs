@@ -151,11 +151,15 @@ class MetaAuthServer {
             }
             ack(true, user, times);
           } else {
+            if(!password) {
+              ack(false, "Unfortunately, spectator mode is currently unsupported for guest users. Please accept the developers' apologies.");
+              return;
+            }
             if(!this.users.userExists(username)) {
               ack(false, "User '" + username + "' does not exist");
               return;
             }
-            ack(false, "Incorrect password");
+            ack(false, "Authentication error");
           }
         } else {
           this.receivedBadRequest("login", {serverReceiveTime: receiveTime},

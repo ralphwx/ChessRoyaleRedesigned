@@ -1,7 +1,7 @@
 
 import {OptionalPair, SquareType} from "./view_enums.mjs";
 import {ChessBitMap, ChessMap} from "../data/maps.mjs";
-import {MoveType, colorOf, Color, Piece, ELIXIR, DELAY} from "../data/enums.mjs";
+import {MoveType, colorOf, Color, Piece, ELIXIR, DELAY, URL} from "../data/enums.mjs";
 import {ChessBoard} from "../data/chess.mjs";
 
 function isPlausibleMove(board, iRow, iCol, fRow, fCol) {
@@ -171,7 +171,7 @@ class Controller {
       abort: () => {this.model.abort()},
       resign: () => {this.model.resign()},
       draw: () => {this.model.offerDraw()},
-      exit: () => {console.log("redirect")},
+      exit: () => {window.location.replace(URL)},
       offerRematch: () => {this.model.offerRematch()},
       cancelRematch: () => {this.model.cancelRematch()},
       onReady: () => {this.model.declareReady()},

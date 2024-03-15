@@ -61,7 +61,7 @@ class Lobby extends React.Component {
       createPrivateChallenge={(opponent) => 
         handleCreatePrivateChallenge(this.socket, opponent)}
       cancelChallenge={() => handleCancelChallenge(this.socket)}
-      acceptChallenge={(opponent) => handleAcceptChallenge(this.socket)}
+      acceptChallenge={(opponent) => handleAcceptChallenge(this.socket, opponent)}
     />
   }
 }
@@ -139,6 +139,17 @@ function requestAuthentication() {
 const root = ReactDOM.createRoot(document.getElementById("root"));
 if(loginType !== null) {
   connect(URL, username, password, loginType, undefined, (socket) => {
+    socket.addEventHandler("joined", (meta, args) => {
+      window.location.replace(URL + "/game");
+    });
+    socket.addEventHandler("started", (meta, args) => {
+      window.location.replace(URL + "/game");
+    });
+    socket.notify("redirect?", (meta, args) => {
+      if(args === Location.GAME) {
+        window.location.replace(URL + "/game");
+      }
+    });
     root.render(<Lobby user={username} loginType={loginType} socket={socket} />);
   }, (msg) => {
     requestAuthentication();

@@ -111,13 +111,14 @@ authserver.addEventHandler("redirect?", (meta, args, ack) => {
 
 /**
  * Returns a user's profile info. [args] be an object with a property [user].
- * Currently, [ack] returns an object with the property [elo], but more
+ * Currently, [ack] returns an object with the properties [elo] and [inGame], 
+ * but more
  * properties may be added later. If the user does not exist, then an empty
  * object is returned.
  */
 authserver.addEventHandler("getUserInfo", (meta, args, ack) => {
   if(users.userExists(args.user)) {
-    ack({elo: users.getElo(args.user)});
+    ack({elo: users.getElo(args.user), inGame: userslobby.isInGame(user)});
   } else {
     ack({});
   }

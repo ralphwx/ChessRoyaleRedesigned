@@ -10,6 +10,7 @@ These tests are to be performed by hand
 - moves without elixir --> premove
 - moves while motion sick --> premove
 - elixir bar animation works correctly
+- elixir bar animation works correctly cross-platform
 - arrow animations work correctly
 - chat messages send
 - chat messages render

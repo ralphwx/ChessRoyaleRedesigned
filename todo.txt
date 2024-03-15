@@ -2,15 +2,21 @@
 Currently working on:
 - Fill in missing links (integration time!)
 - Import GameMobile view from original project
+- write tests for lobby.js
+- write tests for login.js and create.js
 
 TODO:
-- Add sound effects and game start animation
+
+- Import how to play screen from original project
+- Fix the screen white-out bug when game starts
+- Fix "user is not in game" bug when spectating
+- Fix "cannot remove" error on backend for spectator mode
+- Add functionality for elo updates when games end
 - Add tests for things user screwing things up via JS console (eg, username
     or password) (I mean, technically that's cheating/hacking ...)
 - Add thread safety features to all data structures
 - Ensure "Offer rematch" button is not available for guest user
 - Implement a settings screen
-- Hyperlink the chess royale logo in the header
 - Make a proper test server for testing code ...
 - Add a list of tasks for sending code to production
 - Write tests for spectator mode functionality (where user is requesting
@@ -20,7 +26,7 @@ TODO:
 Tasks for interns if I ever get any:
 - Improve the bots and write bot benchmarks
 - Make arrows size adapt to window size
-- Add functionality for elo updates when games end
+- Add sound effects and game start animation
 - Attempt to hack my server, as is. Make a test suite of attempted hacks
 - Make the rules of the game page look pretty, include diagrams, etc. Add fair
   play rules to "how to play" page

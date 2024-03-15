@@ -1,1 +1,1 @@
-import "./frontend/create.js";
+import "./frontend/lobby.js";
