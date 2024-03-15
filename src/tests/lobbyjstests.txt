@@ -1,0 +1,26 @@
+
+Tests for lobby.js
+
+- Login popup when not logged in
+  - Check that logging in normally works
+  - Test logging in with incorrect username
+  - Test logging in with incorrect password
+  - Test log in as guest
+  - Test that logging in as guest is not polluted by username/password
+  - Test "create account option"
+- Check that lobby starts out empty
+- Check that create open challenge shows up on your own device
+- Check that other people's create open challenge shows up
+- Test create private challenge
+  - with invalid username
+  - with incorrect username
+  - with a guest username
+  - as a guest (should not be allowed)
+  - normal case shows up correctly for both players
+- Test how to play link
+- Test practice bots links
+- Test that games in progress show up in spectators tab
+- Test spectator link
+- Check that spectator mode is not allowed for guest
+- Check that header displays correctly for both logged in and guest users
+- Check that the user redirects if in a game

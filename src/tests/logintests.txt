@@ -1,0 +1,14 @@
+
+Tests for login.js:
+- Test logging in normally
+- Test logging in with incorrect username
+- Test logging in with incorrect password
+- Test "play as guest"
+- Test "Create account"
+
+Tests for create.js:
+- Test normal account creation
+- Test creating an account that already exists
+- Test password mismatch
+- Test "Log in"
+- Test "play as guest"

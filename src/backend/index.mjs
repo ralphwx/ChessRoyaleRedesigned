@@ -118,7 +118,7 @@ authserver.addEventHandler("redirect?", (meta, args, ack) => {
  */
 authserver.addEventHandler("getUserInfo", (meta, args, ack) => {
   if(users.userExists(args.user)) {
-    ack({elo: users.getElo(args.user), inGame: userslobby.isInGame(user)});
+    ack({elo: users.getElo(args.user), inGame: userslobby.isInGame(args.user)});
   } else {
     ack({});
   }
