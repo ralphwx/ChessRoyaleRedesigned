@@ -401,6 +401,19 @@
   margin-right: auto;
 }
 
+.button_row {
+  width: 50%;
+  min-width: min(28rem, 90vh);
+  max-width: 750px;
+  height: max(3.5vw, 3.5rem);
+  display: flex;
+  background-color: #bbbe;
+  margin-right: auto;
+  margin-left: auto;
+  border: 3px solid #bbbe;
+  flex-wrap: wrap;
+}
+
 .spectate_border {
   border-color: gray;
 }

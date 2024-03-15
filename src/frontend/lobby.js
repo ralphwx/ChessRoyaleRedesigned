@@ -10,6 +10,26 @@ let username = window.localStorage.getItem("username");
 let password = window.localStorage.getItem("password");
 let loginType = JSON.parse(window.localStorage.getItem("loginType"));
 
+function handleCreateOpenChallenge(socket) {
+  socket.notify("createOpenChallenge", {}, (meta, args) => {});
+}
+
+function handleCreatePrivateChallenge(socket, opponent) {
+  socket.notify("createPrivateChallenge", opponent, (meta, args) => {
+    if(!args.result) {
+      renderPopUp(<h3>{args.message}</h3>, [{inner:"Okay", onClick:() => {}}]);
+    }
+  });
+}
+
+function handleCancelChallenge(socket) {
+  socket.notify("cancelChallenge", {}, (meta, args) => {});
+}
+
+function handleAcceptChallenge(socket, opponent) {
+  socket.notify("acceptChallenge", opponent, () => {});
+}
+
 class Lobby extends React.Component {
   constructor(props) {
     super(props);
@@ -37,6 +57,11 @@ class Lobby extends React.Component {
       userElo={this.state.userElo}
       data={this.state.data}
       loginType={this.loginType}
+      createOpenChallenge={() => handleCreateOpenChallenge(this.socket)}
+      createPrivateChallenge={(opponent) => 
+        handleCreatePrivateChallenge(this.socket, opponent)}
+      cancelChallenge={() => handleCancelChallenge(this.socket)}
+      acceptChallenge={(opponent) => handleAcceptChallenge(this.socket)}
     />
   }
 }

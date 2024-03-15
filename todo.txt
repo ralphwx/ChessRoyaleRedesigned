@@ -1,7 +1,6 @@
 
 Currently working on:
-- Connect lobby display with server request
-- Import build script and fill in missing links (integration time!)
+- Fill in missing links (integration time!)
 - Import GameMobile view from original project
 
 TODO:

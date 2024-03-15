@@ -1,8 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
+import "./popup.css";
 import {Tabs} from "./tabs.js";
 import {HeaderRow} from "./header.js";
+import {renderPopUp} from "./popup.js";
 
 const RowType = {
   NO_CHALLENGES: "empty",
@@ -247,6 +249,27 @@ function spectateLobby(props) {
     />})
 }
 
+function PrivateChallengePopUp(props) {
+  return <div>
+    <h3>Who would you like to challenge?</h3>
+    <input className="text_input" type="text" id="opponent-input" />
+    <br />
+  </div>
+}
+
+function handlePrivateChallenge(createPrivateChallenge) {
+  renderPopUp(<PrivateChallengePopUp />, [{
+    inner: "Send challenge!",
+    onClick: () => {
+      let username = document.querySelector("#opponent-input").value;
+      createPrivateChallenge(username);
+    }
+  }, {
+    inner: "Cancel",
+    onClick: () => {},
+  }]);
+}
+
 /** 
  * Lobby screen display. Props is required to have props:
  *   - user (string): the user's username.
@@ -278,6 +301,19 @@ function LobbyDisplay(props) {
     <HeaderRow username={props.user} loginType={props.loginType} />
     <div className={"main_display"}>
       <Tabs labels={labels} windows={windows} />
+    </div>
+    <div className={"button_row"}>
+      <button className={"optionbutton"} onClick={props.createOpenChallenge}>
+        Create open challenge
+      </button>
+      <button className={"optionbutton"} 
+        onClick={() => {handlePrivateChallenge(props.createPrivateChallenge)}}>
+        Create private challenge
+      </button>
+      <button className={"optionbutton"}
+        onClick={() => {window.location.replace(URL + "/howto")}}>
+        How to play
+      </button>
     </div>
   </div>
 }
