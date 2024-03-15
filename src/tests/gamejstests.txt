@@ -19,6 +19,7 @@ These tests are to be performed by hand
 - tooltips show up on buttons
 - test rematch and draw offer
 - Test resign, abort, return to lobby
+- No draw offer before or after the game, only during
 - Mouse mechanics:
   - click + click movement
   - click + drag movement
@@ -30,7 +31,6 @@ These tests are to be performed by hand
   - right-click toggles highlights and arrows
   - arrows don't absorb mouse input
   - premove is allowed only for "plausible" moves
-  - 
 - Window mechanics:
   - loading in the middle of a game
   - multiple windows are synchronized (moves + elixir + delay highlight + chat)

@@ -182,7 +182,7 @@
   font-size: 1.5rem;
 }
 
-.drawhover {
+.draw:hover {
   background-color: #669922;
   color: #eee;
 }
@@ -192,7 +192,7 @@
   margin-right: 5%;
 }
 
-.resignhover {
+.resign:hover {
   background-color: #ee5511;
   color: #eee;
 }

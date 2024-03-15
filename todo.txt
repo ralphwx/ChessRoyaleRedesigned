@@ -1,22 +1,17 @@
 
 Currently working on:
-- Fill in missing links (integration time!)
 - Import GameMobile view from original project
-- Fix the screen white-out bug when game starts
+- Make elixir bar and delay take lag into account
 
 TODO:
-- Make sure other pop-ups don't cover login popup from lobby
-- Import how to play screen from original project
 - Disable chat for spectators
 - Disable buttons for spectators
-- Add tooltip for buttons on game display
 - Fix "cannot remove" error on backend for spectator mode
 - Add functionality for elo updates when games end
 - Clean up CSS!!!!
 - Add tests for things user screwing things up via JS console (eg, username
     or password) (I mean, technically that's cheating/hacking ...)
 - Add thread safety features to all data structures
-- Ensure "Offer rematch" button is not available for guest user
 - Implement a settings screen
 - Make a proper test server for testing code ...
 - Add a list of tasks for sending code to production

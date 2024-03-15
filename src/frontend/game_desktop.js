@@ -61,7 +61,12 @@ function getBoardProps(props, now) {
  * Helper function
  */
 function computeElixirAmount(props, now) {
-  if(!props.userReady || !props.opponentReady || props.gameOver) return 0;
+  if(!props.gamedata 
+    || !props.userReady 
+    || !props.opponentReady 
+    || props.gameOver) {
+    return 0;
+  }
   if(props.color === Color.WHITE) {
     return (now - props.gamedata.history.head.wStart) / ELIXIR;
   }
@@ -138,13 +143,13 @@ function OpponentReadyButton(props) {
  * Renders the lower left button on the user's control panel
  */
 function LowerLeftControl(props) {
-  return <HoverButton
-    innerHTML={"1/2"}
-    innerHTMLHover={"1/2"}
-    className={"controlbutton draw"}
-    classNameHover={"controlbutton draw drawhover"}
+  return <button 
+    className={"controlbutton draw"} 
     onClick={props.draw}
-  />
+    title={"Offer/Accept draw"}
+  >
+    1/2
+  </button>
 }
 
 /**
@@ -152,30 +157,27 @@ function LowerLeftControl(props) {
  */
 function LowerRightControl(props) {
   if(props.gameOver) {
-    return <HoverButton
-      innerHTML={exit_img}
-      innerHTMLHover={exit_img}
-      className={"controlbutton resign"}
-      classNameHover={"controlbutton resign resignhover"}
+    return <button 
+      className={"controlbutton resign"} 
       onClick={props.exit}
-    />
+      title={"Return to Lobby"}>
+      {exit_img}
+    </button>
   }
   if(props.userReady && props.opponentReady) {
-    return <HoverButton
-      innerHTML={resign_img}
-      innerHTMLHover={resign_img}
-      className={"controlbutton resign"}
-      classNameHover={"controlbutton resign resignhover"}
+    return <button 
+      className={"controlbutton resign"} 
       onClick={props.resign}
-    />
+      title={"Resign"}>
+      {resign_img}
+    </button>
   }
-  return <HoverButton
-    innerHTML={abort_img}
-    innerHTMLHover={abort_img}
-    className={"controlbutton resign"}
-    classNameHover={"controlbutton resign resignhover"}
+  return <button 
+    className={"controlbutton resign"} 
     onClick={props.abort}
-  />
+    title={"Abort"}>
+    {abort_img}
+  </button>
 }
 
 /**

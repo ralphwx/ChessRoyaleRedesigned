@@ -138,6 +138,8 @@ class ServerGame {
    * Records a draw offer from [user].
    */
   drawOffer(user) {
+    if(!this.wready || !this.bready) return;
+    if(this.gameOver) return;
     if(this.white === user && !this.wdraw) this.wdraw = true;
     else if(this.black === user && !this.bdraw) this.bdraw = true;
     else return;
