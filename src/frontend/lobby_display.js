@@ -239,11 +239,14 @@ function PrivateChallengePopUp(props) {
 }
 
 function handlePrivateChallenge(props) {
-  if(props.loginType !== LoginType.LOGIN) {
+  if(props.loginType === LoginType.GUEST) {
     renderPopUp(<h2>Private challenges are for logged in users only</h2>, [{
       inner: "Okay",
       onClick: () => {},
     }]);
+    return;
+  }
+  if(props.loginType !== LoginType.LOGIN) {
     return;
   }
   renderPopUp(<PrivateChallengePopUp />, [{
