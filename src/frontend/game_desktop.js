@@ -218,9 +218,11 @@ function LowerRightControl(props) {
  *   - cancelRematch: a function to call when the user tries to cancel a
  *     rematch
  *   - onReady: a function to call when the user declares ready
+ *   - lagMax: the best overestimate of local time minus server time
  */
 function GameDesktop(props) {
-  let now = Date.now();
+  let lag = props.lagMax ? props.lagMax : 0;
+  let now = Date.now() - lag;
   let boardProps = getBoardProps(props, now);
   let boardview = <BoardView
     color={props.color}

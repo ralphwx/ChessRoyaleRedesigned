@@ -41,7 +41,7 @@ const BOARD_HISTORY_START = HTList.cons(ChessBoard.startingPosition(),
 class GameState {
   static initial(startTime) {
     return new GameState(startTime, startTime, startTime, 
-      ImChessMap.fromDefault(startTime - DELAY), HTList.NIL, BOARD_HISTORY_START);
+      ImChessMap.fromDefault(startTime - 2 * DELAY), HTList.NIL, BOARD_HISTORY_START);
   }
   constructor(start, wstart, bstart, delay, moveHistory, boardHistory) {
     this.currentTime = start;

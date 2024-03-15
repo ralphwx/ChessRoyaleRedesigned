@@ -24,16 +24,13 @@ connect(URL, user, psw, loginType, undefined, (socket) => {
     window.location.reload(true);
   });
   socket.notify("redirect?", {}, (meta, args) => {
-    console.log("redirect to? ");
-    console.log(args);
-    console.log(args === Location.LOBBY);
     if(args === Location.LOBBY) {
       window.location.replace(URL);
     }
   });
   let user = socket.user;
   let model = new GameModel(user, socket);
-  let controller = new Controller(model, user, loginType);
+  let controller = new Controller(model, user, loginType, socket.lagEstimator);
   let view = <Game controller={controller} />
   const root = ReactDOM.createRoot(document.getElementById("root"));
   root.render(view);

@@ -3,6 +3,8 @@ import {OptionalPair, SquareType} from "./view_enums.mjs";
 import {ChessBitMap, ChessMap} from "../data/maps.mjs";
 import {MoveType, colorOf, Color, Piece, ELIXIR, DELAY, URL} from "../data/enums.mjs";
 import {ChessBoard} from "../data/chess.mjs";
+import {LagEstimator} from "../data/lag_estimator.mjs";
+
 
 function isPlausibleMove(board, iRow, iCol, fRow, fCol) {
   let dr = fRow - iRow;
@@ -41,7 +43,7 @@ function isPlausibleMove(board, iRow, iCol, fRow, fCol) {
  * requests to the server.
  */
 class Controller {
-  constructor(model, user, loginType) {
+  constructor(model, user, loginType, lagEstimator) {
     this.user = user;
     this.model = model;
     this.loginType = loginType;
@@ -66,6 +68,12 @@ class Controller {
     if(this.premoveThread) clearTimeout(this.premoveThread);
     this.premoveThread = undefined;
     this.listeners = [];
+    this.lagEstimator = lagEstimator;
+    if(!lagEstimator) {
+      this.lagEstimator = new LagEstimator();
+      this.lagEstimator.min = 0;
+      this.lagEstimator.max = 0;
+    }
   }
   /**
    * [listener] should be an object with the same signature as the input to
@@ -175,6 +183,7 @@ class Controller {
       offerRematch: () => {this.model.offerRematch()},
       cancelRematch: () => {this.model.cancelRematch()},
       onReady: () => {this.model.declareReady()},
+      lagMax: this.lagEstimator.get_max(),
     };
   }
   onMouseDown(r, c, x, y, b) {
@@ -251,7 +260,7 @@ class Controller {
   attemptMove(iRow, iCol, fRow, fCol) {
     let gamedata = this.model.getGameData();
     if(gamedata === undefined) return;
-    let now = Date.now();
+    let now = Date.now() - this.lagEstimator.get_min();
     let gamestate = gamedata.history.head;
     this.viewState.premoveSrc = OptionalPair.NONE;
     this.viewState.premoveDest = OptionalPair.NONE;
