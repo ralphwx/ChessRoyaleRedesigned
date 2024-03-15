@@ -1,11 +1,8 @@
 
 Currently working on:
 - Import GameMobile view from original project
-- Make elixir bar and delay take lag into account
 
 TODO:
-- Disable chat for spectators
-- Disable buttons for spectators
 - Fix "cannot remove" error on backend for spectator mode
 - Add functionality for elo updates when games end
 - Clean up CSS!!!!

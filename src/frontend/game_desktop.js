@@ -143,6 +143,7 @@ function OpponentReadyButton(props) {
  * Renders the lower left button on the user's control panel
  */
 function LowerLeftControl(props) {
+  if(props.loginType === LoginType.SPECTATE) return <div></div>
   return <button 
     className={"controlbutton draw"} 
     onClick={props.draw}
@@ -156,7 +157,7 @@ function LowerLeftControl(props) {
  * Renders the lower right button the user's control panel
  */
 function LowerRightControl(props) {
-  if(props.gameOver) {
+  if(props.loginType === LoginType.SPECTATE || props.gameOver) {
     return <button 
       className={"controlbutton resign"} 
       onClick={props.exit}
@@ -253,7 +254,11 @@ function GameDesktop(props) {
         <InfoBar user={props.opponent} elo={props.opponentElo} />
         <OpponentReadyButton {...props} />
         <div>
-          <ChatBox messages={props.chat} sendMessage={props.sendMessage} />
+          <ChatBox 
+            messages={props.chat} 
+            sendMessage={props.sendMessage} 
+            loginType={props.loginType}
+          />
         </div>
         <UserReadyButton {...props}/>
         <InfoBar user={props.user} elo={props.userElo} />
