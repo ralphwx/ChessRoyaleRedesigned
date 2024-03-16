@@ -180,7 +180,7 @@ class Controller {
       resign: () => {this.model.resign()},
       draw: () => {this.model.offerDraw()},
       exit: () => {window.location.replace(URL)},
-      offerRematch: () => {this.model.offerRematch()},
+      offerRematch: () => {console.log("rematch"); this.model.offerRematch()},
       cancelRematch: () => {this.model.cancelRematch()},
       onReady: () => {this.model.declareReady()},
       lagMax: this.lagEstimator.get_max(),

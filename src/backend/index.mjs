@@ -63,6 +63,19 @@ let handleMetaUpdate = (users_list, data) => {
 };
 
 let handleGameOver = (users_list, data) => {
+  if(users.userExists(users_list[0])) {
+    let game = userslobby.getGame(users_list[0]);
+    let welo = users.getElo(game.white);
+    let belo = users.getElo(game.black);
+    if(data.gameOverResult === Color.WHITE) {
+      users.recordWin(game.white, belo);
+      users.recordLoss(game.black, welo);
+    }
+    if(data.gameOverResult === Color.BLACK) {
+      users.recordWin(game.black, welo);
+      users.recordLoss(game.white, belo);
+    }
+  }
   for(let user of users_list) {
     authserver.notify(user, "gameOver", {data: data});
   }

@@ -2,6 +2,17 @@
 import {GameData} from "../data/gamedata.mjs";
 
 /**
+ * Takes a list of {user, elo} objects and determines whether any of them
+ * have user: [target]
+ */
+function containsUser(challengeList, target) {
+  for(let {user, elo} of challengeList) {
+    if(user === target) return true;
+  }
+  return false;
+}
+
+/**
  * Client side object that interacts with the server and keeps track of the
  * game state and metadata. Calling classes can use this objects properties
  * directly, as long as they are not modified.
@@ -131,8 +142,8 @@ class GameModel {
     let opponent = this.metadata.white === this.user ? this.metadata.black
       : this.metadata.white;
     this.socket.notify("lobbyData", {}, (meta, args) => {
-      let opponentRematch = args.incoming.includes(opponent);
-      let userRematch = args.outgoing.includes(opponent);
+      let opponentRematch = containsUser(args.incoming, opponent);
+      let userRematch = containsUser(args.outgoing, opponent);
       let notifyListeners = this.opponentRematch !== opponentRematch
         || this.userRematch !== userRematch;
       this.opponentRematch = opponentRematch;

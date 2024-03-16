@@ -25,7 +25,7 @@ with open("./src/index.js", "w") as f:
 
 exit_code = os.system("npm run build")
 print("Exit code: ", exit_code)
-if exit_code != 0: sys.exit(exit_code)
+if exit_code != 0: exit(1)
 
 os.system("cp -r ./build/* ./main/" + outdir)
 
