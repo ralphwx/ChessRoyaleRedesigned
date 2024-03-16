@@ -72,9 +72,14 @@
   height: 64vmin;
 }
 
+.chessboardvert {
+  width: 90vmin;
+  height: 90vmin;
+}
+
 .innerimg {
   width: calc(100% - 6px);
-  height: calc(100% - 6px);
+  height: calc(100% - 2px);
   margin-left: 3px;
   margin-right: 3px;
   margin-top: 1px;
@@ -98,6 +103,13 @@
 .resourcebar {
   width: 64vmin;
   height: 6.4vmin;
+  display: flex;
+  background-color: rgba(0, 0, 255, 0.2);
+}
+
+.resourcebarvert {
+  width: 90vmin;
+  height: 9vmin;
   display: flex;
   background-color: rgba(0, 0, 255, 0.2);
 }
@@ -129,6 +141,15 @@
   font-size: 1rem;
 }
 
+.infovert {
+  height: 2rem;
+  font-size: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  display: flex;
+  align-items: center;
+}
+
 .online {
   background-color: #ccebc5;
 }
@@ -145,6 +166,18 @@
   font-size: 1.5rem;
 }
 
+.readyvert {
+  height: 2rem;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-left: auto;
+  min-width: 7.5rem;
+}
+
 .console {
   width: 88%;
   height: calc(58.4vmin - 17.5rem);
@@ -158,6 +191,13 @@
   text-align: left;
   color: #555;
   overflow: auto;
+}
+
+.consolevert {
+  margin-left: auto;
+  margin-right: auto;
+  width: 90vmin;
+  background-color: lightgray;
 }
 
 .consoleinner {
@@ -179,6 +219,9 @@
 
 .draw {
   margin-left: 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 1.5rem;
 }
 
@@ -203,11 +246,13 @@
   margin-top: 1%;
   margin-bottom: 1%;
   position: relative;
+  display: flex;
 }
 
 .ctrlRow {
   width: 90vmin;
   height: 4rem;
+  display: flex;
 }
 
 .chat_input {

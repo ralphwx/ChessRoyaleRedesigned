@@ -34,7 +34,7 @@ function InfoBar(props) {
 
 /**
  * Helper function for rendering the board. Returns
- * {board, delay, squareType, moveArrows}
+ * {board, delay, moveArrows}
  */
 function getBoardProps(props, now) {
   if(!props.gamedata || !props.userReady || !props.opponentReady) {
@@ -243,7 +243,7 @@ function GameDesktop(props) {
     <div className="gamecontainer">
       <div>
         {boardview}
-        <div className={"resourcebar"}>
+        <div className="resourcebar">
           <ResourceBar 
             amount={elixirAmount}
             animate={props.userReady && props.opponentReady && !props.gameOver}
@@ -262,7 +262,7 @@ function GameDesktop(props) {
         </div>
         <UserReadyButton {...props}/>
         <InfoBar user={props.user} elo={props.userElo} />
-        <div className={"gamectrl"}>
+        <div className="gamectrl">
           <LowerLeftControl {...props} />
           <LowerRightControl {...props} />
         </div>

@@ -1,11 +1,11 @@
 
 Currently working on:
-- Import GameMobile view from original project
+- Make the rules of the game page look pretty, include diagrams, etc. Add fair
+  play rules to "how to play" page
 
 TODO:
 - Fix "cannot remove" error on backend for spectator mode
 - Add functionality for elo updates when games end
-- Clean up CSS!!!!
 - Add tests for things user screwing things up via JS console (eg, username
     or password) (I mean, technically that's cheating/hacking ...)
 - Add thread safety features to all data structures
@@ -14,6 +14,8 @@ TODO:
 - Add a list of tasks for sending code to production
 - Write tests for spectator mode functionality (where user is requesting
   game data corresponding to other users)
+- Make chat auto scroll down
+- Make game info bar reflect whether the opponent is online
 - learn SQL?
 
 Tasks for interns if I ever get any:
@@ -21,7 +23,5 @@ Tasks for interns if I ever get any:
 - Make arrows size adapt to window size
 - Add sound effects and game start animation
 - Attempt to hack my server, as is. Make a test suite of attempted hacks
-- Make the rules of the game page look pretty, include diagrams, etc. Add fair
-  play rules to "how to play" page
 - Implement countdown circle for move cooldown
 - Change elixir bar opacity display to opacity + width

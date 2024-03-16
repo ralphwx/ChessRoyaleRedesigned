@@ -77,6 +77,7 @@ const MoveType = {
  */
 //var URL = "https://royalechess.org";
 const URL = "http://localhost:8080";
+//const URL = "http://10.49.78.179:8080";
 
 /**
  * Some gameplay constants

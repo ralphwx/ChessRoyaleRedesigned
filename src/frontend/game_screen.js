@@ -3,10 +3,12 @@ import React from "react";
 import {Controller} from "./controller.mjs";
 import {URL, LoginType, GameOverCause, Color} from "../data/enums.mjs";
 import {GameDesktop} from "./game_desktop.js";
+import {GameMobile} from "./game_mobile.js";
+
 import {renderPopUp} from "./popup.js";
+import {DynamicDisplay} from "./dynamicdisplay.js";
 
 import "./index.css";
-
 
 function getMessage(result, cause) {
   if(cause === GameOverCause.ABORT) {
@@ -69,7 +71,11 @@ class Game extends React.Component {
     });
   }
   render() {
-    return <GameDesktop {...this.state} />
+    return <DynamicDisplay
+      innerHTMLHorizontal={<GameDesktop {...this.state} />}
+      innerHTMLVertical={<GameMobile {...this.state} />}
+      ratio={0.7}
+    />
   }
 }
 

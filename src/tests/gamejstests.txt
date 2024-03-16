@@ -20,6 +20,7 @@ These tests are to be performed by hand
 - test rematch and draw offer
 - Test resign, abort, return to lobby
 - No draw offer before or after the game, only during
+- Check that whether a user is online is reflected in the info bar
 - Mouse mechanics:
   - click + click movement
   - click + drag movement
@@ -38,3 +39,4 @@ These tests are to be performed by hand
   - check that smaller window and vertical window display correctly
 - Guest mechanics:
   - check that elo is hidden for guest
+  - check that rematch offers work for guest

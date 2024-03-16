@@ -164,25 +164,27 @@ function playersLobby(props) {
   let data = props.data;
   if(!data) return [<LobbyRow key={"#loading"} type={RowType.LOADING} />];
   let priority_list = [];
-  for(let {user, elo} of data.outgoing) {
-    priority_list.push(<LobbyRow
-      key={user + RowType.OUTGOING_PRIVATE}
-      challenger={props.user}
-      challengerElo={props.userElo}
-      type={RowType.OUTGOING_PRIVATE}
-      opponent={user}
-      onClick={() => props.cancelChallenge()}
-    />);
-  }
-  for(let {user, elo} of data.incoming) {
-    priority_list.push(<LobbyRow
-      key={user + RowType.INCOMING_PRIVATE}
-      challenger={user}
-      challengerElo={elo}
-      type={RowType.INCOMING_PRIVATE}
-      opponent={props.user}
-      onClick={() => props.acceptChallenge(user)}
-    />);
+  if(props.loginType === LoginType.LOGIN) {
+    for(let {user, elo} of data.outgoing) {
+      priority_list.push(<LobbyRow
+        key={user + RowType.OUTGOING_PRIVATE}
+        challenger={props.user}
+        challengerElo={props.userElo}
+        type={RowType.OUTGOING_PRIVATE}
+        opponent={user}
+        onClick={() => props.cancelChallenge()}
+      />);
+    }
+    for(let {user, elo} of data.incoming) {
+      priority_list.push(<LobbyRow
+        key={user + RowType.INCOMING_PRIVATE}
+        challenger={user}
+        challengerElo={elo}
+        type={RowType.INCOMING_PRIVATE}
+        opponent={props.user}
+        onClick={() => props.acceptChallenge(user)}
+      />);
+    }
   }
   let open_list = [];
   for(let {user, elo} of data.open) {

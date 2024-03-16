@@ -145,9 +145,12 @@ authserver.addEventHandler("createOpenChallenge", (meta, args, ack) => {
  */
 authserver.addEventHandler("createPrivateChallenge", (meta, args, ack) => {
   if(meta.isGuest) {
+    guestlobby.makePrivateChallenge(meta.user, args);
+    if(guestlobby.outgoingChallenges(args).includes(meta.user)) {
+      guestlobby.attemptJoin(meta.user, args);
+    }
     ack({
-      result: false,
-      message: "Guest users may not send private challenges",
+      result: true,
     });
   } else if(!users.userExists(args)) {
     ack({

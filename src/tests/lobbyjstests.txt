@@ -20,6 +20,8 @@ Tests for lobby.js
   - with a guest username
   - as a guest (should not be allowed)
   - normal case shows up correctly for both players
+  - Test that private challenges (from rematch offers) show up for logged in
+    users but not guests
 - Test how to play link
 - Test practice bots links
 - Test that games in progress show up in spectators tab
