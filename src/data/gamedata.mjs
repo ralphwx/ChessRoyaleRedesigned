@@ -1,4 +1,3 @@
-import {List} from "immutable";
 import {HTList} from "./htlist.mjs";
 import {ImChessMap} from "./maps.mjs";
 import {ChessBoard} from "./chess.mjs";

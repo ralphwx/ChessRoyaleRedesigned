@@ -4,9 +4,7 @@ import ReactDOM from "react-dom/client";
 import {Controller} from "./controller.mjs";
 import {GameModel} from "./game_model.mjs";
 import {connect} from "./metaauthclient.mjs";
-import {URL, LoginType, GameOverCause, Color, Location} from "../data/enums.mjs";
-import {GameDesktop} from "./game_desktop.js";
-import {renderPopUp} from "./popup.js";
+import {URL, Location} from "../data/enums.mjs";
 import {Game} from "./game_screen.js";
 
 import "./index.css";

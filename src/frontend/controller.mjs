@@ -1,7 +1,7 @@
 
 import {OptionalPair, SquareType} from "./view_enums.mjs";
 import {ChessBitMap, ChessMap} from "../data/maps.mjs";
-import {MoveType, colorOf, Color, Piece, ELIXIR, DELAY, URL} from "../data/enums.mjs";
+import {colorOf, Color, Piece, ELIXIR, DELAY, URL} from "../data/enums.mjs";
 import {ChessBoard} from "../data/chess.mjs";
 import {LagEstimator} from "../data/lag_estimator.mjs";
 

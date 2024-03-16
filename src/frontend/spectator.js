@@ -4,7 +4,6 @@ import ReactDOM from "react-dom/client";
 import {SpectatorController} from "./spectator_controller.mjs";
 import {GameModel} from "./game_model.mjs";
 import {connect} from "./metaauthclient.mjs";
-import {GameDesktop} from "./game_desktop.js";
 import {Game} from "./game_screen.js";
 import {LoginType, URL} from "../data/enums.mjs";
 import {renderPopUp} from "./popup.js";

@@ -198,6 +198,7 @@
   margin-right: auto;
   width: 90vmin;
   background-color: lightgray;
+  overflow: auto;
 }
 
 .consoleinner {

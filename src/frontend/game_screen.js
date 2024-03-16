@@ -1,7 +1,6 @@
 
 import React from "react";
-import {Controller} from "./controller.mjs";
-import {URL, LoginType, GameOverCause, Color} from "../data/enums.mjs";
+import {GameOverCause, Color} from "../data/enums.mjs";
 import {GameDesktop} from "./game_desktop.js";
 import {GameMobile} from "./game_mobile.js";
 

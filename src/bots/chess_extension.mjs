@@ -1,4 +1,3 @@
-import {ChessBoard} from "../data/chess.mjs";
 import {ChessMap} from "../data/maps.mjs";
 import {Color, colorOf, MoveType, Piece} from "../data/enums.mjs";
 
@@ -21,6 +20,7 @@ function piece_value(piece) {
     case Piece.B_QUEEN: return 9;
     case Piece.W_KING:
     case Piece.B_KING: return 10;
+    default: throw new Error("Incomplete case match: " + piece);
   }
 }
 
@@ -88,7 +88,6 @@ function collapseTree(root) {
   let stack = [root];
   while(stack.length > 0) {
     let node = stack[stack.length - 1];
-    let push_child = undefined;
     let scale = node.toMove === Color.BLACK ? -1 : 1;
     //scan for no children children
     for(let i = node.children.length - 1; i >= 0; i--) {

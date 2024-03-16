@@ -1,9 +1,7 @@
 
-import ReactDOM from "react-dom/client";
 import {HeaderRow} from "./header.js";
 import {BoardView} from "./boardview.js";
 import {ResourceBar} from "./resourcebar.js";
-import {HoverButton} from "./hoverbutton.js";
 import {HoverDiv} from "./hoverdiv.js";
 import {ChatBox} from "./chatbox.js";
 import {ChessBoard} from "../data/chess.mjs";

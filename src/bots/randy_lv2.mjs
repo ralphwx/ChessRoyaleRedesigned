@@ -1,14 +1,12 @@
 
 import {computeFeatures} from "./chess_extension.mjs";
-import {Color, colorOf} from "../data/enums.mjs";
-import {GameData, Move} from "../data/gamedata.mjs";
+import {colorOf} from "../data/enums.mjs";
 
 class DemoBot {
   elixirValue(e) {
     return 3.5 / e;
   }
   moveValue(iRow, iCol, fRow, fCol, board) {
-    let color = colorOf(board.pieceAt(iRow, iCol));
     let features = computeFeatures(iRow, iCol, fRow, fCol, board);
     if(features.capture_king) return 100;
     let output = 0;

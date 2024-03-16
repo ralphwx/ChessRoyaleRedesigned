@@ -1,6 +1,7 @@
 
 import "./index.css";
 import {LoginType} from "../data/enums.mjs";
+import {useEffect} from "react";
 
 /**
  * ChatBox renders a chat window with a text input box. props is required to
@@ -17,8 +18,13 @@ function ChatBox(props) {
     input_line = <input className="chat_input" type="text" id="chat_input"
       disabled="disabled" value="Chat disabled for spectators" />
   }
+  useEffect(() => {
+    let element = document.getElementById("chat");
+    element.scrollTop = element.scrollHeight;
+  }, [props.messages]);
+
   return <div>
-    <div className="console">
+    <div className="console" id="chat">
       {props.messages.map((msg) => {
         let text = msg.sender + ": " + msg.message;
         return <div key={text}>{text}</div>
