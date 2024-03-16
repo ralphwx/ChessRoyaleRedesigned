@@ -1,12 +1,9 @@
 
 Currently working on:
-- Fix an issue where rematch offers aren't rendered correctly
 - Make the rules of the game page look pretty, include diagrams, etc. Add fair
   play rules to "how to play" page
 
 TODO:
-- Fix "cannot remove" error on backend for spectator mode
-- Add functionality for elo updates when games end
 - Add tests for things user screwing things up via JS console (eg, username
     or password) (I mean, technically that's cheating/hacking ...)
 - Add thread safety features to all data structures
