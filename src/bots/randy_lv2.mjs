@@ -1,6 +1,5 @@
 
 import {computeFeatures} from "./chess_extension.mjs";
-import {colorOf} from "../data/enums.mjs";
 
 class DemoBot {
   elixirValue(e) {

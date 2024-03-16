@@ -164,6 +164,7 @@ function Square(props) {
   let zStyle = {
     zIndex: props.translateX || props.translateY ? 1 : 0,
   }
+  console.log("animation delay: " + props.animationDelay);
   return <div id={props.id} className={"squarecontainer"} style={zStyle}>
     <div key={props.key + props.animationDelay} 
       className={"squaretrigger " + props.type} 
@@ -187,8 +188,15 @@ function Square(props) {
         e.preventDefault(); 
         props.onMouseMove(e.clientX, e.clientY)
       }}
+
     ></div>
     <div key={props.animationDelay} className={"square"} style={translateStyle}>{props.img}</div>
+    <svg key={"circle" + props.animationDelay}>
+      <circle r="46%" cx="50%" cy="50%" className="countdown" style={{
+        animationDelay: props.animationDelay + "ms",
+        animationDuration: DELAY + "ms",
+      }}></circle>
+    </svg>
   </div>
 }
 

@@ -1,0 +1,24 @@
+
+svg {
+  transform: rotate(0.25turn) scaleX(-1);
+}
+
+.circle {
+  fill: none;
+  stroke-width: 6%;
+  stroke: #0005;
+  stroke-dasharray: 315%;
+  stroke-dashoffset: 0%;
+  animation: countdown;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
+}
+
+@keyframes countdown {
+  0% {
+    stroke-dashoffset: 0%;
+  }
+  100% {
+    stroke-dashoffset: 315%;
+  }
+}

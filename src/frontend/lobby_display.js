@@ -1,5 +1,3 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
 import "./index.css";
 import "./popup.css";
 import {Tabs} from "./tabs.js";
@@ -25,7 +23,7 @@ function getDescription(props) {
     case RowType.INCOMING_PRIVATE: return "Private Challenge";
     case RowType.INCOMING_PUBLIC: return "Public Challenge";
     case RowType.PRACTICE: return "Practice vs Bot";
-    default: throw "Incomplete case match: " + props.type;
+    default: throw new Error("Incomplete case match: " + props.type);
   }
 }
 
@@ -38,7 +36,7 @@ function getFloaterContent(props) {
     case RowType.INCOMING_PUBLIC:
     case RowType.PRACTICE:
       return "Accept";
-    default: throw "Incomplete case match: " + props.type;
+    default: throw new Error("Incomplete case match: " + props.type);
   }
 }
 
