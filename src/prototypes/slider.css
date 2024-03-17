@@ -1,0 +1,33 @@
+.progressBox {
+  position: relative;
+  border: 2px solid black;
+  width: 296px;
+}
+
+.progressBackground {
+  width: 300px;
+  height: 20px;
+  background-color: lightgray;
+}
+
+.progressBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  background-color: red;
+  pointer-events: none;
+}
+
+.progressPoint {
+  position: absolute;
+  top: 0;
+  left: -14px;
+  height: 20px;
+  width: 20px;
+  transform: rotate(0.125turn);
+  background-color: orange;
+  z-index: 2;
+  pointer-events: none;
+}
+

@@ -1,1 +1,1 @@
-import "./frontend/mad_scientist.js";
+import "./prototypes/slider.js";

@@ -1,5 +1,7 @@
 
 Currently working on:
+- Implement replay
+- See how the display looks on different screens
 - Make the rules of the game page look pretty, include diagrams, etc. Add fair
   play rules to "how to play" page
 
@@ -12,7 +14,6 @@ TODO:
 - Add a list of tasks for sending code to production
 - Write tests for spectator mode functionality (where user is requesting
   game data corresponding to other users)
-- Make chat auto scroll down
 - Make game info bar reflect whether the opponent is online
 - learn SQL?
 
@@ -21,5 +22,3 @@ Tasks for interns if I ever get any:
 - Make arrows size adapt to window size
 - Add sound effects and game start animation
 - Attempt to hack my server, as is. Make a test suite of attempted hacks
-- Implement countdown circle for move cooldown
-- Change elixir bar opacity display to opacity + width
