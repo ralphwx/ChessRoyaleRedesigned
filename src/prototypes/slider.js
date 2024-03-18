@@ -4,6 +4,21 @@ import ReactDOM from "react-dom/client";
 import "./slider.css";
 
 class Slider extends React.Component {
+  static getDerivedStateFromProps(props,state) {
+    if(props.progress === state.progress
+      && props.id === state.id
+      && props.playing === state.playing
+      && props.animationDuration === state.animationDuration
+    ) {
+      return null;
+    }
+    return {
+      progress: props.progress,
+      id: props.id,
+      playing: props.playing,
+      animationDuration: props.animationDuration,
+    }
+  }
   constructor(props) {
     super(props);
     this.state = {
@@ -12,9 +27,10 @@ class Slider extends React.Component {
       mouseDownX: 0,
       mouseCurrentX: 0,
       id: props.id,
+      playing: props.playing,
+      animationDuration: props.animationDuration,
     }
     this.positionListeners = props.subscribers;
-    console.log("Called constructor");
     window.addEventListener("mousemove", (e) => {this.onMouseMove(e.clientX)});
     window.addEventListener("mouseup", (e) => {this.onMouseUp()});
   }
@@ -30,7 +46,9 @@ class Slider extends React.Component {
     });
   }
   onMouseUp() {
+    console.log("mouse up");
     if(!this.state.mouseDown) return;
+    console.log("mouse up proper");
     this.setState({
       mouseDown: false,
       progress: this.computeProgress(),
@@ -40,7 +58,7 @@ class Slider extends React.Component {
     }
   }
   onMouseMove(x) {
-    console.log("on mouse move");
+    console.log("mouse move");
     if(!this.state.mouseDown) return;
     this.setState({
       mouseCurrentX: x,
@@ -51,6 +69,9 @@ class Slider extends React.Component {
   }
   computeProgress() {
     let output = this.state.progress;
+    console.log("progress: " + this.state.progress);
+    console.log("current x: " + this.state.mouseCurrentX);
+    console.log("down x: " + this.state.mouseDownX);
     if(this.state.mouseDown) {
       output += (this.state.mouseCurrentX - this.state.mouseDownX) / this.maxWidthPixels();
     }
@@ -61,20 +82,22 @@ class Slider extends React.Component {
   maxWidthPixels() {
     let element = this.state.target;
     let rect = element.getBoundingClientRect();
+    console.log("computed width: " + (rect.right - rect.left));
     return rect.right - rect.left;
   }
   render() {
-    let progressBarWidth = {
-      width: (this.computeProgress() * 100) + "%",
+    let animationState = {
+      animationPlayState: this.state.playing && !this.state.mouseDown ? "running" : "paused",
+      animationDuration: this.state.animationDuration + "ms",
+      animationDelay: -this.computeProgress() * this.state.animationDuration + "ms",
     }
-    console.log("computed width: " + progressBarWidth.width);
-    let progressPointStyle = {
-      left: "calc(" + (this.computeProgress() * 100) + "% - 14px)",
-    }
+    console.log("render slider");
+    console.log("animation delay: " + animationState.animationDelay);
     return <div className="progressBox" id={this.state.id}>
-      <div className="progressPoint" style={progressPointStyle}
-        onMouseDown={() => console.log("mouse down on point")}></div>
-      <div className="progressBar" style={progressBarWidth} ></div>
+      <div key={animationState.animationPlayState + "point"}
+        className="progressPoint" style={animationState}></div>
+      <div key={animationState.animationPlayState + "bar"}
+        className="progressBar" style={animationState} ></div>
       <div className="progressBackground"
         onMouseDown={e => this.onMouseDown(e.clientX, e.target)}
       ></div>
@@ -93,7 +116,10 @@ class Main extends React.Component {
     let rounded = Math.floor(this.state.progress * 100) / 100;
     return <div>
       <Slider progress={this.state.progress} subscribers={[
-        (progress) => {this.setState({progress: progress})}]} />
+        (progress) => {this.setState({progress: progress})}]} 
+        playing={false}
+        animationDuration={10000}
+      />
       <div>
         Progress: {rounded}
       </div>
@@ -101,5 +127,6 @@ class Main extends React.Component {
   }
 }
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<Main />);
+export {Slider}
+//const root = ReactDOM.createRoot(document.getElementById("root"));
+//root.render(<Main />);

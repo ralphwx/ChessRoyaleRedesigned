@@ -17,6 +17,9 @@
   height: 20px;
   background-color: red;
   pointer-events: none;
+  animation: expand;
+  animation-timing-function: linear;
+  animation-fill-mode: both;
 }
 
 .progressPoint {
@@ -29,5 +32,25 @@
   background-color: orange;
   z-index: 2;
   pointer-events: none;
+  animation: slide;
+  animation-fill-mode: both;
+  animation-timing-function: linear;
 }
 
+@keyframes expand {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes slide {
+  0% {
+    left: -14px;
+  }
+  100% {
+    left: 286px;
+  }
+}

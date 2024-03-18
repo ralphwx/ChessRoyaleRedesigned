@@ -1,1 +1,1 @@
-import "./prototypes/slider.js";
+import "./prototypes/video_view.js";
