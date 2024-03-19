@@ -43,7 +43,7 @@
   animation-timing-function: linear;
 }
 
-svg {
+.countdownwrapper {
   transform: rotate(0.25turn) scaleX(-1);
   position: absolute;
   top: 0;

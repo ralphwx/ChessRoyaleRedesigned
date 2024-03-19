@@ -191,7 +191,7 @@ function Square(props) {
 
     ></div>
     <div key={props.animationDelay} className={"square"} style={translateStyle}>{props.img}</div>
-    <svg key={"circle" + props.animationDelay}>
+    <svg className="countdownwrapper" key={"circle" + props.animationDelay}>
       <circle r="46%" cx="50%" cy="50%" className="countdown" style={{
         animationDelay: props.animationDelay + "ms",
         animationDuration: DELAY + "ms",
