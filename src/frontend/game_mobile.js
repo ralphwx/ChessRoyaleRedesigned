@@ -170,8 +170,7 @@ function UserReadyButton(props) {
  * Requires the same props as GameDesktop.
  */
 function GameMobile(props) {
-  let lag = props.lagMax ? props.lagMax : 0;
-  let now = Date.now() - lag;
+  let now = props.now;
   let boardProps = getBoardProps(props, now);
   let elixirAmount = computeElixirAmount(props, now);
   return <div>

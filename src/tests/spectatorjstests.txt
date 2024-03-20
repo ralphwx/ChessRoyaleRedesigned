@@ -1,0 +1,7 @@
+
+These tests are to be performed by hand
+- Chat is disabled
+- Elixir bar shows correct amount (cross-platform)
+- Delay countdowns, arrow opacity is correct (cross-platform)
+- Displays correctly on mobile
+- TODO: write more

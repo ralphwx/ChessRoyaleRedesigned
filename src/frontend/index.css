@@ -247,6 +247,7 @@
   width: 4rem;
   height: 4rem;
   background-color: darkgray;
+  font-size: 1.5rem;
 }
 
 .draw {
@@ -254,7 +255,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.5rem;
 }
 
 .draw:hover {
@@ -637,4 +637,66 @@
   flex: 1;
   font-size: 1rem;
   margin: 0.5rem;
+}
+
+.replayBarContainer {
+  width: 90vw;
+  height: 3vh;
+  margin-top: 2vh;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid black;
+  position: relative;
+}
+
+.replayBarBackground {
+  width: 100%;
+  height: 100%;
+  background-color: gray;
+}
+
+.replayBarProgress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: #cc0000;
+  animation: expand;
+  animation-fill-mode: both;
+  animation-timing-function: linear;
+}
+
+@keyframes expand {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+.replayBarPointer {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  background-color: #008866;
+  transform: translate(-50%, 0%) rotate(0.125turn);
+  animation: slide;
+  animation-fill-mode: both;
+  animation-timing-function: linear;
+}
+
+@keyframes slide {
+  0% {
+    left: 0%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.middle {
+  margin-left: auto;
+  margin-right: auto;
 }

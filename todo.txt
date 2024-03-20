@@ -1,6 +1,7 @@
 
 Currently working on:
 - Implement replay
+  - Set up ReplayDesktop first then fill in the details for ReplayController
 - See how the display looks on different screens
 - Make the rules of the game page look pretty, include diagrams, etc. Add fair
   play rules to "how to play" page

@@ -27,7 +27,7 @@ let game = new ServerGame(user, bot_name);
 if(playAsBlack) {
   game = new ServerGame(bot_name, user);
 }
-let model = new LocalModel(user, game, "", "1000");
+let model = new LocalModel(user, game, "", "500");
 let controller = new Controller(model, user, loginType);
 let view = <Game controller={controller} />
 

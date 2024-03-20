@@ -10,7 +10,7 @@ import {ChessBoard} from "../data/chess.mjs";
  * inputs.
  */
 class SpectatorController {
-  constructor(model, user) {
+  constructor(model, user, lagEstimator) {
     this.user = user;
     this.model = model;
     this.model.addListener(this);
@@ -30,6 +30,7 @@ class SpectatorController {
       highlights: ChessBitMap.empty(),
     }
     this.listeners = [];
+    this.lagEstimator = lagEstimator;
   }
   /**
    * [listener] should be an object with the same signature as the input to
@@ -131,6 +132,7 @@ class SpectatorController {
       offerRematch: () => {},
       cancelRematch: () => {},
       onReady: () => {},
+      now: Date.now() - this.lagEstimator.getMax(),
     };
   }
   onMouseDown(r, c, x, y, b) {

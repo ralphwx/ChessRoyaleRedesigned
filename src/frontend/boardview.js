@@ -69,9 +69,10 @@ function colorToHex(color) {
  *   translate: ChessMap<[dx, dy]>
  *   moveArrows: list of {iRow, iCol, fRow, fCol, time, color} objects
  *   userArrows: list of {iRow, iCol, fRow, fCol} objects
+ *   now: the timestamp to be displayed
  */
 function BoardView(props) {
-  let now = Date.now();
+  let now = props.now;
   let squares = [];
   let squareType = props.squareType;
   let translate = props.translate;
@@ -164,7 +165,6 @@ function Square(props) {
   let zStyle = {
     zIndex: props.translateX || props.translateY ? 1 : 0,
   }
-  console.log("animation delay: " + props.animationDelay);
   return <div id={props.id} className={"squarecontainer"} style={zStyle}>
     <div key={props.key + props.animationDelay} 
       className={"squaretrigger " + props.type} 

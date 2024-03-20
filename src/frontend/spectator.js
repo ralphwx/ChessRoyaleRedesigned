@@ -46,7 +46,7 @@ connect(URL, user, psw, loginType, target, (socket) => {
   });
   let user = socket.user;
   let model = new GameModel(target, socket);
-  let controller = new SpectatorController(model, user);
+  let controller = new SpectatorController(model, user, socket.lagEstimator);
   let view = <Game controller={controller} />
   const root = ReactDOM.createRoot(document.getElementById("root"));
   root.render(view)
