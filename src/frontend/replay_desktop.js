@@ -3,10 +3,11 @@ import ReactDOM from "react-dom/client";
 import {HeaderRow} from "./header.js";
 import {ResourceBar} from "./resourcebar.js";
 import {ChatBox} from "./chatbox.js";
-import {Color, LoginType} from "../data/enums.mjs";
+import {Color, LoginType, ELIXIR, ARROW_TIME} from "../data/enums.mjs";
 import {ChessBoard} from "../data/chess.mjs";
 import {ChessMap} from "../data/maps.mjs";
 import {BoardView} from "./boardview.js";
+import {GameData} from "../data/gamedata.mjs";
 
 function InfoBar(props) {
   if(props.elo) {
@@ -27,74 +28,197 @@ function OpponentReadyButton() {
   return <button className="ready online">{"Opponent ready!"}</button>
 }
 
+/**
+ * Given the full set of props, computes
+ *   - board
+ *   - delay
+ *   - moveArrows
+ *   - wElixir
+ *   - bElixir
+ */
+function computeBoardProps(gamedata, now) {
+  let statePointer = gamedata.history;
+  while(!statePointer.tail.isNil() && statePointer.head.currentTime > now) {
+    statePointer = statePointer.tail;
+  }
+  let board = statePointer.head.boardHistory.head;
+  let delay = statePointer.head.delay;
+  let moveArrows = [];
+  let movePointer = statePointer.head.moveHistory;
+  while(!movePointer.isNil() && movePointer.head.time >= now - ARROW_TIME) {
+    moveArrows.push(movePointer.head);
+  }
+  return {
+    board: board,
+    delay: delay,
+    moveArrows: moveArrows,
+    wElixir: (now - statePointer.head.wStart) / ELIXIR,
+    bElixir: (now - statePointer.head.bStart) / ELIXIR,
+  }
+}
+
+function PlayButton(props) {
+  if(props.playing) {
+    return <button className="controlbutton middle" onClick={props.onPause}>
+      {"||"}
+    </button>
+  }
+  return <button className="controlbutton middle" onClick={props.onPlay}>
+    {"|>"}
+  </button>
+}
+
+/**
+ * Requires props:
+ *   loginUser (string): The username of the user who's watching the replay
+ *   loginType (LoginType): the type of login of [loginUser], or undefined if
+ *     not logged in
+ *   color (Color): Color.WHITE, if watching from white's perspective,
+ *     otherwise Color.BLACK.
+ *   user (string): the username of the person whose playing [color]
+ *   userElo (int or empty string): the elo of the person playing [color], or
+ *     empty string if they were playing as guest
+ *   opponent (string): the username of the opponent
+ *   opponentElo (int or empty string): the elo of the opponent, or empty string
+ *     if they were playing as guest
+ *
+ *   gamedata (GameData): a gamedata object representing the game that was
+ *     played
+ *   userArrows (list of {iRow, iCol, fRow, fCol}): arrows the user has drawn
+ *     on the board
+ *   squareType (ChessMap<SquareType>): a description of the display type of
+ *     each square on the board
+ *   translate (ChessMap<[dx, dy]>): a description of how much each chess piece
+ *     on the board should be moved.
+ *
+ *   progress (float [0, 1]): how much of the replay has already been played
+ *   playing (bool): whether the replay is currently playing
+ *   now (long): the timestamp to display
+ *   duration (long): the total length of the video in ms
+ *   
+ *   onMouseDownBoard ((r, c, x, y, b) => (None)): function to call when the
+ *     mouse is pressed on the board
+ *   onMouseUpBoard ((r, c, x, y) => (None)): function to call when the mouse
+ *     is lifted while on the board
+ *   onMouseDownBar ((x, target) => (None)): function to call when the mouse
+ *     is pressed on the progress bar
+ *   
+ *   onNextFrame (() => (None)): function to call when the user requests the 
+ *     next frame
+ *   onPrevFrame (() => None): function to call when the user requests the
+ *     previous frame
+ *   onPlay (() => (None)): function to call when the user presses play
+ *   onPause (() => (None)): function to call when the user presses pause
+ */
 function ReplayDesktop(props) {
+  let animationState = {
+    animationDuration: props.duration + "ms",
+    animationDelay: -props.progress * props.duration + "ms",
+    animationPlayState: props.playing ? "running" : "paused",
+  }
+  let boardProps = computeBoardProps(props.gamedata, props.now);
   let boardview = <BoardView
-    now={Date.now()}
-    color={Color.WHITE}
-    board={ChessBoard.startingPosition()}
-    delay={ChessMap.fromDefault(0)}
-    squareType={ChessMap.fromInitializer((r, c) => {
-      if((r + c) & 1) return "odd";
-      return "even";
-    })}
-    onMouseDown={() => {}}
-    onMouseUp={() => {}}
+    now={props.now}
+    color={props.color}
+    board={boardProps.board}
+    delay={boardProps.delay}
+    squareType={props.squareType}
+    onMouseDown={(r, c, x, y, b) => {props.onMouseDownBoard(r, c, x, y, b)}}
+    onMouseUp={(r, c, x, y) => {props.onMouseUpBoard(r, c, x, y)}}
     onMouseMove={() => {}}
-    translate={ChessMap.fromInitializer(() => {return [0, 0]})}
-    moveArrows={[]}
-    userArrows={[]}
+    translate={props.translate}
+    moveArrows={boardProps.moveArrows}
+    userArrows={props.userArrows}
+    freezeFrame={!props.playing}
   />
+  let userElixir = props.color === Color.WHITE ? boardProps.wElixir : boardProps.bElixir;
+  let opponentElixir = props.color === Color.WHITE ? boardProps.bElixir: boardProps.wElixir;
+  let chat = [
+    {
+      sender: "[system]",
+      message: "Welcome to replay mode. Use the buttons below to start the replay, or click the Chess Royale logo in the upper right to return to the main lobby"
+    }
+  ];
+  let replay
   return <div>
-    <HeaderRow username={"streamer1"} loginType={undefined} />
+    <HeaderRow username={props.loginUser} loginType={props.loginType} />
     <div className="gamecontainer">
       <div>
         {boardview}
         <div className="resourcebar">
           <ResourceBar
-            amount={3.14}
-            animate={false}
+            amount={userElixir}
+            animate={props.playing}
           />
         </div>
       </div>
       <div className="metabox">
-        <InfoBar user={"Random Noob"} elo={100} />
+        <InfoBar user={props.opponent} elo={props.opponentElo} />
         <OpponentReadyButton />
         <div>
           <ChatBox
-            messages={[]}
+            messages={chat}
             loginType={LoginType.SPECTATE}
           />
         </div>
         <UserReadyButton />
-        <InfoBar user={"Pot of Queens sub"} elo={9999} />
+        <InfoBar user={props.user} elo={props.userElo} />
         <div className="gamectrl">
-          <button className="controlbutton">
+          <button 
+            className="controlbutton" 
+            onClick={props.onPrevFrame}
+            title={"rewind 0.1s"}
+          >
             {"<"}
           </button>
-          <button className="controlbutton middle">
-            {"|>"}
-          </button>
-          <button className="controlbutton">
+          <PlayButton playing={props.playing} onPlay={props.onPlay} onPause={props.onPause} />
+          <button 
+            className="controlbutton" 
+            onClick={props.onNextFrame}
+            title={"fast foward 0.1s"}
+          >
             {">"}
           </button>
         </div>
       </div>
     </div>
     <div className="replayBarContainer">
-      <div className="replayBarBackground"></div>
-      <div className="replayBarProgress" style={{
-        animationDuration: "10000ms",
-        animationDelay: "-2000ms",
-        animationPlayState: "paused"
-      }}></div>
-      <div className="replayBarPointer" style={{
-        animationDuration: "10000ms",
-        animationDelay: "-2000ms",
-        animationPlayState: "paused",
-      }}></div>
+      <div 
+        className="replayBarBackground" 
+        onClick={(e) => {props.onMouseDownBar(e.clientX, e.target)}}
+      ></div>
+      <div className="replayBarProgress" style={animationState}></div>
+      <div className="replayBarPointer" style={animationState}></div>
     </div>
   </div>
 }
 
+let gamedata = new GameData(0);
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<ReplayDesktop />);
+root.render(<ReplayDesktop 
+  loginUser={"streamer1"}
+  loginType={undefined}
+  color={Color.WHITE}
+  user={"Pot of Queens Sub"}
+  userElo={"9999"}
+  opponent={"Random noob"}
+  opponentElo={"100"}
+  gamedata={new GameData(0)}
+  userArrows={[]}
+  squareType={ChessMap.fromInitializer((r, c) => {
+    if((r + c) & 1) return "odd";
+    return "even";
+  })}
+  translate={ChessMap.fromDefault([0, 0])}
+  progress={0.5}
+  playing={false}
+  now={5000}
+  duration={10000}
+  onMouseDownBoard={() => {}}
+  onMouseUpBoard={() => {}}
+  onPlay={() => {console.log("play");}}
+  onPause={() => {console.log("pause");}}
+  onNextFrame={() => {console.log("onNextFrame")}}
+  onPrevFrame={() => {console.log("onPrevFrame")}}
+/>);

@@ -1,1 +1,1 @@
-import "./prototypes/slideshow.js";
+import "./frontend/replay_desktop.js";

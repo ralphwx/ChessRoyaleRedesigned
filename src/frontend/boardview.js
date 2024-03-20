@@ -70,6 +70,7 @@ function colorToHex(color) {
  *   moveArrows: list of {iRow, iCol, fRow, fCol, time, color} objects
  *   userArrows: list of {iRow, iCol, fRow, fCol} objects
  *   now: the timestamp to be displayed
+ *   freezeFrame (bool): whether the animations should be frozen
  */
 function BoardView(props) {
   let now = props.now;
@@ -94,6 +95,7 @@ function BoardView(props) {
         onMouseDown={(x, y, b) => props.onMouseDown(r, c, x, y, b)}
         onMouseUp={(x, y) => props.onMouseUp(r, c, x, y)}
         onMouseMove={(x, y) => props.onMouseMove(x, y)}
+        freezeFrame={props.freezeFrame}
       /></div>);
     }
     squares.push(<div key={i} className="gridrow">{row}</div>);
@@ -108,6 +110,7 @@ function BoardView(props) {
       style={{
         animationDuration: ARROW_TIME + "ms",
         animationDelay: (move.time - now) + "ms",
+        animationPlayState: props.freezeFrame ? "paused" : "running",
       }}
     >
       <Xarrow
@@ -155,12 +158,14 @@ function BoardView(props) {
  *   img: JSX
  *   translateX: double
  *   translateY: double
+ *   freezeFrame: whether the animation should be frozen
  */
 function Square(props) {
   let translateStyle = {
     transform: "translate(" + props.translateX + "px, " + props.translateY + "px)",
     animationDelay: props.animationDelay + "ms",
     animationDuration: DELAY + "ms",
+    animationPlayState: props.freezeFrame ? "paused" : "running",
   };
   let zStyle = {
     zIndex: props.translateX || props.translateY ? 1 : 0,
@@ -188,13 +193,13 @@ function Square(props) {
         e.preventDefault(); 
         props.onMouseMove(e.clientX, e.clientY)
       }}
-
     ></div>
     <div key={props.animationDelay} className={"square"} style={translateStyle}>{props.img}</div>
     <svg className="countdownwrapper" key={"circle" + props.animationDelay}>
       <circle r="46%" cx="50%" cy="50%" className="countdown" style={{
         animationDelay: props.animationDelay + "ms",
         animationDuration: DELAY + "ms",
+        animationPlayState: props.freezeFrame ? "paused" : "running",
       }}></circle>
     </svg>
   </div>
