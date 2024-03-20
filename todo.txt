@@ -1,10 +1,15 @@
 
 Currently working on:
 - Implement replay
-  - Set up ReplayDesktop first then fill in the details for ReplayController
-- See how the display looks on different screens
+  - Add opponent's elixir bar and delay
+  - Implement encoding and decoding servergame data
+  - Implement replay end-to-end
+  - Write a list of tests
+  - Check to make sure nothing broke on the other pages
+  - Make replays available on mobile
 - Make the rules of the game page look pretty, include diagrams, etc. Add fair
   play rules to "how to play" page
+
 
 TODO:
 - Add tests for things user screwing things up via JS console (eg, username

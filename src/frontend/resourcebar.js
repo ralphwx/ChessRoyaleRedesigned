@@ -29,16 +29,13 @@ function ResourceBar(props) {
  * Helper Component for rendering individual squares
  */
 function ResourceSquare(props) {
-  if(props.animate) {
-    return <div className="resource">
-      <div key={props.amount} className="resourceinner" style={{
-        animationDuration: ELIXIR + "ms",
-        animationDelay: -ELIXIR * props.amount + "ms",
-      }}></div>
-    </div>
-  } else {
-    return <div className="resource"></div>
-  }
+  return <div className="resource">
+    <div key={props.amount} className="resourceinner" style={{
+      animationDuration: ELIXIR + "ms",
+      animationDelay: -ELIXIR * props.amount + "ms",
+      animationPlayState: props.animate ? "running" : "paused",
+    }}></div>
+  </div>
 }
 
 export {ResourceBar}

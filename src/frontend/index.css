@@ -664,6 +664,7 @@
   animation: expand;
   animation-fill-mode: both;
   animation-timing-function: linear;
+  pointer-events: none;
 }
 
 @keyframes expand {
@@ -685,6 +686,7 @@
   animation: slide;
   animation-fill-mode: both;
   animation-timing-function: linear;
+  pointer-events: none;
 }
 
 @keyframes slide {

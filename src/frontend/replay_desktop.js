@@ -47,6 +47,7 @@ function computeBoardProps(gamedata, now) {
   let movePointer = statePointer.head.moveHistory;
   while(!movePointer.isNil() && movePointer.head.time >= now - ARROW_TIME) {
     moveArrows.push(movePointer.head);
+    movePointer = movePointer.tail;
   }
   return {
     board: board,
@@ -111,12 +112,14 @@ function PlayButton(props) {
  *   onPause (() => (None)): function to call when the user presses pause
  */
 function ReplayDesktop(props) {
+  console.log("replay desktop received now: " + props.now);
   let animationState = {
     animationDuration: props.duration + "ms",
     animationDelay: -props.progress * props.duration + "ms",
     animationPlayState: props.playing ? "running" : "paused",
   }
   let boardProps = computeBoardProps(props.gamedata, props.now);
+  console.log("Computed elixir: " + boardProps.wElixir);
   let boardview = <BoardView
     now={props.now}
     color={props.color}
@@ -149,6 +152,7 @@ function ReplayDesktop(props) {
           <ResourceBar
             amount={userElixir}
             animate={props.playing}
+            key={userElixir + "bar"}
           />
         </div>
       </div>
@@ -185,16 +189,20 @@ function ReplayDesktop(props) {
     <div className="replayBarContainer">
       <div 
         className="replayBarBackground" 
-        onClick={(e) => {props.onMouseDownBar(e.clientX, e.target)}}
+        onMouseDown={(e) => {props.onMouseDownBar(e.clientX, e.target)}}
       ></div>
-      <div className="replayBarProgress" style={animationState}></div>
-      <div className="replayBarPointer" style={animationState}></div>
+      <div key={props.progress + "bar"} 
+        className="replayBarProgress" style={animationState}
+      ></div>
+      <div key={props.progress + "point"} 
+        className="replayBarPointer" style={animationState}
+      ></div>
     </div>
   </div>
 }
 
 let gamedata = new GameData(0);
-
+/*
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(<ReplayDesktop 
   loginUser={"streamer1"}
@@ -222,3 +230,6 @@ root.render(<ReplayDesktop
   onNextFrame={() => {console.log("onNextFrame")}}
   onPrevFrame={() => {console.log("onPrevFrame")}}
 />);
+*/
+
+export {ReplayDesktop}

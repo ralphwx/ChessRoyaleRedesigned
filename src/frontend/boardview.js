@@ -73,6 +73,7 @@ function colorToHex(color) {
  *   freezeFrame (bool): whether the animations should be frozen
  */
 function BoardView(props) {
+  console.log("received now: " + props.now);
   let now = props.now;
   let squares = [];
   let squareType = props.squareType;

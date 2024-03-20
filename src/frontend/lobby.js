@@ -149,7 +149,6 @@ if(loginType !== null) {
       window.location.replace(URL + "/game");
     });
     socket.notify("redirect?", {}, (meta, args) => {
-      console.log("redirect to: " + args);
       if(args === Location.GAME) {
         window.location.replace(URL + "/game");
       }
