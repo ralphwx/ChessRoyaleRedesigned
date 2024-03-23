@@ -131,9 +131,23 @@
   margin-right: auto;
 }
 
+.gamecontainerreplay {
+  width: 90vmin;
+  height: 70.6vmin;
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+}
 .resourcebar {
   width: 64vmin;
   height: 6.4vmin;
+  display: flex;
+  background-color: rgba(0, 0, 255, 0.2);
+}
+
+.resourcebarreplay {
+  width: 58.8vmin;
+  height: 5.88vmin;
   display: flex;
   background-color: rgba(0, 0, 255, 0.2);
 }
@@ -222,6 +236,7 @@
   text-align: left;
   color: #555;
   overflow: auto;
+  word-wrap: break-word;
 }
 
 .consolevert {
@@ -640,7 +655,7 @@
 }
 
 .replayBarContainer {
-  width: 90vw;
+  width: 90vmin;
   height: 3vh;
   margin-top: 2vh;
   margin-left: auto;

@@ -239,6 +239,7 @@ function GameDesktop(props) {
   let elixirAmount = computeElixirAmount(props, now);
   return <div>
     <HeaderRow username={props.loginUser} loginType={props.loginType} />
+    <div style={{height: "5vh"}}></div>
     <div className="gamecontainer">
       <div>
         {boardview}

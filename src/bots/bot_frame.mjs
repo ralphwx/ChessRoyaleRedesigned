@@ -102,7 +102,7 @@ class Scheduler {
     this.callingThread = setTimeout(() => {this.execute()}, this.interval);
   }
   react() {
-    clearTimeout(this.callingThread);
+    clearInterval(this.callingThread);
     this.callingThread = setTimeout(() => {this.execute()}, this.reactionTime);
   }
   /**

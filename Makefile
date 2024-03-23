@@ -6,6 +6,7 @@ build:
 	python3 build.py frontend/game.js game
 	python3 build.py frontend/spectator.js spectate
 	python3 build.py frontend/howto.js howto
+	python3 build.py frontend/replay.js replay
 	make local_bots
 
 local_bots:

@@ -12,13 +12,14 @@ class ReplayController {
       this.lengths.push(stateHead.head.currentTime - stateHead.tail.head.currentTime);
       stateHead = stateHead.tail;
     }
-    this.lengths.push(DELAY);
+    this.lengths.reverse();
+    this.lengths.push(100);
     this.startTime = stateHead.head.currentTime;
     
     this.playing = false; //whether the video is currently playing
     this.progress = 0; //the proportion of the video that has finished
                        //playing, ignoring playtime and slider
-    this.totalLength = gamedata.history.head.currentTime - this.startTime + DELAY;
+    this.totalLength = gamedata.history.head.currentTime - this.startTime + 100;
     this.mouse = {
       down: false,
       button: 0,
@@ -170,7 +171,6 @@ class ReplayController {
     }
   }
   onMouseDownBar(x, target) {
-    console.log("mouse down recorded");
     this.pause();
     let rect = target.getBoundingClientRect();
     this.progress = (x - rect.left) / (rect.right - rect.left);

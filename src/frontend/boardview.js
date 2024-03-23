@@ -44,7 +44,8 @@ function pieceToHTML(p) {
 }
 
 function computeDelay(props, r, c, now) {
-  if(colorOf(props.board.pieceAt(r, c)) !== props.color
+  if((!props.animateBoth
+    && colorOf(props.board.pieceAt(r, c)) !== props.color)
     || now - props.delay.get(r, c) >= DELAY) return -DELAY;
   return props.delay.get(r, c) - now;
 }
@@ -59,7 +60,8 @@ function colorToHex(color) {
 
 /**
  * Props is required to have:
- *   color: Color
+ *   animateBoth: bool (show both players' animations)
+ *   color: Color (show the pieces from the perspective of [color]).
  *   board: ChessBoard
  *   delay: ChessMap<time>
  *   squareType: ChessMap<SquareType>

@@ -60,11 +60,19 @@ function computeBoardProps(gamedata, now) {
 
 function PlayButton(props) {
   if(props.playing) {
-    return <button className="controlbutton middle" onClick={props.onPause}>
+    return <button 
+      className="controlbutton middle" 
+      onClick={props.onPause}
+      title={"Pause"}
+    >
       {"||"}
     </button>
   }
-  return <button className="controlbutton middle" onClick={props.onPlay}>
+  return <button 
+    className="controlbutton middle" 
+    onClick={props.onPlay}
+    title={"Play"}
+  >
     {"|>"}
   </button>
 }
@@ -72,8 +80,6 @@ function PlayButton(props) {
 /**
  * Requires props:
  *   loginUser (string): The username of the user who's watching the replay
- *   loginType (LoginType): the type of login of [loginUser], or undefined if
- *     not logged in
  *   color (Color): Color.WHITE, if watching from white's perspective,
  *     otherwise Color.BLACK.
  *   user (string): the username of the person whose playing [color]
@@ -112,16 +118,15 @@ function PlayButton(props) {
  *   onPause (() => (None)): function to call when the user presses pause
  */
 function ReplayDesktop(props) {
-  console.log("replay desktop received now: " + props.now);
   let animationState = {
     animationDuration: props.duration + "ms",
     animationDelay: -props.progress * props.duration + "ms",
     animationPlayState: props.playing ? "running" : "paused",
   }
   let boardProps = computeBoardProps(props.gamedata, props.now);
-  console.log("Computed elixir: " + boardProps.wElixir);
   let boardview = <BoardView
     now={props.now}
+    animateBoth={true}
     color={props.color}
     board={boardProps.board}
     delay={boardProps.delay}
@@ -144,92 +149,73 @@ function ReplayDesktop(props) {
   ];
   let replay
   return <div>
-    <HeaderRow username={props.loginUser} loginType={props.loginType} />
-    <div className="gamecontainer">
-      <div>
-        {boardview}
-        <div className="resourcebar">
-          <ResourceBar
-            amount={userElixir}
-            animate={props.playing}
-            key={userElixir + "bar"}
-          />
-        </div>
-      </div>
-      <div className="metabox">
-        <InfoBar user={props.opponent} elo={props.opponentElo} />
-        <OpponentReadyButton />
+    <HeaderRow username={props.loginUser} loginType={LoginType.REPLAY} />
+    <div style={{width: "calc(100% - 6vh)", height: "80vh", borderLeft: "3vh #cab2d6 solid", borderRight: "3vh #cab2d6 solid", borderBottom: "3vh #cab2d6 solid"}}>
+      <div style={{height: "3vh"}}></div>
+      <div className="gamecontainerreplay">
         <div>
-          <ChatBox
-            messages={chat}
-            loginType={LoginType.SPECTATE}
-          />
+          <div className="resourcebarreplay">
+            <ResourceBar
+              amount={opponentElixir}
+              animate={props.playing}
+              key={opponentElixir + "obar"}
+            />
+          </div>
+          <div>
+            {boardview}
+          </div>
+          <div className="resourcebarreplay">
+            <ResourceBar
+              amount={userElixir}
+              animate={props.playing}
+              key={userElixir + "bar"}
+            />
+          </div>
         </div>
-        <UserReadyButton />
-        <InfoBar user={props.user} elo={props.userElo} />
-        <div className="gamectrl">
-          <button 
-            className="controlbutton" 
-            onClick={props.onPrevFrame}
-            title={"rewind 0.1s"}
-          >
-            {"<"}
-          </button>
-          <PlayButton playing={props.playing} onPlay={props.onPlay} onPause={props.onPause} />
-          <button 
-            className="controlbutton" 
-            onClick={props.onNextFrame}
-            title={"fast foward 0.1s"}
-          >
-            {">"}
-          </button>
+        <div className="metabox">
+          <InfoBar user={props.opponent} elo={props.opponentElo} />
+          <OpponentReadyButton />
+          <div>
+            <ChatBox
+              messages={chat}
+              loginType={LoginType.SPECTATE}
+            />
+          </div>
+          <UserReadyButton />
+          <InfoBar user={props.user} elo={props.userElo} />
+          <div className="gamectrl">
+            <button 
+              className="controlbutton" 
+              onClick={props.onPrevFrame}
+              title={"rewind 0.1s"}
+            >
+              {"<"}
+            </button>
+            <PlayButton playing={props.playing} onPlay={props.onPlay} onPause={props.onPause} />
+            <button 
+              className="controlbutton" 
+              onClick={props.onNextFrame}
+              title={"fast foward 0.1s"}
+            >
+              {">"}
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-    <div className="replayBarContainer">
-      <div 
-        className="replayBarBackground" 
-        onMouseDown={(e) => {props.onMouseDownBar(e.clientX, e.target)}}
-      ></div>
-      <div key={props.progress + "bar"} 
-        className="replayBarProgress" style={animationState}
-      ></div>
-      <div key={props.progress + "point"} 
-        className="replayBarPointer" style={animationState}
-      ></div>
+      <div className="replayBarContainer">
+        <div 
+          className="replayBarBackground" 
+          onMouseDown={(e) => {props.onMouseDownBar(e.clientX, e.target)}}
+        ></div>
+        <div key={props.progress + "bar"} 
+          className="replayBarProgress" style={animationState}
+        ></div>
+        <div key={props.progress + "point"} 
+          className="replayBarPointer" style={animationState}
+        ></div>
+      </div>
     </div>
   </div>
 }
-
-let gamedata = new GameData(0);
-/*
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<ReplayDesktop 
-  loginUser={"streamer1"}
-  loginType={undefined}
-  color={Color.WHITE}
-  user={"Pot of Queens Sub"}
-  userElo={"9999"}
-  opponent={"Random noob"}
-  opponentElo={"100"}
-  gamedata={new GameData(0)}
-  userArrows={[]}
-  squareType={ChessMap.fromInitializer((r, c) => {
-    if((r + c) & 1) return "odd";
-    return "even";
-  })}
-  translate={ChessMap.fromDefault([0, 0])}
-  progress={0.5}
-  playing={false}
-  now={5000}
-  duration={10000}
-  onMouseDownBoard={() => {}}
-  onMouseUpBoard={() => {}}
-  onPlay={() => {console.log("play");}}
-  onPause={() => {console.log("pause");}}
-  onNextFrame={() => {console.log("onNextFrame")}}
-  onPrevFrame={() => {console.log("onPrevFrame")}}
-/>);
-*/
 
 export {ReplayDesktop}

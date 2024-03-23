@@ -95,6 +95,7 @@ const LoginType = {
   LOGIN: 2,
   GUEST: 3,
   SPECTATE: 4,
+  REPLAY: 5,
 }
 
 /**

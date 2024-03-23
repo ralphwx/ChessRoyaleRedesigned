@@ -183,7 +183,7 @@ class Controller {
       offerRematch: () => {this.model.offerRematch()},
       cancelRematch: () => {this.model.cancelRematch()},
       onReady: () => {this.model.declareReady()},
-      lagMax: this.lagEstimator.get_max(),
+      now: Date.now() - this.lagEstimator.get_max(),
     };
   }
   onMouseDown(r, c, x, y, b) {

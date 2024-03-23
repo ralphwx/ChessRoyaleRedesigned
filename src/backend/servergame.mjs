@@ -1,8 +1,8 @@
 
-import {Color, GameOverCause} from "../data/enums.mjs";
+import {URL, Color, GameOverCause} from "../data/enums.mjs";
 import {ChatLog} from "../data/chat_log.mjs";
 import {Move, GameData} from "../data/gamedata.mjs";
-
+import {encodeGameData} from "../data/gamedataencoder.mjs";
 /**
  * A string constant representing the origin of server-generated messages.
  */
@@ -102,6 +102,9 @@ class ServerGame {
         gameOverResult: this.gameResult,
       });
     }
+    let replayURL = URL + "/replay?white=" + this.white + "&black=" + this.black
+      + "&data=" + encodeGameData(this.gameState);
+    this.chat.addMessage(system, "Replay available at: " + replayURL);
   }
   /**
    * Records a "declare ready" from [user].

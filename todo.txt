@@ -7,6 +7,7 @@ Currently working on:
   - Write a list of tests
   - Check to make sure nothing broke on the other pages
   - Make replays available on mobile
+  - Make things look nice
 - Make the rules of the game page look pretty, include diagrams, etc. Add fair
   play rules to "how to play" page
 
