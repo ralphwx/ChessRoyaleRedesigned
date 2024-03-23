@@ -77,6 +77,20 @@ class UserManager {
     fs.writeFileSync(this.path + username, JSON.stringify(data));
   }
 
+  recordGame(username, gameID) {
+    let data = this._parseFile(username);
+    if(data.recentGames.length < 10) {
+      data.recentGames.unshift(gameID);
+      if(data.recentGames.length > 10) data.recentGames.splice(10);
+    }
+    fs.writeFileSync(this.path + username, JSON.stringify(data));
+  }
+
+  getRecentGames(username) {
+    let data = this._parseFile(username);
+    return data.recentGames;
+  }
+
   setElo(username, elo) {
     let userData = this._parseFile(username);
     userData.elo = elo;
@@ -93,6 +107,7 @@ class UserManager {
       password: makeHash(password + salt),
       elo: 1000,
       winStreak: 0,
+      recentGames: [],
     });
     fs.writeFileSync(this.path + username, s);
   }

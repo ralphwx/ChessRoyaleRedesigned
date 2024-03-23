@@ -118,6 +118,7 @@ function PlayButton(props) {
  *   onPause (() => (None)): function to call when the user presses pause
  */
 function ReplayDesktop(props) {
+  console.log("Received color: " + props.color);
   let animationState = {
     animationDuration: props.duration + "ms",
     animationDelay: -props.progress * props.duration + "ms",
@@ -147,7 +148,6 @@ function ReplayDesktop(props) {
       message: "Welcome to replay mode. Use the buttons below to start the replay, or click the Chess Royale logo in the upper right to return to the main lobby"
     }
   ];
-  let replay
   return <div>
     <HeaderRow username={props.loginUser} loginType={LoginType.REPLAY} />
     <div style={{width: "calc(100% - 6vh)", height: "80vh", borderLeft: "3vh #cab2d6 solid", borderRight: "3vh #cab2d6 solid", borderBottom: "3vh #cab2d6 solid"}}>

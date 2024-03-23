@@ -6,7 +6,7 @@ import {Color} from "../data/enums.mjs";
  * the server.
  */
 class LocalModel {
-  constructor(user, servergame, userElo, opponentElo) {
+  constructor(user, servergame, userElo, opponentElo, generateReplay) {
     this.user = user;
     this.gameResult = undefined;
     this.cause = undefined;
@@ -18,6 +18,7 @@ class LocalModel {
 
     this.servergame = servergame;
     this.servergame.addListener(this);
+    this.generateReplay = generateReplay;
   }
   /**
    * Listener functionality
@@ -35,6 +36,10 @@ class LocalModel {
     this.gameResult = data.gameOverResult;
     this.cause = data.gameOverCause;
     for(let listener of this.listeners) listener.gameOver();
+    if(this.generateReplay) {
+      console.log("Generate replay");
+      this.generateReplay(this.servergame);
+    }
   }
   gameStarted(now) {
     for(let listener of this.listeners) listener.gameStarted();

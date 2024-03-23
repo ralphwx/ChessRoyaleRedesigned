@@ -102,9 +102,6 @@ class ServerGame {
         gameOverResult: this.gameResult,
       });
     }
-    let replayURL = URL + "/replay?white=" + this.white + "&black=" + this.black
-      + "&data=" + encodeGameData(this.gameState);
-    this.chat.addMessage(system, "Replay available at: " + replayURL);
   }
   /**
    * Records a "declare ready" from [user].

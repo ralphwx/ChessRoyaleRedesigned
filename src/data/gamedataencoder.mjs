@@ -129,7 +129,6 @@ function decodeGameData(string) {
   let scanner = new StringScanner(string);
   let output = new GameData(0);
   while(scanner.hasNext()) {
-    console.log(scanner.position);
     let time = readTime(scanner);
     let {iRow, iCol, fRow, fCol} = readMove(scanner);
     let color = colorOf(output.getBoard().pieceAt(iRow, iCol));

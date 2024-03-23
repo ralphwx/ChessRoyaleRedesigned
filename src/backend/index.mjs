@@ -32,14 +32,17 @@ app.use(express.static("../../main"));
 import {MetaAuthServer} from "./metaauthserver.mjs";
 import {LobbyData} from "./lobbydata.mjs";
 import {UserManager} from "./users.mjs";
-import {Location, Color} from "../data/enums.mjs";
+import {Location, Color, URL} from "../data/enums.mjs";
 import {isGuest} from "./guestid.mjs";
+import {GameDatabase} from "./game_database.mjs";
+import {encodeGameData, decodeGameData} from "../data/gamedataencoder.mjs";
 
 let users = new UserManager("./users/");
 let authserver = new MetaAuthServer(server, users);
 
 let guestlobby = new LobbyData();
 let userslobby = new LobbyData();
+let games = new GameDatabase("./games/");
 
 /**
  * Set up lobby listeners that notify the client upon changes.
@@ -65,6 +68,13 @@ let handleMetaUpdate = (users_list, data) => {
 let handleGameOver = (users_list, data) => {
   if(users.userExists(users_list[0])) {
     let game = userslobby.getGame(users_list[0]);
+    if(game.wready && game.bready) {
+      let id = games.save(encodeGameData(game.gameState), game.white, game.black, "", "");
+      game.chatMessage("[system]", "Replay available at: " + URL 
+        + "/replay?id=" + id);
+      users.recordGame(game.white, id);
+      users.recordGame(game.black, id);
+    }
     let welo = users.getElo(game.white);
     let belo = users.getElo(game.black);
     if(data.gameOverResult === Color.WHITE) {
@@ -74,6 +84,13 @@ let handleGameOver = (users_list, data) => {
     if(data.gameOverResult === Color.BLACK) {
       users.recordWin(game.black, welo);
       users.recordLoss(game.white, belo);
+    }
+  } else {
+    let game = guestlobby.getGame(users_list[0]);
+    if(game.wready && game.bready) {
+      let id = games.save(encodeGameData(game.gameState), game.white, game.black, "", "");
+      game.chatMessage("[system]", "Replay available at: " + URL 
+        + "/replay?id=" + id);
     }
   }
   for(let user of users_list) {
@@ -107,6 +124,38 @@ userslobby.addListener(listener);
  * The remainder of the code implements server responses to client requests
  */
 
+/**
+ * The saveGame request is used by the client to upload a game to the server.
+ * [args] is required to have property [gamedata], which is a string encoding of
+ * the game. [args] may also have properties [white] and [black], which specify
+ * the usernames of the players. [ack] returns an object with properties {
+ *   success (bool): whether the game was saved successfully
+ *   id (string): a string id for the saved game
+ * }
+ */
+authserver.addEventHandler("saveGame", (meta, args, ack) => {
+  decodeGameData(args.gamedata);
+  let id = games.save(args.gamedata, args.white, args.black, "", "");
+  ack({
+    success: true,
+    id: id,
+  });
+});
+
+/**
+ * The loadGame request is used by the client to retrieve data corresponding to
+ * a game saved on the server. [args] is the string id of the game to be
+ * retrieved. [ack] returns {gamedata, date, white, black, whiteElo, blackElo} if 
+ * the game was found (data is a string encoding of the gamedata), returns false
+ * otherwise.
+ */
+authserver.addEventHandler("loadGame", (meta, args, ack) => {
+  if(games.gameExists(args)) {
+    ack(games.load(args));
+  } else {
+    ack(false);
+  }
+});
 /**
  * Redirect? request is used by the client to determine if they need to redirect
  * to a different screen. [args] is not used. [ack] returns a Location object

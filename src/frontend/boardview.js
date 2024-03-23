@@ -76,6 +76,11 @@ function colorToHex(color) {
  */
 function BoardView(props) {
   console.log("received now: " + props.now);
+  console.log(props.color);
+  console.log(Color.WHITE);
+  console.log(props.color === Color.WHITE);
+  console.log("received color white?" + (props.color === Color.WHITE));
+  console.log("received color black?" + (props.color === Color.BLACK));
   let now = props.now;
   let squares = [];
   let squareType = props.squareType;
