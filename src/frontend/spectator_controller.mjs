@@ -132,7 +132,7 @@ class SpectatorController {
       offerRematch: () => {},
       cancelRematch: () => {},
       onReady: () => {},
-      now: Date.now() - this.lagEstimator.getMax(),
+      now: Date.now() - this.lagEstimator.get_max(),
     };
   }
   onMouseDown(r, c, x, y, b) {

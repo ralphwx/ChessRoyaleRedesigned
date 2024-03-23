@@ -293,6 +293,7 @@ function LobbyDisplay(props) {
   }
   return <div>
     <HeaderRow username={props.user} loginType={props.loginType} />
+    <div style={{height: "5vh"}}></div>
     <div className={"main_display"}>
       <Tabs labels={labels} windows={windows} />
     </div>
@@ -311,23 +312,5 @@ function LobbyDisplay(props) {
     </div>
   </div>
 }
-
-//let data = {
-//  open: [{user: "BOT_RANDY", elo: 1200}],
-//  incoming: [{user: "tiny25", elo: 1000}],
-//  outgoing: [{user: "Arturo", elo: 9999}],
-//  ongoing: [[{user: "nicecream18", elo: 1100}, {user: "slimkey", elo: 1200}]],
-//};
-//
-//const root = ReactDOM.createRoot(document.getElementById("root"));
-//root.render(<LobbyDisplay 
-//  user={"ralphwx"}
-//  userElo={"1100"}
-//  data={data}
-//  createOpenChallenge={() => {console.log("create open")}}
-//  createPrivateChallenge={(username) => {console.log("private challenge: " + username)}}
-//  cancelChallenge={() => {console.log("cancel challenge")}}
-//  acceptChallenge={(username) => {console.log("accept challenge from " + username)}}
-///>);
 
 export {LobbyDisplay};

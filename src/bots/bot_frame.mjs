@@ -2,7 +2,7 @@
 import {Color, Location, ELIXIR} from "../data/enums.mjs";
 import {GameModel} from "../frontend/game_model.mjs";
 import {Move} from "../data/gamedata.mjs";
-
+import {Mutex} from "async-mutex";
 
 /**
  * Scales each element of [probs] so that the list adds to 1
@@ -96,27 +96,37 @@ class Scheduler {
     this.interval = interval;
     this.reactionTime = reactionTime;
     this.callingThread = undefined;
+    this.mutex = new Mutex();
   }
   execute() {
-    this.fn();
-    this.callingThread = setTimeout(() => {this.execute()}, this.interval);
+    this.mutex.runExclusive(() => {
+      this.fn();
+      this.callingThread = setTimeout(() => {this.execute()}, this.interval);
+    });
   }
   react() {
-    clearInterval(this.callingThread);
-    this.callingThread = setTimeout(() => {this.execute()}, this.reactionTime);
+    this.mutex.runExclusive(() => {
+      clearTimeout(this.callingThread);
+      this.callingThread = setTimeout(() => {this.execute()}, 
+        this.reactionTime);
+    });
   }
   /**
    * Begins the execution cycle
    */
   start() {
-    clearTimeout(this.callingThread);
-    this.execute();
+    this.mutex.runExclusive(() => {
+      clearTimeout(this.callingThread);
+      this.execute();
+    });
   }
   /**
    * Stops the execution cycle
    */
   stop() {
-    clearTimeout(this.callingThread);
+    this.mutex.runExclusive(() => {
+      clearTimeout(this.callingThread);
+    });
   }
 }
 
