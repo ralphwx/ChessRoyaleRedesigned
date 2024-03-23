@@ -1,6 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import {ReplayDesktop} from "./replay_desktop.js";
+import {ReplayMobile} from "./replay_mobile.js";
+import {DynamicDisplay} from "./dynamicdisplay.js";
 import {ReplayController} from "./replay_controller.mjs";
 import {GameData, Move} from "../data/gamedata.mjs";
 import {Color, ELIXIR, URL, LoginType} from "../data/enums.mjs";
@@ -27,7 +29,11 @@ class ReplayScreen extends React.Component {
     Object.assign(this.state, this.controller.getViewState());
   }
   render() {
-    return <ReplayDesktop {...this.state} />;
+    return <DynamicDisplay
+      innerHTMLHorizontal={<ReplayDesktop {...this.state} />}
+      innerHTMLVertical={<ReplayMobile {...this.state} />}
+      ratio={0.7}
+    />
   }
 }
 

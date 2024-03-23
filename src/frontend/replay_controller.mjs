@@ -91,7 +91,7 @@ class ReplayController {
       return SquareType.EVEN;
     });
     if(this.boardview.select.isPresent()) {
-      let [r, c] = this.boardview.get();
+      let [r, c] = this.boardview.select.get();
       squareType.set(r, c, SquareType.SELECT);
     }
     let translate = ChessMap.fromDefault([0, 0]);
@@ -152,7 +152,7 @@ class ReplayController {
       }
     }
     if(b === 2) {
-      this.viewState.select = OptionalPair.NONE;
+      this.boardview.select = OptionalPair.NONE;
     }
     this.notifyListeners();
   }

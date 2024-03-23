@@ -32,6 +32,7 @@
   animation-name: fadein;
   animation-fill-mode: both;
   animation-timing-function: linear;
+  position: relative;
 }
 
 .squaretrigger {
@@ -108,6 +109,11 @@
   height: 90vmin;
 }
 
+.chessboardreplayvert {
+  width: 80vmin;
+  height: 80vmin;
+}
+
 .innerimg {
   width: calc(100% - 6px);
   height: calc(100% - 2px);
@@ -155,6 +161,13 @@
 .resourcebarvert {
   width: 90vmin;
   height: 9vmin;
+  display: flex;
+  background-color: rgba(0, 0, 255, 0.2);
+}
+
+.resourcebarreplayvert {
+  width: 80vmin;
+  height: 8vmin;
   display: flex;
   background-color: rgba(0, 0, 255, 0.2);
 }
@@ -300,6 +313,14 @@
   width: 90vmin;
   height: 4rem;
   display: flex;
+}
+
+.ctrlRowReplay {
+  width: 75vmin;
+  height: 4rem;
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .chat_input {
@@ -664,6 +685,17 @@
   position: relative;
 }
 
+.replayBarContainervert {
+  width: 80vmin;
+  height: 2vh;
+  margin-top: 1vh;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1vh;
+  border: 1px solid black;
+  position: relative;
+}
+
 .replayBarBackground {
   width: 100%;
   height: 100%;
@@ -716,4 +748,14 @@
 .middle {
   margin-left: auto;
   margin-right: auto;
+  position: relative;
 }
+
+.playimg {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  height: 100%;
+}
+
