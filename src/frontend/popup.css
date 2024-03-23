@@ -1,5 +1,5 @@
 
-@keyframes expand {
+@keyframes expandpopup {
   0% {
     position: absolute;
     top: 50%;
@@ -21,7 +21,7 @@
   top: 50%;
   left: 50%;
   background-color: #bbbe;
-  animation-name: expand;
+  animation-name: expandpopup;
   animation-duration: 0.5s;
   transform: translate(-50%, -50%);
   white-space: nowrap;
