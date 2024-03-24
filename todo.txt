@@ -1,31 +1,26 @@
 
-Currently working on:
-- Implement replay
-  - Add opponent's elixir bar and delay
-  - Implement encoding and decoding servergame data
-  - Implement replay end-to-end
-  - Write a list of tests
-  - Check to make sure nothing broke on the other pages
-  - Make replays available on mobile
-  - Make things look nice
+Near term TODO:
+- Add a list of tasks for sending code to production
+- Put bootstrapping code in a separate file? Or some other way
+  to make it really easy to switch between HTTP local testing and
+  running HTTPS in production.
+- Make things display correctly on mobile
+  - Make arrows size adapt to window size
+- Refactor CSS
+- Figure out how many requests per second my server can handle
 - Make the rules of the game page look pretty, include diagrams, etc. Add fair
   play rules to "how to play" page
+- Add tests for things user screwing things up via JS console
+- Write tests for spectator mode
+- Write tests for replay functionality
+- Improve the bots and write bot benchmarks
 
-
-TODO:
-- Add tests for things user screwing things up via JS console (eg, username
-    or password) (I mean, technically that's cheating/hacking ...)
+Long term TODO:
 - Add thread safety features to all data structures
 - Implement a settings screen
-- Make a proper test server for testing code ...
-- Add a list of tasks for sending code to production
-- Write tests for spectator mode functionality (where user is requesting
-  game data corresponding to other users)
+- Consider representing the server as a collection of state variables
 - Make game info bar reflect whether the opponent is online
+- Attempt to hack my server, as is. Make a test suite of attempted hacks
+- Add sound effects and game start animation
 - learn SQL?
 
-Tasks for interns if I ever get any:
-- Improve the bots and write bot benchmarks
-- Make arrows size adapt to window size
-- Add sound effects and game start animation
-- Attempt to hack my server, as is. Make a test suite of attempted hacks
