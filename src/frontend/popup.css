@@ -2,14 +2,14 @@
 @keyframes expandpopup {
   0% {
     position: absolute;
-    top: 50%;
+    top: 50dvh;
     left: 50%;
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.1, 0.1);
   }
   100% {
     position: absolute;
-    top: 50%;
+    top: 50dvh;
     left: 50%;
     opacity: 1;
     transform: translate(-50%, -50%) scale(1, 1);
@@ -18,13 +18,14 @@
 
 .popup {
   position: absolute;
-  top: 50%;
+  top: 50dvh;
   left: 50%;
   background-color: #bbbe;
   animation-name: expandpopup;
   animation-duration: 0.5s;
   transform: translate(-50%, -50%);
   white-space: nowrap;
+  z-index: 5;
 }
 
 .popupcontent {
@@ -36,7 +37,6 @@
 .optionrow {
   position:absolute;
   width: 100%;
-  height: max(3.5vw, 3.5rem);
   display: flex;
   flex-wrap: wrap;
   justify-content: right;

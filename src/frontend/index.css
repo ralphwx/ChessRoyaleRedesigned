@@ -421,7 +421,6 @@
 }
 
 .roomli {
-  height: 1.9rem;
   font-size: 1.4rem;
   margin: 5px;
   position: relative;
@@ -429,7 +428,7 @@
   display: flex;
   align-items: stretch;
   justify-content: space-evenly;
-
+  padding: 0.2rem;
 }
 
 .empty_border {
@@ -507,25 +506,31 @@
   z-index:2;
   height: 100%;
   width:100%;
-  position: absolute;
-  top:0;
-  left: 0;
 }
 
 .challenger {
   float: left;
   margin: 2px;
+  max-width: 45%;
+  word-wrap: break-word;
+}
+
+.center_text {
+  display: flex;
+  justify-content: center;
 }
 
 .subdescription {
   float:right;
   margin: 2px;
+  max-width: 45%;
 }
 
 .main_display {
+  flex: 1;
   width: 50%;
-  height: 50vh;
-  min-width: min(28rem, 90vh);
+  max-height: 50vh;
+  min-width: min(90vw, 28rem);
   max-width: 750px;
   border: 3px solid gray;
   overflow: auto;
@@ -535,9 +540,8 @@
 
 .button_row {
   width: 50%;
-  min-width: min(28rem, 90vh);
+  min-width: min(28rem, 90vw);
   max-width: 750px;
-  height: max(3.5vw, 3.5rem);
   display: flex;
   background-color: #bbbe;
   margin-right: auto;

@@ -53,17 +53,17 @@ function getFloaterContent(props) {
 function LobbyRow(props) {
   if(props.type === RowType.NO_CHALLENGES) {
     return <div className={"roomli empty"}>
-      <div className={"floater"}>{"<No open challenges>"}</div>
+      <div className={"descriptor center_text"}>{"<No open challenges>"}</div>
     </div>
   }
   if(props.type === RowType.NO_ONGOING) {
     return <div className={"roomli empty"}>
-      <div className={"floater"}>{"<No ongoing games>"}</div>
+      <div className={"descriptor center_text"}>{"<No ongoing games>"}</div>
     </div>
   }
   if(props.type === RowType.LOADING) {
     return <div className={"roomli empty"}>
-      <div className={"floater"}>{"Loading ..."}</div>
+      <div className={"descriptor center_text"}>{"Loading ..."}</div>
     </div>;
   }
   let challengerDescription = props.challenger;
@@ -123,7 +123,7 @@ function SpectateRow(props) {
   </div>
 }
 
-function practiceLobby(props) {
+function PracticeLobby(props) {
   if(!props.data) return <LobbyRow type={RowType.LOADING} />;
   let output = [
     <LobbyRow
@@ -158,7 +158,7 @@ function practiceLobby(props) {
  * By convention: outgoing challenges go first, then private incoming challenges
  * then incoming open challenges
  */
-function playersLobby(props) {
+function PlayersLobby(props) {
   let data = props.data;
   if(!data) return [<LobbyRow key={"#loading"} type={RowType.LOADING} />];
   let priority_list = [];
@@ -213,7 +213,7 @@ function playersLobby(props) {
   return output;
 }
 
-function spectateLobby(props) {
+function SpectateLobby(props) {
   if(!props.data) return <LobbyRow type={RowType.LOADING} />;
   if(props.data.ongoing.length === 0) {
     return <LobbyRow type={RowType.NO_ONGOING} />
@@ -284,14 +284,14 @@ function handlePrivateChallenge(props) {
 function LobbyDisplay(props) {
   let labels = ["Play", "Practice"];
   let windows = [
-    <div>{playersLobby(props)}</div>,
-    <div>{practiceLobby(props)}</div>,
+    <div>{<PlayersLobby {...props} />}</div>,
+    <div>{<PracticeLobby {...props} />}</div>,
   ];
   if(props.loginType === LoginType.LOGIN) {
     labels.push("Spectate");
-    windows.push(<div>{spectateLobby(props)}</div>);
+    windows.push(<div><SpectateLobby {...props}/></div>);
   }
-  return <div>
+  return <div style={{display: "flex", flexDirection: "column", height: "100dvh"}}>
     <HeaderRow username={props.user} loginType={props.loginType} />
     <div style={{height: "5vh"}}></div>
     <div className={"main_display"}>
