@@ -8,6 +8,8 @@ import {ChessBoard} from "../data/chess.mjs";
 import {ChessMap} from "../data/maps.mjs";
 import {BoardView} from "./boardview.js";
 import {GameData} from "../data/gamedata.mjs";
+import play from "./img/play.png";
+import pause from "./img/pause.png";
 
 function InfoBar(props) {
   if(props.elo) {
@@ -65,7 +67,7 @@ function PlayButton(props) {
       onClick={props.onPause}
       title={"Pause"}
     >
-      {"||"}
+      <img src={pause} className="playimg" alt="||" />
     </button>
   }
   return <button 
@@ -73,7 +75,7 @@ function PlayButton(props) {
     onClick={props.onPlay}
     title={"Play"}
   >
-    {"|>"}
+    <img src={play} className="playimg" alt="|>" />
   </button>
 }
 

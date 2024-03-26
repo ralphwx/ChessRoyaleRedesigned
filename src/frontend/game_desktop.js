@@ -13,9 +13,9 @@ import abort from "./img/abort.png";
 import exit from "./img/exit.png";
 import resign from  "./img/flag.png";
 
-const abort_img = <img className="innerimg" src={abort} alt="?" />
-const exit_img = <img className="innerimg" src={exit} alt="?" />
-const resign_img = <img className="innerimg" src={resign} alt="?" />
+const abort_img = <img className="playimg" src={abort} alt="?" />
+const exit_img = <img className="playimg" src={exit} alt="?" />
+const resign_img = <img className="playimg" src={resign} alt="?" />
 
 /**
  * Sub-component of GameDesktop

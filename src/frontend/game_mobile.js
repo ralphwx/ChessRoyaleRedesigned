@@ -14,9 +14,9 @@ import abort from "./img/abort.png";
 
 import "./index.css";
 
-const abort_img = <img className="innerimg" src={abort} alt="?" />;
-const exit_img = <img className="innerimg" src={exit} alt="?" />;
-const resign_img = <img className="innerimg" src={resign} alt="?" />;
+const abort_img = <img className="playimg" src={abort} alt="?" />;
+const exit_img = <img className="playimg" src={exit} alt="?" />;
+const resign_img = <img className="playimg" src={resign} alt="?" />;
 
 /**
  * Helper functions taken from game_desktop.js
@@ -182,6 +182,7 @@ function GameMobile(props) {
       </div>
       <div className="chessboardvert">
         <BoardView
+          now={now}
           color={props.color}
           board={boardProps.board}
           delay={boardProps.delay}
