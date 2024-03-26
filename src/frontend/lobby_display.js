@@ -106,9 +106,8 @@ function SpectateRow(props) {
   if(props.whiteElo) whiteDescription += " (" + props.whiteElo + ")";
   let blackDescription = props.black;
   if(props.blackElo) blackDescription += " (" + props.blackElo + ")";
-  return <div className={"roomli"}>
+  return <div className={"roomli roomlispectate"}>
     <div className={"descriptor_left"}>
-      <div className={"spectate_white"}></div>
       <div className={"descriptor_user_left"}
         onClick={() => goSpectate(props.white)}>{whiteDescription}</div>
       <div className={"action_white"}>Watch as white</div>
