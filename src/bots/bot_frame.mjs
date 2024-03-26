@@ -135,6 +135,8 @@ function runBot(moveValue, elixirValue, interval, reactionTime, socket) {
   socket.notify("redirect?", {}, (meta, args) => {
     if(args === Location.GAME) {
       socket.notify("declareReady", {}, (meta, args) => {});
+    } else {
+      socket.notify("createOpenChallenge", {}, () => {});
     }
   });
   socket.addEventHandler("joined", (meta, args) => {
@@ -154,7 +156,10 @@ function runBot(moveValue, elixirValue, interval, reactionTime, socket) {
     metaUpdated: () => {},
     boardUpdated: () => {scheduler.react()},
     chatUpdated: () => {},
-    gameOver: () => {scheduler.stop();},
+    gameOver: () => {
+      scheduler.stop(); 
+      socket.notify("createOpenChallenge", {}, () => {});
+    },
     gameStarted: () => {scheduler.start();},
   });
 }

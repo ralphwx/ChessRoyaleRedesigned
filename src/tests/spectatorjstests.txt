@@ -4,4 +4,21 @@ These tests are to be performed by hand
 - Elixir bar shows correct amount (cross-platform)
 - Delay countdowns, arrow opacity is correct (cross-platform)
 - Displays correctly on mobile
-- TODO: write more
+- Board state renders correctly
+- Left click highlights a square
+- Left click removes arrows and highlights
+- Clicking while highlighted doesn't make a move
+- Dragging a piece doesn't cause a move
+- Right click a square toggles highlight
+- Right click a square in the presence of user arrow
+- Toggle user arrow
+- Toggle user arrow in the presence of highlights
+- Check that chat messages show up correctly
+- Check that end of game message shows up
+
+Replay tests:
+- Try dragging the progress bar
+- Check that scrolling cancels highlights and user arrows
+- Check that play, pause, and skip frame work as expected
+- Check that pause button pauses on the correct frame
+- Clicking the progress bar causes a skip

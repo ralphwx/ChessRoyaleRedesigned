@@ -1,0 +1,11 @@
+
+General UI tests:
+- Ensure lobby shows up correctly for phone, tablet, computer, old computer,
+  windows computer
+- Ensure game (practice bot, real game) shows up correctly for phone, tablet,
+  computer, old computer, windows computer
+- Ensure spectator mode shows up correctly for all devices
+- Check that redirect to game works for all pages
+- Try loading pages as someone not logged in as user or guest
+- Try loading pages as logged in person
+- Try loading pages as not logged in

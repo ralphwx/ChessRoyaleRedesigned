@@ -25,10 +25,12 @@ Tests for lobby.js
 - Test how to play link
 - Test practice bots links
 - Test that games in progress show up in spectators tab
-- Test spectator link
+- Test spectator link, ensure spectating as the correct color
+- Watch a spectator link show up
+- Watch a spectator link go away
+- Watch an open challenge go away
 - Check that spectator mode is not allowed for guest
 - Check that header displays correctly for both logged in and guest users
 - Check that the user redirects if in a game
 - Check that interacting with other buttons doesn't cover up login popup
 - Check that practice bots alternate colors
-
