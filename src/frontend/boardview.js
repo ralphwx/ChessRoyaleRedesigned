@@ -14,10 +14,10 @@ import b_knight from "./img/b_knight.png";
 import b_bishop from "./img/b_bishop.png";
 import b_queen from "./img/b_queen.png";
 import b_king from "./img/b_king.png";
-import "./index.css";
 
 import Xarrow from "react-xarrows";
 import {colorOf, Color, Piece, DELAY, ARROW_TIME} from "../data/enums.mjs";
+import "./boardview.css";
 
 function imgSrc(p) {
   switch(p) {
@@ -87,7 +87,7 @@ function BoardView(props) {
       let img = pieceToHTML(props.board.pieceAt(r, c));
       let type = squareType.get(r, c);
       let [dx, dy] = translate.get(r, c);
-      row.push(<div key={r + "_" + c}><Square 
+      row.push(<div className="gridunit" key={r + "_" + c}><Square 
         img={img} 
         type={type} 
         id={r + "_" + c}
@@ -143,8 +143,8 @@ function BoardView(props) {
       passProps={{pointerEvents: "none"}}
     /></div>);
   }
-  return <div>
-    <div>{squares}</div>
+  return <div className="fillparent">
+    <div className="grid fillparent">{squares}</div>
     <div>{arrows}</div>
   </div>
 }
@@ -163,22 +163,21 @@ function BoardView(props) {
  *   freezeFrame: whether the animation should be frozen
  */
 function Square(props) {
-  let translateStyle = {
-    transform: "translate(" + props.translateX + "px, " + props.translateY + "px)",
+  let animationStyle = {
     animationDelay: props.animationDelay + "ms",
     animationDuration: DELAY + "ms",
     animationPlayState: props.freezeFrame ? "paused" : "running",
-  };
+  }
+  let translateStyle = Object.assign({
+    transform: "translate(" + props.translateX + "px, " + props.translateY + "px)",
+  }, animationStyle);
   let zStyle = {
     zIndex: props.translateX || props.translateY ? 1 : 0,
   }
-  return <div id={props.id} className={"squarecontainer"} style={zStyle}>
-    <div key={props.key + props.animationDelay} 
-      className={"squaretrigger " + props.type} 
-      style={{
-        animationDelay: props.animationDelay + "ms",
-        animationDuration: DELAY + "ms",
-      }}
+  return <div id={props.id} className="squarecontainer" style={zStyle}>
+    <div className={"overlay fillparent " + props.type} 
+      key={props.key + props.animationDelay} 
+      style={animationStyle}
       onContextMenu={e => e.preventDefault()}
       onMouseDown={e => {
         e.preventDefault(); 
@@ -196,13 +195,17 @@ function Square(props) {
         props.onMouseMove(e.clientX, e.clientY)
       }}
     ></div>
-    <div key={props.animationDelay} className={"square"} style={translateStyle}>{props.img}</div>
-    <svg className="countdownwrapper" key={"circle" + props.animationDelay}>
-      <circle r="46%" cx="50%" cy="50%" className="countdown" style={{
-        animationDelay: props.animationDelay + "ms",
-        animationDuration: DELAY + "ms",
-        animationPlayState: props.freezeFrame ? "paused" : "running",
-      }}></circle>
+    <div className="square fillparent" 
+      key={props.animationDelay} 
+      style={translateStyle}
+    >
+      {props.img}
+    </div>
+    <svg className="countdownwrapper" 
+      key={"circle" + props.animationDelay}
+    >
+      <circle r="46%" cx="50%" cy="50%" className="countdown"
+        style={animationStyle}></circle>
     </svg>
   </div>
 }

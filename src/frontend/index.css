@@ -1,103 +1,4 @@
 /* style for game.js */
-.gridrow:after {
-  content: "";
-  display: table;
-}
-
-.gridrow {
-  width: 100%;
-  height: 12.5%;
-}
-
-.squarecontainer {
-  width: 12.5%;
-  min-height: 100%;
-  float: left;
-  position: relative;
-}
-
-.arrow {
-  z-index: 4;
-}
-
-.fadearrow {
-  z-index: 4;
-  animation-name: fadeout;
-  animation-fill-mode: both;
-  animation-timing-function: linear;
-}
-
-.square {
-  pointer-events: none;
-  animation-name: fadein;
-  animation-fill-mode: both;
-  animation-timing-function: linear;
-  position: relative;
-}
-
-.squaretrigger {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  animation-name: fadein;
-  animation-fill-mode: both;
-  animation-timing-function: linear;
-}
-
-.countdownwrapper {
-  transform: rotate(0.25turn) scaleX(-1);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 2;
-}
-
-.countdown {
-  fill: none;
-  stroke-width: 6%;
-  stroke: #0005;
-  stroke-dasharray: 315%;
-  stroke-dashoffset: 0%;
-  animation: countdown;
-  animation-timing-function: linear;
-  animation-fill-mode: both;
-}
-
-@keyframes countdown {
-  0% {
-    stroke-dashoffset: 0%;
-  }
-  100% {
-    stroke-dashoffset: 315%;
-  }
-}
-
-.even {
-  background-color: #beaed4;
-}
-
-.odd {
-  background-color: #fdc086;
-}
-
-.select {
-  background-color: #ffffb3;
-}
-
-.highlight {
-  background-color: #7fc97f;
-}
-
-.premove_init {
-  background-color: #f08080
-}
-
-.premove_dest {
-  background-color: #8b0000
-}
 
 .chessboard {
   width: 64vmin;
@@ -112,15 +13,6 @@
 .chessboardreplayvert {
   width: 80vmin;
   height: 80vmin;
-}
-
-.innerimg {
-  width: calc(100% - 6px);
-  height: calc(100% - 2px);
-  margin-left: 3px;
-  margin-right: 3px;
-  margin-top: 1px;
-  margin-bottom: 1px;
 }
 
 .metabox {
@@ -238,7 +130,7 @@
 
 .console {
   width: 88%;
-  height: calc(58.4vmin - 17.5rem);
+  height: calc(58.4vh - 17.5rem);
   background-color: lightgray;
   margin-left: 5%;
   margin-right: 5%;

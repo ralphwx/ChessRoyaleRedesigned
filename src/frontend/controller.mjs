@@ -264,6 +264,7 @@ class Controller {
     let gamestate = gamedata.history.head;
     this.viewState.premoveSrc = OptionalPair.NONE;
     this.viewState.premoveDest = OptionalPair.NONE;
+    this.boardUpdated();
     //first check that you're moving your own piece
     if(colorOf(gamestate.boardHistory.head.pieceAt(iRow, iCol)) 
       !== this.getColor()) {

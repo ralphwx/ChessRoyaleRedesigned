@@ -11,6 +11,7 @@ import {SquareType} from "./frontend/view_enums.mjs";
 import {Color, DELAY} from "./data/enums.mjs";
 import {ChessMap} from "./data/maps.mjs";
 
+let now = Date.now();
 let color = Color.BLACK;
 let squareType = ChessMap.fromInitializer((r, c) => {
   if((r + c) & 1) return SquareType.ODD;
@@ -18,7 +19,9 @@ let squareType = ChessMap.fromInitializer((r, c) => {
 });
 let translate = ChessMap.fromDefault([0, 0]);
 translate.set(6, 1, [10, -100]);
-let delay = ChessMap.fromDefault(Date.now() - DELAY);
+let delay = ChessMap.fromDefault(now - DELAY);
+delay.set(3, 4, now);
+delay.set(4, 4, now);
 let board = ChessBoard.startingPosition();
 board = board.move(1, 4, 3, 4);
 board = board.move(6, 4, 4, 4);
@@ -30,12 +33,13 @@ let main = <BoardView color={color} board={board} delay={delay}
     {iRow: 0, iCol: 1, fRow: 1, fCol: 3}
   ]} 
   moveArrows={[
-    {iRow: 1, iCol: 4, fRow: 3, fCol: 4, time:Date.now(), color:Color.WHITE},
-    {iRow: 6, iCol: 4, fRow: 4, fCol: 4, time:Date.now(), color:Color.BLACK}
+    {iRow: 1, iCol: 4, fRow: 3, fCol: 4, time:now, color:Color.WHITE},
+    {iRow: 6, iCol: 4, fRow: 4, fCol: 4, time:now, color:Color.BLACK}
   ]} 
   onMouseMove={() => {}}
   onMouseUp={() => {}}
   onMouseDown={() => {}}
+  now={now}
 />;
 
 squareType.set(0, 0, SquareType.SELECT);
@@ -43,4 +47,4 @@ squareType.set(1, 3, SquareType.PREMOVE_SRC);
 squareType.set(3, 3, SquareType.PREMOVE_DEST);
 squareType.set(3, 4, SquareType.HIGHLIGHT);
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<div style={{width: "50%", height: "50%"}}>{main}</div>);
+root.render(<div style={{width: "400px", height: "400px", border: "2px solid black"}}>{main}</div>);

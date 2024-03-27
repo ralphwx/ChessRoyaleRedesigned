@@ -174,7 +174,7 @@ function GameMobile(props) {
   let boardProps = getBoardProps(props, now);
   let elixirAmount = computeElixirAmount(props, now);
   return <div>
-    <HeaderRow />
+    <HeaderRow username={props.loginUser} loginType={props.loginType} />
     <div>
       <div className="infoRow">
         <InfoBar user={props.opponent} elo={props.opponentElo} />

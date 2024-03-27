@@ -242,7 +242,7 @@ function GameDesktop(props) {
     <div style={{height: "5vh"}}></div>
     <div className="gamecontainer">
       <div>
-        {boardview}
+        <div className="chessboard">{boardview}</div>
         <div className="resourcebar">
           <ResourceBar 
             amount={elixirAmount}

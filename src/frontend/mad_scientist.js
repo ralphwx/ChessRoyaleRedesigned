@@ -15,14 +15,17 @@ let user = localStorage.getItem("username");
 let psw = localStorage.getItem("password");
 let loginType = JSON.parse(localStorage.getItem("loginType"));
 
+user = "ralphwx";
+psw = "asdfghjkl;";
+loginType = LoginType.LOGIN;
 let bot_name = "Mad Scientist";
 
 let playAsBlack = JSON.parse(localStorage.getItem("playAsBlack?"));
 localStorage.setItem("playAsBlack?", !playAsBlack);
 
-if(loginType !== LoginType.LOGIN && loginType !== LoginType.GUEST) {
-  window.location.replace(URL);
-}
+//if(loginType !== LoginType.LOGIN && loginType !== LoginType.GUEST) {
+//  window.location.replace(URL);
+//}
 
 let game = new ServerGame(user, bot_name);
 if(playAsBlack) {
