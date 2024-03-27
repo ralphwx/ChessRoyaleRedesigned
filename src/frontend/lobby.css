@@ -1,0 +1,220 @@
+
+.screen {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+}
+
+.main_display {
+  flex: 1;
+  width: 50%;
+  max-height: 50vh;
+  min-width: min(90vw, 28rem);
+  max-width: 750px;
+  border: 3px solid gray;
+  overflow: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.button_row {
+  width: 50%;
+  min-width: min(28rem, 90vw);
+  max-width: 750px;
+  display: flex;
+  background-color: #bbbe;
+  margin-right: auto;
+  margin-left: auto;
+  border: 3px solid #bbbe;
+  flex-wrap: wrap;
+}
+
+.roomli {
+  font-size: 1.4rem;
+  margin: 5px;
+  position: relative;
+  border: 2px solid;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-evenly;
+  padding: 0.2rem;
+}
+
+.roomlispectate {
+  padding: 0rem;
+}
+
+.empty_border {
+  border-color: lightgray;
+}
+
+.outgoing_public_border {
+  border-color: #a6cee3;
+}
+
+.outgoing_private_border {
+  border-color: #1f78b4;
+}
+
+.incoming_public_border {
+  border-color: #b2df8a;
+}
+
+.incoming_private_border {
+  border-color: #33a02c;
+}
+
+.practice_border {
+  border-color: gray;
+}
+
+.outgoing_public_background {
+  background-color: #a6cee3;
+}
+
+.outgoing_private_background {
+  background-color: #1f78b4;
+}
+
+.incoming_private_background {
+  background-color: #33a02c;
+}
+
+.incoming_public_background {
+  background-color: #b2df8a;
+}
+
+.practice_background {
+  background-color: gray;
+}
+
+.floater {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  justify-content: center;
+  display: flex;
+}
+
+.background {
+  opacity: 0.2;
+}
+
+.roomli:hover > .background {
+  opacity: 0.5;
+}
+
+.descriptor {
+  z-index:2;
+  height: 100%;
+  width:100%;
+}
+
+.center_text {
+  display: flex;
+  justify-content: center;
+}
+
+.challenger {
+  float: left;
+  margin: 2px;
+  max-width: 45%;
+  word-wrap: break-word;
+}
+
+.subdescription {
+  float:right;
+  margin: 2px;
+  max-width: 45%;
+}
+
+.action {
+  opacity: 0;
+  margin: 2px;
+}
+
+.roomli:hover > .action {
+  opacity: 0.8;
+}
+
+.descriptor_left {
+  flex: 1;
+  z-index: 2;
+  background-color: #fdc08666
+}
+
+.descriptor_left:hover {
+  background-color: #fdc086
+}
+
+.descriptor_left:hover > .spectate_white {
+  opacity: 1;
+}
+
+.descriptor_user_left {
+  padding: 2px;
+  z-index: 3;
+}
+
+.descriptor_right {
+  flex: 1;
+  text-align: right;
+  background-color: #beaed466;
+}
+
+.descriptor_right:hover {
+  background-color: #beaed4;
+}
+
+.descriptor_user_right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  padding: 2px;
+  z-index: 2;
+}
+
+.versus {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.8rem;
+  z-index: 4;
+}
+
+.action_white {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(50% - 1.8rem);
+  height: 100%;
+  text-align: right;
+  opacity: 0;
+  padding: 0.2rem;
+}
+
+.descriptor_left:hover > .action_white {
+  opacity: 0.5;
+}
+
+.action_black {
+  position:absolute;
+  top: 0;
+  right: 0;
+  width: calc(50% - 1.8rem);
+  height: 100%;
+  text-align: left;
+  opacity: 0;
+  padding: 0.2rem;
+}
+
+.descriptor_right:hover > .action_black {
+  opacity: 0.5;
+}
+

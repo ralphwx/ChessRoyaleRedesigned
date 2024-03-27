@@ -4,7 +4,8 @@ import {connect} from "./metaauthclient.mjs";
 import {URL, LoginType, Location} from "../data/enums.mjs";
 import {renderPopUp} from "./popup.js";
 import {LobbyDisplay} from "./lobby_display.js";
-import "./index.css";
+import "./lobby.css";
+//import "./index.css";
 
 let username = window.localStorage.getItem("username");
 let password = window.localStorage.getItem("password");

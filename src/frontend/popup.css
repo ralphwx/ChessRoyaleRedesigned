@@ -58,3 +58,16 @@
 .first {
   margin-left: auto;
 }
+
+.entry {
+  font-size:1.2rem;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.text_input {
+  font-size: 1.2rem;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}

@@ -137,12 +137,12 @@ class MetaAuthServer {
           ack(true, user, times);
         } else if(type === LoginType.SPECTATE) {
           if(this.users.authenticate(username, password)) {
-            user = username;
             spectating = target;
             if(!this.users.userExists(target)) {
               ack(false, "User " + target + " does not exist");
               return;
             }
+            user = username;
             this.socketmap.add(user, socket);
             this.spectatormap.add(target, socket);
             let times = {
@@ -168,7 +168,12 @@ class MetaAuthServer {
         }
       });
       socket.on("disconnect", () => {
-        if(user !== null) this.socketmap.remove(user, socket);
+        if(user !== null) {
+          this.socketmap.remove(user, socket);
+          if(this.spectatormap.get(user).includes(socket)) {
+            this.spectatormap.remove(user, socket);
+          }
+        }
       });
     });
   }

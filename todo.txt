@@ -1,5 +1,6 @@
 
 Near term TODO:
+- Write tests for crashing the backend
 - Add a list of tasks for sending code to production
 - Put bootstrapping code in a separate file? Or some other way
   to make it really easy to switch between HTTP local testing and

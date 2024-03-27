@@ -110,7 +110,7 @@ function OpponentReadyButton(props) {
     if(props.opponentRematch) {
       return <div className={"readyvert online"}>{"Rematch offered"}</div>
     } else {
-      return <div className={"ready offline"}>
+      return <div className={"readyvert offline"}>
         Considering a rematch...
       </div>
     }
@@ -120,7 +120,7 @@ function OpponentReadyButton(props) {
       Opponent ready!
     </div>
   }
-  return <div className="ready offline">
+  return <div className="readyvert offline">
     Opponent preparing...
   </div>
 }
@@ -173,6 +173,7 @@ function GameMobile(props) {
   let now = props.now;
   let boardProps = getBoardProps(props, now);
   let elixirAmount = computeElixirAmount(props, now);
+  console.log(props.chat);
   return <div>
     <HeaderRow username={props.loginUser} loginType={props.loginType} />
     <div>

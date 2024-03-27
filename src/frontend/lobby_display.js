@@ -1,4 +1,5 @@
-import "./index.css";
+//import "./index.css";
+import "./lobby.css";
 import "./popup.css";
 import {Tabs} from "./tabs.js";
 import {HeaderRow} from "./header.js";
@@ -52,17 +53,17 @@ function getFloaterContent(props) {
  */
 function LobbyRow(props) {
   if(props.type === RowType.NO_CHALLENGES) {
-    return <div className={"roomli empty"}>
+    return <div className={"roomli empty_border"}>
       <div className={"descriptor center_text"}>{"<No open challenges>"}</div>
     </div>
   }
   if(props.type === RowType.NO_ONGOING) {
-    return <div className={"roomli empty"}>
+    return <div className={"roomli empty_border"}>
       <div className={"descriptor center_text"}>{"<No ongoing games>"}</div>
     </div>
   }
   if(props.type === RowType.LOADING) {
-    return <div className={"roomli empty"}>
+    return <div className={"roomli empty_border"}>
       <div className={"descriptor center_text"}>{"Loading ..."}</div>
     </div>;
   }
@@ -111,10 +112,8 @@ function SpectateRow(props) {
       <div className={"descriptor_user_left"}>{whiteDescription}</div>
       <div className={"action_white"}>Watch as white</div>
     </div>
-    <div className={"descriptor_right"}>
-      <div className="spectate_black"></div>
-      <div className="descriptor_user_right"
-        onClick={() => goSpectate(props.black)}>{blackDescription}</div>
+    <div className={"descriptor_right"} onClick={() => goSpectate(props.black)}>
+      <div className="descriptor_user_right">{blackDescription}</div>
       <div className={"action_black"}>Watch as black</div>
     </div>
     <div className={"versus"}>VS</div>
@@ -151,6 +150,7 @@ function PracticeLobby(props) {
   ];
   return output;
 }
+
 /**
  * Converts [data] to a list of LobbyRow objects.
  * By convention: outgoing challenges go first, then private incoming challenges
@@ -159,6 +159,7 @@ function PracticeLobby(props) {
 function PlayersLobby(props) {
   let data = props.data;
   if(!data) return [<LobbyRow key={"#loading"} type={RowType.LOADING} />];
+  console.log(data.open);
   let priority_list = [];
   if(props.loginType === LoginType.LOGIN) {
     for(let {user, elo} of data.outgoing) {
@@ -289,7 +290,7 @@ function LobbyDisplay(props) {
     labels.push("Spectate");
     windows.push(<div><SpectateLobby {...props}/></div>);
   }
-  return <div style={{display: "flex", flexDirection: "column", height: "100dvh"}}>
+  return <div className="screen">
     <HeaderRow username={props.user} loginType={props.loginType} />
     <div style={{height: "5vh"}}></div>
     <div className={"main_display"}>
