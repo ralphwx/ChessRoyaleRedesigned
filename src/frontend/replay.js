@@ -32,7 +32,7 @@ class ReplayScreen extends React.Component {
     return <DynamicDisplay
       innerHTMLHorizontal={<ReplayDesktop {...this.state} />}
       innerHTMLVertical={<ReplayMobile {...this.state} />}
-      ratio={0.7}
+      ratio={1}
     />
   }
 }
@@ -60,7 +60,8 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 
 let id = queryParameters.get("id");
 if(!id) {
-  fatalError("Request replay was not found");
+  fatalError("Requested replay was not found");
+  window.stop();
 }
 
 let timeoutThread = setTimeout(() => {
@@ -69,8 +70,11 @@ let timeoutThread = setTimeout(() => {
 
 connect(URL, undefined, undefined, LoginType.GUEST, undefined, (socket) => {
   socket.notify("loadGame", id, (meta, args) => {
-    clearInterval(timeoutThread);
-    console.log(args);
+    clearTimeout(timeoutThread);
+    if(!args) {
+      fatalError("Requested replay was not found");
+      return;
+    }
     let gamedata = decodeGameData(args.gamedata);
     let controller = new ReplayController(gamedata);
     let loginUser = window.localStorage.getItem("username");

@@ -234,7 +234,6 @@ class ReplayController {
     this.notifyListeners();
   }
   setNextSlideThread() {
-    console.log("next slide thread");
     this.notifyListeners();
     let progress = this.computeProgress();
     if(this.hasNextSlide(progress)) {

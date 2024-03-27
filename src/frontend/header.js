@@ -49,7 +49,7 @@ function HeaderRow(props) {
           <DynamicDisplay
             innerHTMLHorizontal={<img src={logo2} id="logo" alt="?"/>}
             innerHTMLVertical={<img src={logo1} id="logo" alt="?"/>}
-            ratio={0.8}
+            ratio={1}
           />
         </a>
       </div>

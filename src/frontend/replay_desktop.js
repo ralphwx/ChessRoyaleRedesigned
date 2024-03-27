@@ -2,7 +2,6 @@ import ReactDOM from "react-dom/client";
 
 import {HeaderRow} from "./header.js";
 import {ResourceBar} from "./resourcebar.js";
-import {ChatBox} from "./chatbox.js";
 import {Color, LoginType, ELIXIR, ARROW_TIME} from "../data/enums.mjs";
 import {ChessBoard} from "../data/chess.mjs";
 import {ChessMap} from "../data/maps.mjs";
@@ -10,6 +9,7 @@ import {BoardView} from "./boardview.js";
 import {GameData} from "../data/gamedata.mjs";
 import play from "./img/play.png";
 import pause from "./img/pause.png";
+import "./index.css";
 
 function InfoBar(props) {
   if(props.elo) {
@@ -79,6 +79,21 @@ function PlayButton(props) {
   </button>
 }
 
+function ChatBoxReplay(props) {
+  return <div>
+    <div className="consolereplay" id="chat">
+      <div>{"[system]: Welcome to replay mode. Use the buttons below to start"
+        + " the replay or click the Chess Royale log in the upper right to"
+        + " return to the main lobby"}</div>
+    </div>
+    <div className="text_input_wrapper">
+      <form>
+        <input className="chat_input" type="text" disabled="disabled" value="Chat disabled for replays" />
+      </form>
+    </div>
+  </div>
+}
+
 /**
  * Requires props:
  *   loginUser (string): The username of the user who's watching the replay
@@ -120,7 +135,6 @@ function PlayButton(props) {
  *   onPause (() => (None)): function to call when the user presses pause
  */
 function ReplayDesktop(props) {
-  console.log("Received color: " + props.color);
   let animationState = {
     animationDuration: props.duration + "ms",
     animationDelay: -props.progress * props.duration + "ms",
@@ -152,8 +166,8 @@ function ReplayDesktop(props) {
   ];
   return <div>
     <HeaderRow username={props.loginUser} loginType={LoginType.REPLAY} />
-    <div style={{width: "calc(100% - 6vh)", height: "80vh", borderLeft: "3vh #cab2d6 solid", borderRight: "3vh #cab2d6 solid", borderBottom: "3vh #cab2d6 solid"}}>
-      <div style={{height: "3vh"}}></div>
+    <div className="replayBox">
+      <div className="headerbufferreplay"></div>
       <div className="gamecontainerreplay">
         <div>
           <div className="resourcebarreplay">
@@ -163,7 +177,7 @@ function ReplayDesktop(props) {
               key={opponentElixir + "obar"}
             />
           </div>
-          <div>
+          <div className="chessboardreplay">
             {boardview}
           </div>
           <div className="resourcebarreplay">
@@ -178,10 +192,7 @@ function ReplayDesktop(props) {
           <InfoBar user={props.opponent} elo={props.opponentElo} />
           <OpponentReadyButton />
           <div>
-            <ChatBox
-              messages={chat}
-              loginType={LoginType.SPECTATE}
-            />
+            <ChatBoxReplay />
           </div>
           <UserReadyButton />
           <InfoBar user={props.user} elo={props.userElo} />

@@ -67,7 +67,6 @@ function ReplayMobile(props) {
     animationPlayState: props.playing ? "running" : "paused",
   };
   let boardProps = computeBoardProps(props.gamedata, props.now);
-  console.log("move arrows: " + props.moveArrows);
   let boardview = <BoardView
     now={props.now}
     animateBoth={true}
@@ -89,8 +88,8 @@ function ReplayMobile(props) {
     boardProps.wElixir;
   return <div>
     <HeaderRow loginType={LoginType.REPLAY}/>
-    <div style={{marginRight: "auto", marginLeft: "auto", width: "80vmin"}}>
-      <div className="infoRow">
+    <div className="contentcontainerreplayvert">
+      <div className="infoRowReplay">
         <InfoBar user={props.opponent} elo={props.opponentElo} />
       </div>
       <div className="resourcebarreplayvert">
@@ -108,7 +107,7 @@ function ReplayMobile(props) {
           animate={props.playing}
         />
       </div>
-      <div className="infoRow">
+      <div className="infoRowReplay">
         <InfoBar user={props.user} elo={props.userElo} />
       </div>
       <div className="replayBarContainervert">

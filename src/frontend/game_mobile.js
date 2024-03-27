@@ -173,10 +173,9 @@ function GameMobile(props) {
   let now = props.now;
   let boardProps = getBoardProps(props, now);
   let elixirAmount = computeElixirAmount(props, now);
-  console.log(props.chat);
   return <div>
     <HeaderRow username={props.loginUser} loginType={props.loginType} />
-    <div>
+    <div className="contentcontainervert">
       <div className="infoRow">
         <InfoBar user={props.opponent} elo={props.opponentElo} />
         <OpponentReadyButton {...props} />

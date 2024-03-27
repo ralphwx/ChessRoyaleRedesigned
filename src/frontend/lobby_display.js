@@ -159,7 +159,6 @@ function PracticeLobby(props) {
 function PlayersLobby(props) {
   let data = props.data;
   if(!data) return [<LobbyRow key={"#loading"} type={RowType.LOADING} />];
-  console.log(data.open);
   let priority_list = [];
   if(props.loginType === LoginType.LOGIN) {
     for(let {user, elo} of data.outgoing) {

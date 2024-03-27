@@ -1,5 +1,10 @@
 /* style for game.js */
 
+.headerbufferreplay {
+  height: 3vh;
+  height: 3dvh;
+}
+
 .chessboard {
   width: 64vh;
   width: 64dvh;
@@ -8,23 +13,25 @@
 }
 
 .chessboardvert {
-  width: min(64vh, 90vw, calc(65vh - 9rem));
-  width: min(64dvh, 90dvw, calc(75dvh - 9rem));
+  width: 100%;
   aspect-ratio: 1/1;
   margin-left: auto;
   margin-right: auto;
 }
 
 .chessboardreplayvert {
-  width: 80vmin;
-  height: 80vmin;
+  width: 100%;
+  aspect-ratio: 1/1;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .metabox {
   width: 32vh;
   width: 32dvh;
+  min-width: 15rem;
   height: 100%;
-  background-color: #386cb0
+  background-color: #386cb0;
 }
 
 .gamecontainer {
@@ -38,8 +45,10 @@
 }
 
 .gamecontainerreplay {
-  width: 90vmin;
-  height: 70.6vmin;
+  width: 90.8vh;
+  width: 90.8dvh;
+  height: 70.6vh;
+  height: 70.6dvh;
   display: flex;
   margin-left: auto;
   margin-right: auto;
@@ -55,15 +64,15 @@
 }
 
 .resourcebarreplay {
-  width: 58.8vmin;
-  height: 5.88vmin;
+  width: 58.8vh;
+  width: 58.8dvh;
+  aspect-ratio: 10/1;
   display: flex;
   background-color: rgba(0, 0, 255, 0.2);
 }
 
 .resourcebarvert {
-  width: min(64vh, 90vw, calc(65vh - 9rem));
-  width: min(64dvh, 90dvw, calc(75dvh - 9rem));
+  width: 100%;
   aspect-ratio: 10/1;
   display: flex;
   background-color: rgba(0, 0, 255, 0.2);
@@ -72,10 +81,12 @@
 }
 
 .resourcebarreplayvert {
-  width: 80vmin;
-  height: 8vmin;
+  width: 100%;
+  aspect-ratio: 10/1;
   display: flex;
   background-color: rgba(0, 0, 255, 0.2);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .resource {
@@ -144,8 +155,25 @@
 
 .console {
   width: 88%;
-  height: calc(58.4vh - 17.5rem);
-  height: calc(58.4dvh - 17.5rem);
+  height: min(calc(59.4vh - 18rem), calc(70.6vh - 23.25rem));
+  height: min(calc(59.4dvh - 18rem), calc(70.6dvh - 23.25rem));
+  background-color: lightgray;
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 5%;
+  padding: 1%;
+  font-size: 1.3rem;
+  font-style: italic;
+  text-align: left;
+  color: #555;
+  overflow: auto;
+  word-wrap: break-word;
+}
+
+.consolereplay {
+  width: 88%;
+  height: min(calc(59.4vh - 18rem), calc(70.6vh - 23.25rem));
+  height: min(calc(59.4dvh - 18rem), calc(70.6dvh - 23.25rem));
   background-color: lightgray;
   margin-left: 5%;
   margin-right: 5%;
@@ -210,20 +238,28 @@
 }
 
 .infoRow {
-  width: min(90vw, 64vh, calc(65vh - 9rem));
-  width: min(90dvw, 64dvh, calc(75dvh - 9rem));
+  width: 100%;
   height: 2rem;
   margin-top: 1%;
   margin-bottom: 1%;
-  position: relative;
+  display: flex;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.infoRowReplay {
+  width: 100%;
+  height: 2rem;
+  margin-top: 1%;
+  margin-bottom: 1%;
   display: flex;
   margin-right: auto;
   margin-left: auto;
 }
 
 .ctrlRow {
-  width: min(90vw, 64vh, calc(65vh - 9rem));
-  width: min(90dvw, 64dvh, calc(75dvh - 9rem));
+  width: min(90vw, calc(65vh - 9rem));
+  width: min(90dvw, calc(75dvh - 9rem));
   height: 4rem;
   display: flex;
   margin-right: auto;
@@ -231,7 +267,7 @@
 }
 
 .ctrlRowReplay {
-  width: 75vmin;
+  width: 80%;
   height: 4rem;
   display: flex;
   margin-left: auto;
@@ -320,7 +356,7 @@
 }
 
 .replayBarContainer {
-  width: 90vmin;
+  width: 90vh;
   height: 3vh;
   margin-top: 2vh;
   margin-left: auto;
@@ -330,7 +366,7 @@
 }
 
 .replayBarContainervert {
-  width: 80vmin;
+  width: 90%;
   height: 2vh;
   margin-top: 1vh;
   margin-left: auto;
@@ -403,3 +439,31 @@
   height: 100%;
 }
 
+.replayBox {
+  width: calc(100% - 6vh);
+  height: 80vh;
+  height: 80dvh;
+  border-left: 3vh #cab2d6 solid;
+  border-right: 3vh #cab2d6 solid;
+  border-bottom: 3vh #cab2d6 solid;
+}
+
+.chessboardreplay {
+  width: 58.8vh;
+  width: 58.8dvh;
+  aspect-ratio: 1/1;
+}
+
+.contentcontainervert {
+  margin-left: auto;
+  margin-right: auto;
+  width: min(90vw, calc(65vh - 9rem));
+  width: min(90dvw, calc(75dvh - 9rem));
+}
+
+.contentcontainerreplayvert {
+  margin-left: auto;
+  margin-right: auto;
+  width: min(90vw, calc(53.5vh - 6.7rem));
+  width: min(90dvw, calc(63.5dvh - 6.7rem));
+}
