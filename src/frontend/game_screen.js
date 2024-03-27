@@ -73,7 +73,7 @@ class Game extends React.Component {
     return <DynamicDisplay
       innerHTMLHorizontal={<GameDesktop {...this.state} />}
       innerHTMLVertical={<GameMobile {...this.state} />}
-      ratio={0.7}
+      ratio={1}
     />
   }
 }

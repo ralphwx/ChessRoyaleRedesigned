@@ -1,13 +1,15 @@
 /* style for game.js */
 
 .chessboard {
-  width: 64vmin;
-  height: 64vmin;
+  width: 64dvh;
+  height: 64dvh;
 }
 
 .chessboardvert {
-  width: 90vmin;
-  height: 90vmin;
+  width: min(90dvw, 64dvh);
+  height: min(90dvw, 64dvh);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .chessboardreplayvert {
@@ -16,14 +18,14 @@
 }
 
 .metabox {
-  width: 32vmin;
+  width: 32dvh;
   height: 100%;
   background-color: #386cb0
 }
 
 .gamecontainer {
-  width: 96vmin;
-  height: 70.6vmin;
+  width: 96dvh;
+  height: 70.6dvh;
   display: flex;
   margin-left: auto;
   margin-right: auto;
@@ -36,9 +38,10 @@
   margin-left: auto;
   margin-right: auto;
 }
+
 .resourcebar {
-  width: 64vmin;
-  height: 6.4vmin;
+  width: 64dvh;
+  height: 6.4dvh;
   display: flex;
   background-color: rgba(0, 0, 255, 0.2);
 }
@@ -51,10 +54,12 @@
 }
 
 .resourcebarvert {
-  width: 90vmin;
-  height: 9vmin;
+  width: min(64dvh, 90dvw);
+  height: min(6.4dvh, 90dvw);
   display: flex;
   background-color: rgba(0, 0, 255, 0.2);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .resourcebarreplayvert {
@@ -130,7 +135,7 @@
 
 .console {
   width: 88%;
-  height: calc(58.4vh - 17.5rem);
+  height: calc(58.4dvh - 17.5rem);
   background-color: lightgray;
   margin-left: 5%;
   margin-right: 5%;
@@ -147,7 +152,7 @@
 .consolevert {
   margin-left: auto;
   margin-right: auto;
-  width: 90vmin;
+  width: 90dvw;
   background-color: lightgray;
   overflow: auto;
 }
@@ -194,18 +199,22 @@
 }
 
 .infoRow {
-  width: 90vmin;
+  width: min(90dvw, 64dvh);
   height: 2rem;
   margin-top: 1%;
   margin-bottom: 1%;
   position: relative;
   display: flex;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 .ctrlRow {
-  width: 90vmin;
+  width: min(90dvw, 64dvh);
   height: 4rem;
   display: flex;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 .ctrlRowReplay {
