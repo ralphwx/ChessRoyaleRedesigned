@@ -15,9 +15,6 @@ let user = localStorage.getItem("username");
 let psw = localStorage.getItem("password");
 let loginType = JSON.parse(localStorage.getItem("loginType"));
 
-user = "ralphwx";
-psw = "asdfghjkl;";
-loginType = LoginType.LOGIN;
 let bot_name = "Mad Scientist";
 
 let playAsBlack = JSON.parse(localStorage.getItem("playAsBlack?"));
