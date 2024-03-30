@@ -22,13 +22,7 @@
  *
  */
 
-import express from "express";
-const app = express();
-import {createServer} from "http";
-const server = createServer(app);
-
-app.use(express.static("../../main"));
-
+import {initializeHttp, initializeHttps} from "./bootstrap.mjs";
 import {MetaAuthServer} from "./metaauthserver.mjs";
 import {LobbyData} from "./lobbydata.mjs";
 import {UserManager} from "./users.mjs";
@@ -37,6 +31,7 @@ import {isGuest} from "./guestid.mjs";
 import {GameDatabase} from "./game_database.mjs";
 import {encodeGameData, decodeGameData} from "../data/gamedataencoder.mjs";
 
+let server = initializeHttp(8080);
 let users = new UserManager("./users/");
 let authserver = new MetaAuthServer(server, users);
 
@@ -496,6 +491,4 @@ authserver.addEventHandler("abort", (meta, args, ack) => {
   ack();
 });
 
-server.listen(8080, () => {
-  console.log("listening on *:8080");
-});
+

@@ -1,0 +1,2 @@
+cp -r src/backend/games/* ../backup/games
+cp -r src/backend/users/* ../backup/users

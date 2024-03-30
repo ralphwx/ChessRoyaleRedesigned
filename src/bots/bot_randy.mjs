@@ -26,7 +26,7 @@ class BotRandy {
   }
 }
 
-connect("http://beta.royalechess.org", "BOT_RANDY", "sophisticated", LoginType.LOGIN, undefined, (socket) => {
+connect(URL, "BOT_RANDY", "TwoUsersNow!!", LoginType.LOGIN, undefined, (socket) => {
   console.log("Connected");
   let bot = new BotRandy();
   runBot(bot.moveValue, bot.elixirValue, 1000, 200, socket);

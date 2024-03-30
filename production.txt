@@ -1,16 +1,23 @@
 
 Tasks when sending code to production:
+- On local:
+  - Run all tests, make sure all tests are passing
+  - Remove users/ and games/ database
+  - Set URL to the correct URL in data/enums.mjs
+  - make build
 - Git push latest version
-- Run all tests, make sure all tests are passing
-- Remove users/ and games/ database
-- Save a copy of all serverside data
+- Run backup on server side
 - Git pull on server side
+- Restore backup on serverside
 - Double check serverside data is correct
-- Set URL to the correct URL in data/enums.mjs
-- make build
-- Ensure that backend/index.mjs supports HTTPS, then
-  run "sudo node index.mjs"
+- Set bootstrap to HTTPS
+- "sudo node index.mjs"
 
 Instructions for setting up HTTPS:
-- Install certbot, follow instructions for getting the certificates
-- (Update these instructions later)
+- Set the DNS to point to the correct IP address, if needed
+- Halt execution of the server, if it's running
+- Install certbot if needed
+- Run certbot and follow instructions for getting the certificates
+- Update bootstrap.mjs with the correct certificate location
+- Set backend/index.mjs to use HTTPS
+- "sudo node index.mjs"
