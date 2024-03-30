@@ -1,7 +1,7 @@
 
 import {OptionalPair, SquareType} from "./view_enums.mjs";
 import {ChessMap, ChessBitMap} from "../data/maps.mjs";
-import {Piece, DELAY} from "../data/enums.mjs";
+import {Piece} from "../data/enums.mjs";
 
 class ReplayController {
   constructor(gamedata) {

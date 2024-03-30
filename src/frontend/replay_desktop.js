@@ -1,12 +1,8 @@
-import ReactDOM from "react-dom/client";
 
 import {HeaderRow} from "./header.js";
 import {ResourceBar} from "./resourcebar.js";
 import {Color, LoginType, ELIXIR, ARROW_TIME} from "../data/enums.mjs";
-import {ChessBoard} from "../data/chess.mjs";
-import {ChessMap} from "../data/maps.mjs";
 import {BoardView} from "./boardview.js";
-import {GameData} from "../data/gamedata.mjs";
 import play from "./img/play.png";
 import pause from "./img/pause.png";
 import "./index.css";
@@ -158,12 +154,6 @@ function ReplayDesktop(props) {
   />
   let userElixir = props.color === Color.WHITE ? boardProps.wElixir : boardProps.bElixir;
   let opponentElixir = props.color === Color.WHITE ? boardProps.bElixir: boardProps.wElixir;
-  let chat = [
-    {
-      sender: "[system]",
-      message: "Welcome to replay mode. Use the buttons below to start the replay, or click the Chess Royale logo in the upper right to return to the main lobby"
-    }
-  ];
   return <div>
     <HeaderRow username={props.loginUser} loginType={LoginType.REPLAY} />
     <div className="replayBox">

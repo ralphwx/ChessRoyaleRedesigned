@@ -4,9 +4,8 @@ import {ReplayDesktop} from "./replay_desktop.js";
 import {ReplayMobile} from "./replay_mobile.js";
 import {DynamicDisplay} from "./dynamicdisplay.js";
 import {ReplayController} from "./replay_controller.mjs";
-import {GameData, Move} from "../data/gamedata.mjs";
-import {Color, ELIXIR, URL, LoginType} from "../data/enums.mjs";
-import {encodeGameData, decodeGameData} from "../data/gamedataencoder.mjs";
+import {Color, URL, LoginType} from "../data/enums.mjs";
+import {decodeGameData} from "../data/gamedataencoder.mjs";
 import {renderPopUp} from "./popup.js";
 import {connect} from "./metaauthclient.mjs";
 

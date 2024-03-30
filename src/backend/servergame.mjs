@@ -1,8 +1,8 @@
 
-import {URL, Color, GameOverCause} from "../data/enums.mjs";
+import {Color, GameOverCause} from "../data/enums.mjs";
 import {ChatLog} from "../data/chat_log.mjs";
 import {Move, GameData} from "../data/gamedata.mjs";
-import {encodeGameData} from "../data/gamedataencoder.mjs";
+
 /**
  * A string constant representing the origin of server-generated messages.
  */

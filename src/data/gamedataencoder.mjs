@@ -1,6 +1,6 @@
 
 import {GameData, Move} from "./gamedata.mjs";
-import {Color, colorOf} from "./enums.mjs";
+import {colorOf} from "./enums.mjs";
 /**
  * This module contains functions for converting gamedata objects to string and
  * back again.
