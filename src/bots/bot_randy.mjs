@@ -6,7 +6,8 @@ import {connect} from "../frontend/metaauthclient.mjs";
 
 class BotRandy {
   elixirValue(e) {
-    return 3.5 / e;
+    if(e < 2.5) return 3.5;
+    return 4 / e;
   }
   moveValue(iRow, iCol, fRow, fCol, board) {
     let features = computeFeatures(iRow, iCol, fRow, fCol, board);
