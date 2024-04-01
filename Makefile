@@ -1,3 +1,6 @@
+clean:
+	rm -r main/*
+
 build:
 	set -e 
 	python3 build.py frontend/lobby.js
