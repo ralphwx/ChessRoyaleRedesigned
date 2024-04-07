@@ -186,4 +186,4 @@ function runBotLocal(moveValue, elixirValue, interval, reactionTime,
   servergame.setReady(username);
 }
 
-export {runBot, runBotLocal}
+export {runBot, runBotLocal, Scheduler}

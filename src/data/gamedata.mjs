@@ -75,15 +75,9 @@ class GameState {
    * Helper function
    */
   checkGameOver() {
-    let wking = false;
-    let bking = false;
     let board = this.boardHistory.head;
-    for(let i = 0; i < 8; i++) {
-      for(let j = 0; j < 8; j++) {
-        if(board.pieceAt(i, j) === Piece.W_KING) wking = true;
-        if(board.pieceAt(i, j) === Piece.B_KING) bking = true;
-      }
-    }
+    let wking = board.state.wking;
+    let bking = board.state.bking;
     if(!wking) return Color.BLACK;
     if(!bking) return Color.WHITE;
     return Color.NONE;
@@ -99,7 +93,9 @@ class GameState {
   isLegalMove(move) {
     let board = this.boardHistory.head;
     //need to check for color, elixir, delay, gameover, and board state
-    if(this.gameOver !== Color.NONE) return false;
+    if(this.gameOver !== Color.NONE) {
+      return false;
+    }
     if(colorOf(board.pieceAt(move.iRow, move.iCol)) !== move.color) {
       return false;
     }

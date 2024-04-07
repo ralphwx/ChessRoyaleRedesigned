@@ -1,5 +1,5 @@
 
-import {ChessMap, LegalMoveMap} from "./maps.mjs";
+import {ChessMap, ChessBitMap, LegalMoveMap} from "./maps.mjs";
 import {Piece, Color, colorOf, MoveType} from "./enums.mjs";
 
 /**
@@ -51,6 +51,8 @@ const START = {
   bqcastle: true,
   wep: [],
   bep: [],
+  bking: true,
+  wking: true,
 };
 
 /**
@@ -444,15 +446,7 @@ function moveType(state, iRow, iCol, fRow, fCol) {
 }
 
 function listLegalMoves(state) {
-  let bk = false;
-  let wk = false;
-  for(let i = 0; i < 8; i++) {
-    for(let j = 0; j < 8; j++) {
-      if(state.board.get(i, j) === Piece.W_KING) wk = true;
-      if(state.board.get(i, j) === Piece.B_KING) bk = true;
-    }
-  }
-  if(!bk || !wk) return [];
+  if(!state.wking || !state.bking) return [];
   let output = state.moves.toList();
   for(let c of state.wep) {
     if(state.board.get(4, c) !== Piece.B_PAWN) continue;
@@ -495,6 +489,8 @@ function move(state, iRow, iCol, fRow, fCol) {
     bqcastle: state.bqcastle,
     wep: [...state.wep],
     bep: [...state.bep],
+    wking: true,
+    bking: true,
   }
   if(iRow === 0 && iCol === 4) {
     output.wkcastle = false;
@@ -523,6 +519,8 @@ function move(state, iRow, iCol, fRow, fCol) {
       output.bep = [];
     }
   }
+  if(state.board.get(fRow, fCol) === Piece.B_KING) output.bking = false;
+  if(state.board.get(fRow, fCol) === Piece.W_KING) output.wking = false;
   if(type === MoveType.PROMOTION) {
     modifySquare(output, iRow, iCol, Piece.NULL);
     if(fRow === 7) {
@@ -582,14 +580,10 @@ class ChessBoard {
     this.moveCache = undefined;
     this.whiteMoveCache = undefined;
     this.blackMoveCache = undefined;
-    this.wking = false; //represents whether the white king is present
-    this.bking = false; //represents whether the black king is present
-    for(let i = 0; i < 8; i++) {
-      for(let j = 0; j < 8; j++) {
-        if(this.state.board.get(i, j) === Piece.W_KING) this.wking = true;
-        if(this.state.board.get(i, j) === Piece.B_KING) this.bking = true;
-      }
-    }
+    this.whiteAttackComputedCache = ChessBitMap.empty();
+    this.blackAttackComputedCache = ChessBitMap.empty();
+    this.blackAttackCache = ChessBitMap.empty();
+    this.whiteAttackCache = ChessBitMap.empty();
   }
   /**
    * Returns the starting position.
@@ -614,7 +608,7 @@ class ChessBoard {
    * [fRow, fCol].
    */
   moveType(iRow, iCol, fRow, fCol) {
-    if(!this.bking || !this.wking) return MoveType.INVALID;
+    if(!this.state.bking || !this.state.wking) return MoveType.INVALID;
     return moveType(this.state, iRow, iCol, fRow, fCol);
   }
   /**
@@ -624,7 +618,7 @@ class ChessBoard {
    * a copy of the current board is returned.
    */
   move(iRow, iCol, fRow, fCol) {
-    if(!this.bking || !this.wking) return this;
+    if(this.moveType(iRow, iCol, fRow, fCol) === MoveType.INVALID) return this;
     return new ChessBoard(move(this.state, iRow, iCol, fRow, fCol));
   }
   /**
@@ -633,16 +627,19 @@ class ChessBoard {
    * is undefined. Each move is represented by a list of four ints 
    * [iRow, iCol, fRow, fCol] such that the move starts at [iRow, iCol] and
    * ends at [fRow, fCol].
+   * 
+   * WARNING: the output of this function MUST NOT be modified, since it's a
+   * pointer to sensitive internal data (for speed purposes)
    */
   listLegalMoves(color) {
     if(color === undefined) {
-      if(this.moveCache !== undefined) return [...this.moveCache];
+      if(this.moveCache !== undefined) return this.moveCache;
       let output = listLegalMoves(this.state);
       this.moveCache = output;
       return output;
     }
     if(color === Color.WHITE) {
-      if(this.whiteMoveCache !== undefined) return [...this.whiteMoveCache];
+      if(this.whiteMoveCache !== undefined) return this.whiteMoveCache;
       let allMoves = this.listLegalMoves();
       let whiteMoves = [];
       for(let [iRow, iCol, fRow, fCol] of allMoves) {
@@ -651,10 +648,10 @@ class ChessBoard {
         }
       }
       this.whiteMoveCache = whiteMoves;
-      return [...this.whiteMoveCache];
+      return this.whiteMoveCache;
     }
     if(color === Color.BLACK) {
-      if(this.blackMoveCache !== undefined) return [...this.blackMoveCache];
+      if(this.blackMoveCache !== undefined) return this.blackMoveCache;
       let allMoves = this.listLegalMoves();
       let blackMoves = [];
       for(let [iRow, iCol, fRow, fCol] of allMoves) {
@@ -663,9 +660,33 @@ class ChessBoard {
         }
       }
       this.blackMoveCache = blackMoves;
-      return [...this.blackMoveCache];
+      return this.blackMoveCache;
     }
     throw new Error("Why is color not WHITE, BLACK, or undefined?");
+  }
+  /**
+   * Returns whether the player playing [color] is attacking the square [r, c]
+   */
+  isAttacked(r, c, color) {
+    if(color === Color.WHITE) {
+      if(this.whiteAttackComputedCache.get(r, c)) {
+        return this.whiteAttackCache.get(r, c);
+      }
+      let output = isAttacked(this.state, r, c, color);
+      this.whiteAttackComputedCache.set(r, c, true);
+      this.whiteAttackCache.set(r, c, output);
+      return output;
+    }
+    if(color === Color.BLACK) {
+      if(this.blackAttackComputedCache.get(r, c)) {
+        return this.blackAttackCache.get(r, c);
+      }
+      let output = isAttacked(this.state, r, c, color);
+      this.blackAttackComputedCache.set(r, c, true);
+      this.blackAttackCache.set(r, c, output);
+      return output;
+    }
+    throw new Error("What color you playin'?");
   }
 }
 
