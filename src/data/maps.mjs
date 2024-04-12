@@ -91,6 +91,22 @@ class ChessBitMap {
   copy() {
     return new ChessBitMap(this.low, this.high);
   }
+  toList() {
+    let output = [];
+    let low = this.low;
+    let high = this.high;
+    while(high !== 0) {
+      let b = 31 - Math.clz32(high);
+      output.push([4 | (b >> 3), b & 7]);
+      high ^= (1 << b);
+    }
+    while(low !== 0) {
+      let b = 31 - Math.clz32(low);
+      output.push([b >> 3, b & 7]);
+      low ^= (1 << b);
+    }
+    return output;
+  }
 }
 
 /**
@@ -122,11 +138,8 @@ class LegalMoveMap {
     let output = [];
     for(let i = 0; i < 8; i++) {
       for(let j = 0; j < 8; j++) {
-        if(this.data.get(i, j).isAllZero()) continue;
-        for(let r = 0; r < 8; r++) {
-          for(let c = 0; c < 8; c++) {
-            if(this.data.get(i, j).get(r, c)) output.push([i, j, r, c]);
-          }
+        for(let [r, c] of this.data.get(i, j).toList()) {
+          output.push([i, j, r, c]);
         }
       }
     }
