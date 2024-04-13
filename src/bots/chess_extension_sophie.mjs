@@ -379,4 +379,5 @@ gamedata.move(new Move(Color.WHITE, ELIXIR, 1, 4, 3, 4));
 gamedata.move(new Move(Color.WHITE, 2 * ELIXIR, 0, 3, 4, 7));
 gamedata.move(new Move(Color.WHITE, 3 * ELIXIR, 0, 5, 3, 2));
 console.log(selectMove(gamedata.history.head, 5 * ELIXIR, Color.WHITE, 1));
+
 export {selectMove};
