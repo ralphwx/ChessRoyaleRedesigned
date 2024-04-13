@@ -10,7 +10,9 @@ class BotRandy {
     return 4 / e;
   }
   moveValue(iRow, iCol, fRow, fCol, board) {
+    console.log("considering move: " + iRow + iCol + fRow + fCol);
     let features = computeFeatures(iRow, iCol, fRow, fCol, board);
+    console.log("hanging: " + features.hanging);
     if(features.capture_king) return 100;
     let output = 0;
     output += 2 * features.is_capture;
@@ -27,7 +29,7 @@ class BotRandy {
   }
 }
 
-connect(URL, "BOT_RANDY", "TwoUsersNow!!", LoginType.LOGIN, undefined, (socket) => {
+connect(URL, "BOT_RANDY_TEST", "TwoUsersNow!!", LoginType.LOGIN, undefined, (socket) => {
   console.log("Connected");
   let bot = new BotRandy();
   runBot(bot.moveValue, bot.elixirValue, 1000, 200, socket);

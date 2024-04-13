@@ -34,8 +34,10 @@ function canMoveAway(board, square, direction) {
   let dc = direction & 7;
   if(piece === Piece.W_PAWN) {
     let push = board.pieceAt(r + 1, c) === Piece.NULL;
-    let captureLeft = board.moveType(r, c, r + 1, c - 1) !== MoveType.INVALID;
-    let captureRight = board.moveType(r, c, r + 1, c + 1) !== MoveType.INVALID;
+    let captureLeft = c - 1 >= 0 
+     && board.moveType(r, c, r + 1, c - 1) !== MoveType.INVALID;
+    let captureRight = c + 1 <= 7
+     && board.moveType(r, c, r + 1, c + 1) !== MoveType.INVALID;
     if(dc === 0) return captureLeft || captureRight;
     return captureRight || captureLeft || push;
   }
@@ -85,7 +87,7 @@ function listAttackers(board, color) {
         let deltas = [0x12, 0x21, -0xe, -0x1f, 0xe, 0x1f, -0x12, -0x21];
         for(let d of deltas) {
           let newSquare = currentSquare + d;
-          if((newSquare & 0x88 === 0) 
+          if(((newSquare & 0x88) === 0) 
             && colorOf(board.pieceAt((newSquare >> 4) & 7, newSquare & 7)) 
             === oppoColor) {
             output.get((newSquare >> 4) & 7, newSquare & 7).push(currentSquare);
@@ -96,7 +98,7 @@ function listAttackers(board, color) {
         let deltas = [0x01, -0x01, 0x11, 0x10, 0xf, -0xf, -0x10, -0x11];
         for(let d of deltas) {
           let newSquare = currentSquare + d;
-          if((newSquare & 0x88 === 0)
+          if(((newSquare & 0x88) === 0)
             && colorOf(board.pieceAt((newSquare >> 4) & 7, newSquare & 7))
             === oppoColor) {
             output.get((newSquare >> 4) & 7, newSquare & 7).push(currentSquare);
@@ -129,7 +131,7 @@ function listAttackers(board, color) {
         for(let d of directions) {
           let newSquare = currentSquare + d;
           let discover = false;
-          for(let newSquare = currentSquare + d; newSquare & 0x88 === 0; 
+          for(let newSquare = currentSquare + d; (newSquare & 0x88) === 0; 
            newSquare += d) {
             let rr = newSquare >> 4 & 7;
             let cc = newSquare & 7;
@@ -163,7 +165,7 @@ function listDefenders(board, r, c) {
     }
   }
   if(color === Color.BLACK) {
-    if(c < 0 && board.pieceAt(r + 1, c - 1) === Piece.B_PAWN) {
+    if(c > 0 && board.pieceAt(r + 1, c - 1) === Piece.B_PAWN) {
       output.push(1);
     }
     if(c < 7 && board.pieceAt(r + 1, c + 1) === Piece.B_PAWN) {
@@ -175,7 +177,7 @@ function listDefenders(board, r, c) {
   let currentSquare = r << 4 | c;
   for(let d of knightDirections) {
     let newSquare = currentSquare + d;
-    if(newSquare & 0x88 !== 0) continue;
+    if((newSquare & 0x88) !== 0) continue;
     let piece = board.pieceAt((newSquare >> 4) & 7, newSquare & 7);
     if((color === Color.WHITE && piece === Piece.W_KNIGHT) 
       || (color === Color.BLACK && piece === Piece.B_KNIGHT)) {
@@ -186,7 +188,7 @@ function listDefenders(board, r, c) {
   let kingDirections = [0x01, -0x01, 0x11, 0x10, 0xf, -0xf, -0x10, -0x11];
   for(let d of kingDirections) {
     let newSquare = currentSquare + d;
-    if(newSquare & 0x88 !== 0) continue;
+    if((newSquare & 0x88) !== 0) continue;
     let piece = board.pieceAt((newSquare >> 4) & 7, newSquare & 7);
     if((color === Color.WHITE && piece === Piece.W_KING)
       || (color === Color.BLACK && piece === Piece.B_KING)) {
@@ -196,9 +198,9 @@ function listDefenders(board, r, c) {
   //now scan horizontally
   let rookDirections = [0x01, -0x01, 0x10, -0x10];
   for(let d of rookDirections) {
-    let newSquare = currentSquare + d;
     let discover = false;
-    while(newSquare & 0x88 === 0) {
+    for(let newSquare = currentSquare + d; (newSquare & 0x88) === 0; 
+     newSquare += d) {
       let nr = (newSquare >> 4) & 7;
       let nc = newSquare & 7;
       let piece = board.pieceAt(nr, nc);
@@ -208,16 +210,19 @@ function listDefenders(board, r, c) {
         output.push(5);
       } else if(piece === Piece.B_QUEEN || piece === Piece.W_QUEEN) {
         output.push(9);
-      } else if(!discover || canMoveAway(board, newSquare, d)) {
-        discover = true;
-      } else break;
+      } else {
+        if(!discover && canMoveAway(board, newSquare, d)) {
+          discover = true;
+        } else break;
+      }
     }
   }
   let bishopDirections = [0x11, 0xf, -0xf, -0x11];
   for(let d of bishopDirections) {
     let newSquare = currentSquare + d;
     let discover = false;
-    while(newSquare & 0x88 === 0) {
+    for(let newSquare = currentSquare + d; (newSquare & 0x88) === 0; 
+     newSquare += d) {
       let nr = (newSquare >> 4) & 7;
       let nc = newSquare & 7;
       let piece = board.pieceAt(nr, nc);
@@ -227,7 +232,7 @@ function listDefenders(board, r, c) {
         output.push(3);
       } else if(piece === Piece.B_QUEEN || piece === Piece.W_QUEEN) {
         output.push(9);
-      } else if(!discover || canMoveAway(board, newSquare, d)) {
+      } else if(!discover && canMoveAway(board, newSquare, d)) {
         discover = true;
       } else break;
     }
@@ -242,8 +247,6 @@ function listDefenders(board, r, c) {
 function computeCapturable(board, color) {
   let attacks = listAttackers(board, color);
   let output = 0;
-  console.log(attacks.get(6, 5));
-  console.log(listDefenders(board, 6, 5));
   for(let r = 0; r < 8; r++) {
     for(let c = 0; c < 8; c++) {
       if(attacks.get(r, c).length === 0) continue;
@@ -253,10 +256,6 @@ function computeCapturable(board, color) {
       let defenders = listDefenders(board, r, c);
       attackers.sort((a, b) => a - b);
       defenders.sort((a, b) => a - b);
-      if(r === 6 && c === 5) {
-        console.log(attackers);
-        console.log(defenders);
-      }
       let base = pieceValue(board.pieceAt(r, c));
       let values = [0, base];
       for(let i = 0; i < Math.min(attackers.length - 1, defenders.length); i++) {
@@ -267,9 +266,6 @@ function computeCapturable(board, color) {
         values.push(
           values[values.length - 1] - attackers[attackers.length - 1]
         );
-      }
-      if(r === 6 && c === 5) {
-        console.log(values);
       }
       for(let i = values.length - 1; i >= 1; i--) {
         if(i & 1) values[i - 1] = Math.max(values[i], values[i - 1]);
@@ -289,3 +285,5 @@ board = board.move(7, 1, 5, 2);
 board = board.move(0, 5, 3, 2);
 console.log(computeCapturable(board, Color.WHITE));
 */
+
+export {computeCapturable}

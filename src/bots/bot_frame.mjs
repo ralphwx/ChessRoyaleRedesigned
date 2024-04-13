@@ -3,6 +3,7 @@ import {Color, Location, ELIXIR} from "../data/enums.mjs";
 import {GameModel} from "../frontend/game_model.mjs";
 import {Move} from "../data/gamedata.mjs";
 import {Mutex} from "async-mutex";
+import {printBoard} from "../tests/test_framework.mjs";
 
 /**
  * Scales each element of [probs] so that the list adds to 1
@@ -55,6 +56,8 @@ function getElixirCount(gamedata, now, color) {
 function selectMove(gamedata, color, moveValue, elixirValue, temperature) {
   let now = Date.now();
   let board = gamedata.getBoard();
+  console.log("Received board");
+  printBoard(board);
   let moves = board.listLegalMoves(color);
   if(moves.length === 0) return undefined;
   let values = [];

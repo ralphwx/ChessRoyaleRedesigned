@@ -2,7 +2,9 @@
 import {connect} from "../frontend/metaauthclient.mjs";
 import {decodeGameData} from "../data/gamedataencoder.mjs";
 import {LoginType, Color} from "../data/enums.mjs";
-import {selectMove} from "./chess_extension_sophie.mjs";
+//import {selectMove} from "./chess_extension_sophie.mjs";
+import {computeCapturable} from "./compute_capturable.mjs";
+import {printBoard} from "../tests/test_framework.mjs";
 
 function extractGameplay(id) {
   return new Promise((resolve, reject) => {
@@ -39,10 +41,16 @@ function printGameData(gamedata) {
 }
 
 let main = async () => {
-  let id = "dKQL3iL";
+  let id = "THyQfp7";
   let gamedata = await extractGameplay(id);
-  let gamestate = await extractGameState(id, 5);
-  console.log(selectMove(gamestate, 42951, Color.WHITE, 1));
+  printGameData(gamedata);
+  let gamestate = await extractGameState(id, 2);
+  //console.log(selectMove(gamestate, 42951, Color.WHITE, 1));
+  let board = gamestate.boardHistory.head;
+  printBoard(board);
+  console.log(computeCapturable(board, Color.WHITE));
+  board = board.move(7, 1, 5, 0);
+  console.log(computeCapturable(board, Color.WHITE));
 }
 
 main();
