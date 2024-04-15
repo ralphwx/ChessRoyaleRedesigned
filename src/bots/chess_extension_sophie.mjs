@@ -302,7 +302,7 @@ function computeCapturable(board, color) {
 function computeTacticalValue(iRow, iCol, fRow, fCol, board, newBoard, color) {
   let oppocolor = flipColor(color);
   let movetype = board.moveType(iRow, iCol, fRow, fCol);
-  let captured = movetype === MoveType.EN_PESANT ? 
+  let captured = movetype === MoveType.ENPESANT ? 
     1 : pieceValue(board.pieceAt(fRow, fCol));
   if(movetype === MoveType.PROMOTION) captured += 8;
   return captured 
@@ -365,7 +365,7 @@ function computeFeatures(iRow, iCol, fRow, fCol, board) {
   let newBoard = board.move(iRow, iCol, fRow, fCol);
   let output = {};
   let capturable = computeCapturable(board, flipColor(color));
-  output.captures = movetype === MoveType.EN_PESANT ? 1 :
+  output.captures = movetype === MoveType.ENPESANT ? 1 :
     pieceValue(board.pieceAt(fRow, fCol));
   if(movetype === MoveType.PROMOTION) {
     output.captures += 8;
@@ -386,4 +386,4 @@ function computeFeatures(iRow, iCol, fRow, fCol, board) {
   return output;
 }
 
-export {computeCapturable, listAttackers, listDefenders, listAttackable, pieceValue, computeFeatures}
+export {computeCapturable, listAttackers, listDefenders, listAttackable, pieceValue, computeFeatures, computeTacticalValue, centralityBonus, countSafeMoves}

@@ -2,11 +2,13 @@
 import {connect} from "../frontend/metaauthclient.mjs";
 import {decodeGameData} from "../data/gamedataencoder.mjs";
 import {LoginType, Color, ELIXIR} from "../data/enums.mjs";
-import {listAttackable, computeFeatures} from "./chess_extension_sophie.mjs";
+import {computeCapturable, listAttackable, computeFeatures} 
+  from "./chess_extension_sophie.mjs";
 import {printBoard} from "../tests/test_framework.mjs";
-import {BotSophie} from "./bot_sophie.mjs";
+//import {BotSophie} from "./bot_sophie.mjs";
 import {ChessBoard} from "../data/chess.mjs";
 import {GameData} from "../data/gamedata.mjs";
+import {selectMove} from "./bot_sophie2.mjs";
 
 function extractGameplay(id) {
   return new Promise((resolve, reject) => {
@@ -32,6 +34,20 @@ async function extractGameState(id, n) {
   return output.head;
 }
 
+async function extractGameDataAfterMove(id, iRow, iCol, fRow, fCol) {
+  let gamedata = await extractGameplay(id);
+  let output = gamedata.history;
+  while(!output.head.moveHistory.isNil()) {
+    let {iRow: ir, iCol: ic, fRow: fr, fCol: fc} = output.head.moveHistory.head;
+    if(iRow === ir && iCol === ic && fRow === fr && fCol === fc) {
+      gamedata.history = output;
+      return gamedata;
+    }
+    output = output.tail;
+  }
+  throw new Error("Could not find move: " + iRow + iCol + fRow + fCol);
+}
+
 function printGameData(gamedata) {
   let output = [];
   let pointer = gamedata.history.head.moveHistory;
@@ -44,37 +60,15 @@ function printGameData(gamedata) {
 }
 
 let main = async () => {
-  let bot = new BotSophie();
-  let id = "ILIK0c1";
-  //let gamedata = await extractGameplay(id);
-  //printGameData(gamedata);
-  let gamestate = await extractGameState(id, 37);
-  let board = gamestate.boardHistory.head;
+  let id = "Wd5a4b6";
+  let gamedataraw = await extractGameplay(id);
+  printGameData(gamedataraw);
+  let gamedata = await extractGameDataAfterMove(id, 0, 6, 2, 7);
+  let board = gamedata.getBoard();
 
-//  let board = ChessBoard.startingPosition();
-//  board.move(6, 4, 4, 4);
-//  board.move(1, 4, 3, 4);
-//  let gamedata = new GameData(-1);
-//  gamedata.move({iRow: 1, iCol: 4, fRow: 3, fCol: 4, color: Color.WHITE, time: ELIXIR});
-//  gamedata.move({iRow: 6, iCol: 4, fRow: 4, fCol: 4, color: Color.BLACK, time: ELIXIR});
-//  let board = gamedata.getBoard();
   printBoard(board);
-  console.log(computeFeatures(2, 3, 1, 3, board));
-  console.log(bot.moveValue(2, 3, 1, 3, board));
-  console.log(computeFeatures(2, 3, 6, 3, board));
-  console.log(bot.moveValue(2, 3, 6, 3, board));
-//  console.log(bot.elixirValue(gamedata.history.head, Color.BLACK, 3 * ELIXIR));
-  //console.log(bot.canAfford(gamestate, 2, 1, 6, 1, 40215));
-  //console.log(bot.moveValue(2, 1, 6, 1, board));
-  //console.log(computeFeatures(2, 1, 6, 1, board));
-  //console.log(computeFeatures(3, 2, 6, 5, board));
-  //console.log(bot.moveValue(3, 2, 6, 5, board));
-  //console.log(computeFeatures(4, 7, 1, 4, board));
-  //console.log(bot.moveValue(4, 7, 1, 4, board));
-//  for(let [iRow, iCol, fRow, fCol] of board.listLegalMoves(Color.WHITE)) {
-//    console.log("" + iRow + iCol + fRow + fCol);
-//    console.log(bot.moveValue(iRow, iCol, fRow, fCol, board));
-//  }
+  let time = gamedata.history.head.currentTime + 2200;
+  console.log(selectMove(gamedata, Color.WHITE, time));
 }
 
 main();

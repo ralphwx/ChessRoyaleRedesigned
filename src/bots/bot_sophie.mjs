@@ -117,9 +117,9 @@ class BotSophie {
     output += 0.1 * features.centerBonus;
     output += 0.2 * features.forward;
     output += 0.1 * features.legalMoveBonus;
-    output += 0.1 * features.legalRestrictBonus;
+    output += 0.05 * features.legalRestrictBonus;
     output += 0.2 * features.safeMovesBonus;
-    output += 0.2 * features.safeRestrictBonus;
+    output += 0.05 * features.safeRestrictBonus;
     output += 3.0 * features.castling;
     return output;
   }
