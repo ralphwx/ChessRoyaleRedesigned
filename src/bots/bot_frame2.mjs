@@ -1,8 +1,9 @@
 
-import {Color, Location, ELIXIR} from "../data/enums.mjs";
+import {Color, Location, ELIXIR, DELAY} from "../data/enums.mjs";
 import {GameModel} from "../frontend/game_model.mjs";
 import {Move} from "../data/gamedata.mjs";
 import {Mutex} from "async-mutex";
+import {printBoard} from "../tests/test_framework.mjs";
 import {Scheduler} from "./scheduler.mjs";
 
 /**
@@ -42,8 +43,8 @@ function getElixirCount(gamedata, now, color) {
  * [elixirValue], and noisiness parameter [temperature].
  * [moveValue] should take (iRow, iCol, fRow, fCol, board) as input, returning
  * a float as output
- * [elixirValue] should take the amount of elixir available as input and return
- * a float as output
+ * [elixirCheck] should take gamestate, iRow, iCol, fRow, fCol, now and return
+ * whether it's feasible to spend the elixir on making that move.
  * [temperature] should be a positive (non-zero) float; larger values correspond
  * to a more random move selection.
  * returns: {iRow, iCol, fRow, fCol} or undefined.
@@ -53,7 +54,7 @@ function getElixirCount(gamedata, now, color) {
  * if the move's value exceeds the value of one elixir, then that move is 
  * returned. Otherwise, no move is returned.
  */
-function selectMove(gamedata, color, moveValue, elixirValue, temperature) {
+function selectMove(gamedata, color, moveValue, elixirCheck, temperature) {
   let now = Date.now();
   let board = gamedata.getBoard();
   //console.log("Received board");
@@ -78,62 +79,15 @@ function selectMove(gamedata, color, moveValue, elixirValue, temperature) {
   normalize(probabilities);
   let i = sample(probabilities);
   let elixirCount = getElixirCount(gamedata, now, color);
-  if(values[i] < elixirValue(elixirCount) && elixirCount < 9) return undefined;
   let [iRow, iCol, fRow, fCol] = moves[i];
+  let ec = elixirCheck(gamedata.history.head, iRow, iCol, fRow, fCol, now);
+  if((elixirCount < 9) && !ec) {
+    return undefined;
+  }
   return {iRow: iRow, iCol: iCol, fRow: fRow, fCol: fCol}
 }
 
-///**
-// * Calls a function at regular intervals, but is allowed to fast-track the
-// * function call in the event of a disturbance
-// */
-//class Scheduler {
-//  /**
-//   * [fn] is the function to be called, [interval] is the normal delay between
-//   * function calls, [reactionTime] is how long the Scheduler waits before
-//   * calling the function in response to a disturbance. The first function call
-//   * waits [delay] before being called.
-//   */
-//  constructor(fn, interval, reactionTime) {
-//    this.fn = fn;
-//    this.interval = interval;
-//    this.reactionTime = reactionTime;
-//    this.callingThread = undefined;
-//    this.mutex = new Mutex();
-//  }
-//  execute() {
-//    this.mutex.runExclusive(() => {
-//      this.fn();
-//      this.callingThread = setTimeout(() => {this.execute()}, this.interval);
-//    });
-//  }
-//  react() {
-//    this.mutex.runExclusive(() => {
-//      clearTimeout(this.callingThread);
-//      this.callingThread = setTimeout(() => {this.execute()}, 
-//        this.reactionTime);
-//    });
-//  }
-//  /**
-//   * Begins the execution cycle
-//   */
-//  start() {
-//    this.mutex.runExclusive(() => {
-//      clearTimeout(this.callingThread);
-//      this.execute();
-//    });
-//  }
-//  /**
-//   * Stops the execution cycle
-//   */
-//  stop() {
-//    this.mutex.runExclusive(() => {
-//      clearTimeout(this.callingThread);
-//    });
-//  }
-//}
-
-function runBot(moveValue, elixirValue, interval, reactionTime, socket) {
+function runBot(moveValue, elixirCheck, interval, reactionTime, socket) {
   let game_model = new GameModel(socket.user, socket);
   socket.notify("redirect?", {}, (meta, args) => {
     if(args === Location.GAME) {
@@ -147,17 +101,22 @@ function runBot(moveValue, elixirValue, interval, reactionTime, socket) {
     socket.notify("declareReady", {}, (meta, args) => {});
   });
   let moveLoop = () => {
-    if(!game_model.gamedata) return;
-    let color = game_model.metadata.white === game_model.user ? 
-      Color.WHITE : Color.BLACK;
-    let now = Date.now();
-    let elixirAmount = getElixirCount(game_model.gamedata, now, color);
-    if(elixirAmount < 1) {
+    if(!game_model || !game_model.gamedata) {
       return [];
     }
-    let move = selectMove(game_model.gamedata, color, moveValue, elixirValue, 1);
+    let color = game_model.metadata.white === game_model.user ? 
+      Color.WHITE : Color.BLACK;
+    let gamestate = game_model.gamedata.history.head;
+    let eStart = color === Color.WHITE ? gamestate.wStart : gamestate.bStart;
+    let now = Date.now();
+    let elixirAmount = (now - eStart) / ELIXIR;
+    if(elixirAmount < 1) {
+      return [eStart + ELIXIR];
+    }
+    let move = selectMove(game_model.gamedata, color, moveValue, elixirCheck, 0.1);
     if(move) {
       socket.notify("move", move, (meta, args) => {});
+      return [Math.max(now + DELAY, eStart + 2 * ELIXIR)];
     }
     return [];
   }
@@ -174,29 +133,29 @@ function runBot(moveValue, elixirValue, interval, reactionTime, socket) {
   });
 }
 
-function runBotLocal(moveValue, elixirValue, interval, reactionTime, 
-  servergame, username) {
-  let moveLoop = () => {
-    let color = servergame.white === username ? 
-      Color.WHITE : Color.BLACK;
-    let move = selectMove(servergame.gameState, color, moveValue, elixirValue, 1);
-    if(move) {
-      let {iRow, iCol, fRow, fCol} = move;
-      let now = Date.now();
-      servergame.move(iRow, iCol, fRow, fCol, color, now);
-      return [];
-    }
-    return [];
-  }
-  let scheduler = new Scheduler(moveLoop, interval, reactionTime);
-  servergame.addListener({
-    metaUpdate: () => {},
-    boardUpdate: () => {scheduler.react()},
-    chatUpdate: () => {},
-    gameOver: () => {scheduler.stop();},
-    gameStarted: () => {scheduler.start();},
-  });
-  servergame.setReady(username);
-}
+//function runBotLocal(moveValue, elixirValue, interval, reactionTime, 
+//  servergame, username) {
+//  let moveLoop = () => {
+//    let color = servergame.white === username ? 
+//      Color.WHITE : Color.BLACK;
+//    let move = selectMove(servergame.gameState, color, moveValue, elixirValue, 1);
+//    if(move) {
+//      let {iRow, iCol, fRow, fCol} = move;
+//      let now = Date.now();
+//      servergame.move(iRow, iCol, fRow, fCol, color, now);
+//      return [now + DELAY];
+//    }
+//    return [];
+//  }
+//  let scheduler = new Scheduler(moveLoop, interval, reactionTime);
+//  servergame.addListener({
+//    metaUpdate: () => {},
+//    boardUpdate: () => {scheduler.react()},
+//    chatUpdate: () => {},
+//    gameOver: () => {scheduler.stop();},
+//    gameStarted: () => {scheduler.start();},
+//  });
+//  servergame.setReady(username);
+//}
 
-export {runBot, runBotLocal}
+export {runBot, Scheduler, selectMove}

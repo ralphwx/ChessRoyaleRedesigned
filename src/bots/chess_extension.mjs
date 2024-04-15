@@ -1,6 +1,5 @@
 import {ChessMap} from "../data/maps.mjs";
 import {Color, colorOf, MoveType, Piece} from "../data/enums.mjs";
-import {computeCapturable} from "./compute_capturable.mjs";
 
 function listLegalMoves(board, color) {
   return board.listLegalMoves(color);
@@ -116,16 +115,11 @@ function collapseTree(root) {
   }
 }
 
-/*
 function computeHangingMaterial(board, color) {
   let root = assembleTree(board, color, 3); //arbitrary depth 3
   collapseTree(root);
   let scale = color === Color.BLACK ? -1 : 1;
   return scale * root.value;
-}
-*/
-function computeHangingMaterial(board, color) {
-  return computeCapturable(board, color);
 }
 
 function computeCapturableMaterial(board, color) {

@@ -63,6 +63,13 @@ let main = async () => {
     return cc1 === 0;
   }
   test("t4", t4);
+  gamestate = await extractGameState("cetlKHA", 1);
+  let t5 = () => {
+    let board = gamestate.boardHistory.head;
+    let cc1 = computeCapturable(board, Color.WHITE);
+    return cc1 > 9;
+  }
+  test("t5", t5);
   printResults();
 }
 

@@ -61,6 +61,15 @@ function colorOf(piece) {
 }
 
 /**
+ * Returns the opposite color of [color], throws error if color is Color.NONE.
+ */
+function flipColor(color) {
+  if(color === Color.WHITE) return Color.BLACK;
+  if(color === Color.BLACK) return Color.WHITE;
+  throw new Error("Cannot flip color: " + color);
+}
+
+/**
  * Enum containing different types of moves.
  */
 const MoveType = {
@@ -116,4 +125,4 @@ const Location = {
   GAME: 1,
 }
 
-export {Piece, pieceToString, Color, colorOf, MoveType, URL, DELAY, ELIXIR, BAR_MAX, ARROW_TIME, LoginType, GameOverCause, Location};
+export {Piece, pieceToString, Color, flipColor, colorOf, MoveType, URL, DELAY, ELIXIR, BAR_MAX, ARROW_TIME, LoginType, GameOverCause, Location};

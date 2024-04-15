@@ -134,6 +134,9 @@ class LegalMoveMap {
   copy() {
     return new LegalMoveMap(this.data.copy());
   }
+  getAll(iRow, iCol) {
+    return this.data.get(iRow, iCol).toList();
+  }
   toList() {
     let output = [];
     for(let i = 0; i < 8; i++) {

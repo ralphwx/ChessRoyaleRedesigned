@@ -664,6 +664,40 @@ class ChessBoard {
     }
     throw new Error("Why is color not WHITE, BLACK, or undefined?");
   }
+  listLegalMovesFromSquare(r, c) {
+    let output = this.state.moves.getAll(r, c).map((dest) => {
+      return [r, c, dest[0], dest[1]];
+    });
+    if(r === 3 && this.pieceAt(r, c) === Piece.B_PAWN) {
+      if(this.state.bep.includes(c + 1) 
+       && this.pieceAt(r, c + 1) === Piece.W_PAWN
+       && this.pieceAt(r - 1, c + 1) === Piece.NULL) {
+        output.push([r, c, r - 1, c + 1]);
+      }
+      if(this.state.bep.includes(c - 1)
+       && this.pieceAt(r, c - 1) === Piece.B_PAWN
+       && this.pieceAt(r - 1, c - 1) === Piece.NULL) {
+        output.push([r, c, r - 1, c - 1]);
+      }
+    }
+    if(r === 4 && this.pieceAt(r, c) === Piece.W_PAWN) {
+      if(this.state.wep.includes(c + 1)
+       && this.pieceAt(r, c + 1) === Piece.W_PAWN
+       && this.pieceAt(r + 1, c + 1) === Piece.NULL) {
+        output.push([r, c, r + 1, c + 1]);
+      }
+      if(this.state.bep.includes(c - 1)
+       && this.pieceAt(r, c + 1) === Piece.B_PAWN
+       && this.pieceAt(r + 1, c - 1) === Piece.NULL) {
+        output.push([r, c, r + 1, c - 1]);
+      }
+    }
+    if(r === 0 && c === 4 && canWKCastle(this.state)) output.push([0, 4, 0, 6]);
+    if(r === 0 && c === 4 && canWQCastle(this.state)) output.push([0, 4, 0, 2]);
+    if(r === 7 && c === 4 && canBKCastle(this.state)) output.push([7, 4, 7, 6]);
+    if(r === 7 && c === 4 && canBQCastle(this.state)) output.push([7, 4, 7, 2]);
+    return output;
+  }
   /**
    * Returns whether the player playing [color] is attacking the square [r, c]
    */

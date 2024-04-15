@@ -1,154 +1,15 @@
+import {Piece, Color, colorOf, flipColor, MoveType} from "../data/enums.mjs";
+import {ChessBoard} from "../data/chess.mjs";
+import {ChessMap, ChessBitMap} from "../data/maps.mjs";
 
-import {GameData, Move} from "../data/gamedata.mjs";
-import {Color, Piece, MoveType, ELIXIR, DELAY, LoginType, Location} from "../data/enums.mjs";
-import {connect} from "../frontend/metaauthclient.mjs";
-import {GameModel} from "../frontend/game_model.mjs";
-import {Mutex} from "async-mutex";
-import {printBoard} from "../tests/test_framework.mjs";
-
-
-function moveEq(m1, m2) {
-  let {iRow, iCol, fRow, fCol} = m1;
-  return m2.iRow === iRow && m2.iCol === iCol 
-    && m2.fRow === fRow && m2.fCol === fCol
-}
-
-/**
- * Returns true if [movePair] is already in [list]. 
- * [movePair] is a list of two Move objects and [list] is a list of
- * objects containing lists of two Move objects.
- */
-function duplicateCheck(movePair, list) {
-  let [m1, m2] = movePair;
-  for(let [mm1, mm2] of list) {
-    if((moveEq(m1, mm2) && moveEq(m2, mm1))
-      || (moveEq(m1, mm1) && moveEq(m2, mm2))) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/**
- * Returns whether the square iRow, iCol is attacked by a player playing 
- * [color].
- */
-function isAttacked(board, r, c, color) {
-  return board.isAttacked(r, c, color);
-}
-
-/**
- * Returns whether a move pair [move, newmove] is tactically relevant.
- * Currently, tactically relevant move pairs fall into one of five
- * categories
- *   - double capture
- *   - discovered capture
- *   - discovered block
- *   - escape square
- *   - double retreat
- */
-function isTacticallyRelevant(board, move, newmove) {
-  let color = move.color;
-  let oppoColor = flipColor(color);
-  let oppoMoves = board.listLegalMoves(oppoColor);
-  //first check double capture
-  let {iRow: ir1, iCol: ic1, fRow: fr1, fCol: fc1} = move;
-  let {iRow: ir2, iCol: ic2, fRow: fr2, fCol: fc2} = newmove;
-  let firstMoveCapture = board.pieceAt(fr1, fc1) !== Piece.NULL ||
-    board.moveType(ir1, ic1, fr1, fc1) === MoveType.ENPESANT;
-  let secondMoveCapture = board.pieceAt(fr2, fc2) !== Piece.NULL ||
-    board.moveType(ir2, ic2, fr2, fc2) === MoveType.ENPESANT;
-  if(firstMoveCapture && secondMoveCapture) return true;
-  //next check for double retreat/discovered retreat
-  //let newboardstate = board.move(ir1, ic1, fr1, fc1);
-  //let secondMoveRetreat = isAttacked(newboardstate, ir2, ic2, oppoColor);
-  //let firstMoveBoard = board.move(ir2, ic2, fr2, fc2);
-  //let firstMoveRetreat = isAttacked(firstMoveBoard, ir1, ic1, oppoColor);
-  //if(firstMoveRetreat && secondMoveRetreat) return true;
-  //next, check for discovered capture
-  let dr1 = fr2 - ir1;
-  let dr2 = ir1 - ir2;
-  let dc1 = fc2 - ic1;
-  let dc2 = ic1 - ic2;
-  if(secondMoveCapture && dr1 * dc2 === dr2 * dc1) {
-    return true;
-  }
-  //next check for discovered block
-  //one of them is a capture and the ending squares are on a line
-  //don't bother checking for an attacking piece on the other side, that
-  //takes too long
-  let dr = fr2 - fr1;
-  let dc = fc2 - fc1;
-  if((firstMoveCapture || secondMoveCapture) 
-   && (Math.abs(dr) === Math.abs(dc) || dr === 0 || dc === 0)) {
-    return true;
-  }
-  //lastly, check for escape square.
-  if(fr2 === ir1 && fc2 === ic1) return true;
-  return false;
-}
-
-/**
- * Returns a list of [captures, ...moves] objects representing possible
- * continuations from [gamedata] for the player playing [color] at time [now].
- * [captures] is the amount of material captured by the move sequence. [moves]
- * is the list of moves that can be played, up to a length of [number].
- *
- * Currently supports only number <= 2 because duplicate checking is kinda
- * annoying for n >= 3
- *
- * Guarantees that the output is sorted in ascending order by number of moves.
- * Eg, if number is 2, then the null move [] is first, then all single moves,
- * then all double moves.
- */
-function listMoves(gamestate, now, color, number) {
-  if(number === 0) {
-    return [];
-  }
-  if(number > 2) {
-    throw new Error("Unimplemented");
-  }
-
-  let output = [];
-  let board = gamestate.boardHistory.head;
-  for(let [iRow, iCol, fRow, fCol] of board.listLegalMoves(color)) {
-    let move = new Move(color, now, iRow, iCol, fRow, fCol);
-    if(gamestate.isLegalMove(move)) {
-      output.push([move]);
-    }
-  }
-  if(number === 1) return [[]].concat(output);
-  if(number !== 2) {
-    throw new Error("Expected number to be int, but got: " + number);
-  }
-  let output_2 = [];
-  for(let [move] of output) {
-    let newgamestate = gamestate.move(move);
-    let newboard = newgamestate.boardHistory.head;
-    for(let [iRow, iCol, fRow, fCol] of newboard.listLegalMoves(color)) {
-      let newmove = new Move(color, now, iRow, iCol, fRow, fCol);
-      let candidate = [move, newmove]
-      if(!duplicateCheck(candidate, output_2) 
-       && newgamestate.isLegalMove(newmove)
-       && isTacticallyRelevant(board, move, newmove)) {
-        output_2.push(candidate);
-      }
-    }
-  }
-  return [[]].concat(output, output_2);
-}
-
-/**
- * Returns the value of [piece]. King is 100 points.
- */
 function pieceValue(piece) {
   switch(piece) {
     case Piece.NULL: return 0;
     case Piece.W_PAWN:
     case Piece.B_PAWN: return 1;
     case Piece.W_KNIGHT:
-    case Piece.W_BISHOP:
     case Piece.B_KNIGHT:
+    case Piece.W_BISHOP:
     case Piece.B_BISHOP: return 3;
     case Piece.W_ROOK:
     case Piece.B_ROOK: return 5;
@@ -160,224 +21,369 @@ function pieceValue(piece) {
   }
 }
 
+function canMoveAway(board, square, direction) {
+  let r = (square >> 4) & 7;
+  let c = square & 7;
+  let piece = board.pieceAt(r, c);
+  let dr = (direction >> 4) & 7;
+  let dc = direction & 7;
+  if(piece === Piece.W_PAWN) {
+    let push = board.pieceAt(r + 1, c) === Piece.NULL;
+    let captureLeft = c - 1 >= 0 
+     && board.moveType(r, c, r + 1, c - 1) !== MoveType.INVALID;
+    let captureRight = c + 1 <= 7
+     && board.moveType(r, c, r + 1, c + 1) !== MoveType.INVALID;
+    if(dc === 0) return captureLeft || captureRight;
+    return captureRight || captureLeft || push;
+  }
+  if(piece === Piece.B_PAWN) {
+    let push = board.pieceAt(r - 1, c) === Piece.NULL;
+    let captureLeft = board.moveType(r, c, r - 1, c - 1) !== MoveType.INVALID;
+    let captureRight = board.moveType(r, c, r - 1, c + 1) !== MoveType.INVALID;
+    if(dc === 0) return captureLeft || captureRight;
+    return captureRight || captureLeft || push;
+  }
+  return true;
+}
+
 /**
- * Returns the amount of material captured by move [move]. King is treated as
- * 100 points. Assumes all moves in [moves] are legal.
+ * Returns a ChessMap [m] such that if [board] has a piece of color opposite
+ * [color] at square [r, c], then [m(r, c)] contains a list of squares
+ * containing pieces of color [color] that attack the piece at [r, c]. Squares
+ * will be represented in 0x88 notation, with the row taking the more
+ * significant bits and the column taking least significant bits.
  */
-function captureValue(gamestate, moves) {
-  let output = 0;
-  let board = gamestate.boardHistory.head;
-  for(let move of moves) {
-    if(board.moveType(move) === MoveType.EN_PESANT) {
-      output += 1;
-      continue;
+function listAttackers(board, color) {
+  let output = ChessMap.fromInitializer((r, c) => {return []});
+  let oppoColor = flipColor(color);
+  for(let r = 0; r < 8; r++) {
+    for(let c = 0; c < 8; c++) {
+      if(colorOf(board.pieceAt(r, c)) !== color) continue;
+      let currentSquare = (r << 4) | c;
+      let currentPiece = board.pieceAt(r, c);
+      if(colorOf(board.pieceAt(r, c)) !== color) continue;
+      if(board.pieceAt(r, c) === Piece.W_PAWN) {
+        if(c > 0 && colorOf(board.pieceAt(r + 1, c - 1)) === oppoColor) {
+          output.get(r + 1, c - 1).push(currentSquare);
+        }
+        if(c < 7 && colorOf(board.pieceAt(r + 1, c + 1)) === oppoColor) {
+          output.get(r + 1, c + 1).push(currentSquare);
+        }
+      }
+      if(board.pieceAt(r, c) === Piece.B_PAWN) {
+        if(c > 0 && colorOf(board.pieceAt(r - 1, c - 1)) === oppoColor) {
+          output.get(r - 1, c - 1).push(currentSquare);
+        }
+        if(c < 7 && colorOf(board.pieceAt(r - 1, c + 1)) === oppoColor) {
+          output.get(r - 1, c + 1).push(currentSquare);
+        }
+      }
+      if(currentPiece === Piece.B_KNIGHT || currentPiece === Piece.W_KNIGHT) {
+        let deltas = [0x12, 0x21, -0xe, -0x1f, 0xe, 0x1f, -0x12, -0x21];
+        for(let d of deltas) {
+          let newSquare = currentSquare + d;
+          if(((newSquare & 0x88) === 0) 
+            && colorOf(board.pieceAt((newSquare >> 4) & 7, newSquare & 7)) 
+            === oppoColor) {
+            output.get((newSquare >> 4) & 7, newSquare & 7).push(currentSquare);
+          }
+        }
+      }
+      if(currentPiece === Piece.B_KING || currentPiece === Piece.W_KING) {
+        let deltas = [0x01, -0x01, 0x11, 0x10, 0xf, -0xf, -0x10, -0x11];
+        for(let d of deltas) {
+          let newSquare = currentSquare + d;
+          if(((newSquare & 0x88) === 0)
+            && colorOf(board.pieceAt((newSquare >> 4) & 7, newSquare & 7))
+            === oppoColor) {
+            output.get((newSquare >> 4) & 7, newSquare & 7).push(currentSquare);
+          }
+        }
+      }
+      if(currentPiece === Piece.B_BISHOP || currentPiece === Piece.W_BISHOP
+        || currentPiece === Piece.B_QUEEN || currentPiece === Piece.W_QUEEN) {
+        let directions = [0x11, 0xf, -0x11, -0xf];
+        for(let d of directions) {
+          let discover = false;
+          for(let newSquare = currentSquare + d; (newSquare & 0x88) === 0; 
+           newSquare += d) {
+            let rr = newSquare >> 4 & 7;
+            let cc = newSquare & 7;
+            let newPiece = board.pieceAt(rr, cc);
+            if(newPiece === Piece.NULL) continue;
+            if(colorOf(newPiece) === oppoColor) {
+              output.get(rr, cc).push(r << 4 | c);
+              break;
+            }
+            if(discover || !canMoveAway(board, newSquare, d)) break;
+            discover = true;
+          }
+        }
+      }
+      if(currentPiece === Piece.B_ROOK || currentPiece === Piece.W_ROOK
+        || currentPiece === Piece.B_QUEEN || currentPiece === Piece.W_QUEEN) {
+        let directions = [0x01, -0x01, -0x10, 0x10];
+        for(let d of directions) {
+          let newSquare = currentSquare + d;
+          let discover = false;
+          for(let newSquare = currentSquare + d; (newSquare & 0x88) === 0; 
+           newSquare += d) {
+            let rr = newSquare >> 4 & 7;
+            let cc = newSquare & 7;
+            let newPiece = board.pieceAt(rr, cc);
+            if(newPiece === Piece.NULL) continue;
+            if(colorOf(newPiece) === oppoColor) {
+              output.get(rr, cc).push(r << 4 | c);
+              break;
+            }
+            if(discover || !canMoveAway(board, newSquare, d)) break;
+            discover = true;
+          }
+        }
+      }
     }
-    if(board.moveType(move) === MoveType.PROMOTION) output += 8;
-    output += pieceValue(board.pieceAt(move.fRow, move.fCol));
-    let {iRow, iCol, fRow, fCol} = move;
-    board = board.move(iRow, iCol, fRow, fCol);
   }
   return output;
 }
 
-function flipColor(color) {
-  switch(color) {
-    case Color.WHITE: return Color.BLACK;
-    case Color.BLACK: return Color.WHITE;
-    default: throw new Error("Incomplete case match: " + color);
-  }
-}
-
-/**
- * Searches down the game tree starting from [gamestate], with players
- * alternating "turns." Player of color [color] takes turn 0, then the
- * other player takes turn 1, and so on, up to the length of [widths]. On the
- * [i]th turn, that player can make up to [widths[i]] moves, with the 
- * requirement that at least one move has to be a capture.
- */
-function computeCapturableMaterial(gamestate, now, color, widths, depth) {
-  if(widths.length === depth) return 0;
-  let candidates = listMoves(gamestate, now, color, widths[depth]);
-  let captureValues = candidates.map((m) => captureValue(gamestate, m));
-  let order = [];
-  for(let i = 0; i < candidates.length; i++) {
-    if(captureValues[i] > 0) order.push(i);
-    order.push(i);
-  }
-  order.sort((i, j) => captureValues[j] - captureValues[i]);
-  let output = 0;
-  let newcolor = flipColor(color);
-  for(let index of order) {
-    let moves = candidates[index];
-    let captures = captureValues[index];
-    if(captures <= output) {
-      continue;
+function listDefenders(board, r, c) {
+  let output = [];
+  //pass through defense is fine up to one level
+  //first check for pawns:
+  let color = colorOf(board.pieceAt(r, c));
+  if(color === Color.WHITE) {
+    if(c > 0 && board.pieceAt(r - 1, c - 1) === Piece.W_PAWN) {
+      output.push(1);
     }
-    let newgamestate = gamestate;
-    for(let move of moves) newgamestate = newgamestate.move(move);
-    let value = captures - computeCapturableMaterial(newgamestate, now, newcolor, widths, depth + 1);
-    if(value > output) {
-      output = value;
+    if(c < 7 && board.pieceAt(r - 1, c + 1) === Piece.W_PAWN) {
+      output.push(1);
+    }
+  }
+  if(color === Color.BLACK) {
+    if(c > 0 && board.pieceAt(r + 1, c - 1) === Piece.B_PAWN) {
+      output.push(1);
+    }
+    if(c < 7 && board.pieceAt(r + 1, c + 1) === Piece.B_PAWN) {
+      output.push(1);
+    }
+  }
+  //then check for knights
+  let knightDirections = [0x12, 0x21, -0xe, -0x1f, 0xe, 0x1f, -0x12, -0x21];
+  let currentSquare = r << 4 | c;
+  for(let d of knightDirections) {
+    let newSquare = currentSquare + d;
+    if((newSquare & 0x88) !== 0) continue;
+    let piece = board.pieceAt((newSquare >> 4) & 7, newSquare & 7);
+    if((color === Color.WHITE && piece === Piece.W_KNIGHT) 
+      || (color === Color.BLACK && piece === Piece.B_KNIGHT)) {
+      output.push(3);
+    }
+  }
+  //then check for king
+  let kingDirections = [0x01, -0x01, 0x11, 0x10, 0xf, -0xf, -0x10, -0x11];
+  for(let d of kingDirections) {
+    let newSquare = currentSquare + d;
+    if((newSquare & 0x88) !== 0) continue;
+    let piece = board.pieceAt((newSquare >> 4) & 7, newSquare & 7);
+    if((color === Color.WHITE && piece === Piece.W_KING)
+      || (color === Color.BLACK && piece === Piece.B_KING)) {
+      output.push(100);
+    }
+  }
+  //now scan horizontally
+  let rookDirections = [0x01, -0x01, 0x10, -0x10];
+  for(let d of rookDirections) {
+    let discover = false;
+    for(let newSquare = currentSquare + d; (newSquare & 0x88) === 0; 
+     newSquare += d) {
+      let nr = (newSquare >> 4) & 7;
+      let nc = newSquare & 7;
+      let piece = board.pieceAt(nr, nc);
+      if(piece === Piece.NULL) continue;
+      if(colorOf(piece) !== color) break;
+      if(piece === Piece.B_ROOK || piece === Piece.W_ROOK) {
+        output.push(5);
+      } else if(piece === Piece.B_QUEEN || piece === Piece.W_QUEEN) {
+        output.push(9);
+      } else {
+        if(!discover && canMoveAway(board, newSquare, d)) {
+          discover = true;
+        } else break;
+      }
+    }
+  }
+  let bishopDirections = [0x11, 0xf, -0xf, -0x11];
+  for(let d of bishopDirections) {
+    let newSquare = currentSquare + d;
+    let discover = false;
+    for(let newSquare = currentSquare + d; (newSquare & 0x88) === 0; 
+     newSquare += d) {
+      let nr = (newSquare >> 4) & 7;
+      let nc = newSquare & 7;
+      let piece = board.pieceAt(nr, nc);
+      if(piece === Piece.NULL) continue;
+      if(colorOf(piece) !== color) break;
+      if(piece === Piece.B_BISHOP || piece === Piece.W_BISHOP) {
+        output.push(3);
+      } else if(piece === Piece.B_QUEEN || piece === Piece.W_QUEEN) {
+        output.push(9);
+      } else if(!discover && canMoveAway(board, newSquare, d)) {
+        discover = true;
+      } else break;
     }
   }
   return output;
 }
 
-function debugPrint(relativeProbs) {
-  let base = relativeProbs.reduce((a, x) => a + x, 0);
-  console.log(relativeProbs.map(x => x / base));
-}
-
-function sample(values, temperature) {
-  let max = Math.max(...values);
-  let relativeProbs = values.map(x => 
-    x < 0 ? 0 : Math.exp((x - max) / temperature)
-  );
-  let base = relativeProbs.reduce((a, x) => a + x, 0);
-  if(base < 1e-6) {
-    return Math.floor(Math.random() * values.length);
-  }
-  let sample = Math.random();
-  for(let i = 0; i < relativeProbs.length; i++) {
-    sample -= relativeProbs[i] / base;
-    if(sample < 0) return i;
-  }
-  return relativeProbs.length - 1;
-}
-
-function selectTactic(gamestate, now, tactic_candidates, tactic_values, 
-  temperature) {
-  //select a single move if possible, otherwise select a double move
-  let singles = [];
-  let single_values = [];
-  for(let i = 0; i < tactic_candidates.length; i++) {
-    let candidate = tactic_candidates[i];
-    if(candidate.length === 1) {
-      singles.push(candidate);
-      single_values.push(tactic_values[i]);
+/**
+ * Returns a ChessMap mapping squares on [board] containing pieces of [color]
+ * to a list of squares containing lower-value opponent's pieces that can attack
+ * that piece in one move.
+ */
+function listAttackable(board, color) {
+  let oppocolor = flipColor(color);
+  let oppomoves = board.listLegalMoves(oppocolor);
+  let output = ChessMap.fromInitializer(() => {return []});
+  for(let [iRow, iCol, fRow, fCol] of oppomoves) {
+    let newBoard = board.move(iRow, iCol, fRow, fCol);
+    let newVision = newBoard.listLegalMovesFromSquare(fRow, fCol);
+    let movedPieceValue = pieceValue(board.pieceAt(iRow, iCol));
+    for(let [ir, ic, fr, fc] of newVision) {
+      let targetPiece = newBoard.pieceAt(fr, fc);
+      if(colorOf(targetPiece) === color 
+       && pieceValue(targetPiece) > movedPieceValue) {
+        output.get(fr, fc).push([iRow, iCol]);
+      }
     }
   }
-  if(singles.length > 0) {
-    let i = sample(single_values, temperature);
-    return [singles[i][0], single_values[i]];
-  }
-  //otherwise all tactics are two-move tactics.
-  let i = sample(tactic_values, temperature);
-  return [tactic_candidates[i][0], tactic_values[i]];
-}
-
-function checkCaptureUp(board, move, color) {
-  let [iRow, iCol, fRow, fCol] = move;
-  let newboard = board.move(iRow, iCol, fRow, fCol);
-  //count moves that end on that square, plus en passant if relevant
-  let newMoves = newboard.listLegalMoves(flipColor(color));
-  for(let [ir, ic, fr, fc] of newMoves) {
-    if(fr === fRow && fc === fCol 
-     && pieceValue(board.pieceAt(iRow, iCol)) 
-     >= pieceValue(newboard.pieceAt(ir, ic))) {
-      return true;
-    }
-  }
-  if(board.moveType(iRow, iCol, fRow, fCol) === MoveType.ENPESANT) {
-    let oppoPawn = color === Color.WHITE ? Piece.B_PAWN : Piece.W_PAWN;
-    return (fCol < 7 && board.pieceAt(fRow, fCol + 1) === Piece.B_PAWN)
-     || (fCol > 0 && board.pieceAt(fRow, fCol - 1) === Piece.B_PAWN);
-  }
-  return false;
+  return output;
 }
 
 /**
- * Returns the mobility of [color] on board [board], minus the mobility of 
- * the opponent. Mobility is counted as the number of legal moves plus three
- * times the number of legal moves that don't allow a capture up or capture 
- * equal for the opponent.
+ * Returns (approximately) the net amount of material gain possible for the 
+ * player with [color]. Sometimes returns a generous overestimate.
  */
-function mobilityBonus(board, color) {
+function computeCapturable(board, color) {
+  let attacks = listAttackers(board, color);
+  let output = 0;
+  for(let r = 0; r < 8; r++) {
+    for(let c = 0; c < 8; c++) {
+      if(attacks.get(r, c).length === 0) continue;
+      let attackers = attacks.get(r, c).map((square) => {
+        return pieceValue(board.pieceAt((square >> 4) & 7, square & 7));
+      });
+      let defenders = listDefenders(board, r, c);
+      attackers.sort((a, b) => a - b);
+      defenders.sort((a, b) => a - b);
+      let base = pieceValue(board.pieceAt(r, c));
+      if(base > 9) {
+        output += 100;
+      }
+      let values = [0, base];
+      for(let i = 0; i < Math.min(attackers.length - 1, defenders.length); i++) {
+        values.push(values[values.length - 1] - attackers[i]);
+        values.push(values[values.length - 1] + defenders[i]);
+      }
+      if(defenders.length >= attackers.length) {
+        values.push(
+          values[values.length - 1] - attackers[attackers.length - 1]
+        );
+      }
+      for(let i = values.length - 1; i >= 1; i--) {
+        if(i & 1) values[i - 1] = Math.max(values[i], values[i - 1]);
+        else values[i - 1] = Math.min(values[i], values[i - 1]);
+      }
+      output += values[0];
+    }
+  }
+  return output;
+}
+
+function computeTacticalValue(iRow, iCol, fRow, fCol, board, newBoard, color) {
+  let oppocolor = flipColor(color);
+  let movetype = board.moveType(iRow, iCol, fRow, fCol);
+  let captured = movetype === MoveType.EN_PESANT ? 
+    1 : pieceValue(board.pieceAt(fRow, fCol));
+  if(movetype === MoveType.PROMOTION) captured += 8;
+  return captured 
+    - computeCapturable(newBoard, oppocolor);
+}
+
+/**
+ * Compute increase in number of legal moves
+ */
+function computeOpenLinesBonus(iRow, iCol, fRow, fCol, board, newBoard, color) {
+  let baseline = board.listLegalMoves(color).length;
+  let newCount = newBoard.listLegalMoves(color).length;
+  return newCount - baseline;
+}
+
+/**
+ * Compute decrease in number of opponent's legal moves
+ */
+function computeRestrictionBonus(iRow, iCol, fRow, fCol, board, newBoard, color) {
+  let baseline = board.listLegalMoves(flipColor(color)).length;
+  let newCount = newBoard.listLegalMoves(flipColor(color)).length;
+  return baseline - newCount;
+}
+
+function countSafeMoves(board, color) {
   let moves = board.listLegalMoves(color);
-  let safeMoves = moves.reduce((a, m) => 
-   a + !checkCaptureUp(board, m, color), 0);
-  let oppoColor = flipColor(color);
-  let oppoMoves = board.listLegalMoves(oppoColor);
-  let oppoSafeMoves = oppoMoves.reduce((a, m) => 
-   a + !checkCaptureUp(board, m, oppoColor), 0);
-//  console.log(moves.length);
-//  console.log(safeMoves);
-//  console.log(oppoMoves.length);
-//  console.log(oppoSafeMoves);
-  return moves.length + 3 * safeMoves - oppoMoves.length - 3 * oppoSafeMoves;
+  let output = 0;
+  for(let [iRow, iCol, fRow, fCol] of moves) {
+    if(computeTacticalValue(iRow, iCol, fRow, fCol, board, 
+      board.move(iRow, iCol, fRow, fCol), color) >= 0) output += 1
+  }
+  return output;
 }
 
 /**
- * Returns [move, value] where [move] is the selected move and [value] is the
- * value of that move. [move] takes the form of {iRow, iCol, fRow, fCol}
+ * Compute increase in number of moves that don't blunder.
  */
-function selectMove(gamestate, now, color, temperature) {
-  console.log("Received board: ");
-  printBoard(gamestate.boardHistory.head);
-  let selectStart = Date.now();
-  let candidates = listMoves(gamestate, now, color, 2);
-  let oppoColor = flipColor(color);
-  let tactical_value = [];
-  let tactic_candidates = [];
-  let tactic_values = [];
-  let tacticCheckStart = Date.now();
-  let deepCapturableCount = 0;
-  for(let moves of candidates) {
-    let newgamestate = gamestate;
-    for(let move of moves) newgamestate = newgamestate.move(move);
-    let value = captureValue(gamestate, moves);
-    if(value === 0 && moves.length > 1) {
-      value -= computeCapturableMaterial(newgamestate, now + DELAY, oppoColor, [1], 0);
-    } else {
-      deepCapturableCount++;
-      value -= computeCapturableMaterial(newgamestate, now + DELAY, oppoColor, 
-       [2, 1, 1], 0);
-    }
-    tactical_value.push(value);
-    if(value > tactical_value[0]) {
-      tactic_candidates.push(moves);
-      tactic_values.push(value - tactical_value[0]);
-    }
-  }
-  console.log("baseline tactic value: " + tactical_value[0]);
-  if(tactic_candidates.length > 0) {
-    console.log("Select tactic");
-    console.log(tactic_values);
-    return selectTactic(gamestate, now, tactic_candidates, tactic_values, 
-      temperature);
-  }
-  let tacticCheckEnd = Date.now();
-  console.log("tactic check took: " + (tacticCheckEnd - tacticCheckStart) + "ms");
-  //otherwise select based on open lines and restriction bonus
-  //open lines baseline = # of single moves that don't lose material
-  //open lines after the move = # of double moves containing that move
-  // that don't lose material
-  let singles = [];
-  let values = [];
-  for(let i = 1; i < candidates.length; i++) {
-    if(candidates[i].length === 2) break;
-    singles.push(candidates[i][0]);
-    values.push(tactical_value[i]);
-  }
-  let board = gamestate.boardHistory.head;
-  let mobilityBaseline = mobilityBonus(board, color);
-  for(let i = 0; i < singles.length; i++) {
-    let move = singles[i];
-    let {iRow, iCol, fRow, fCol} = move;
-    values[i] += (mobilityBonus(board.move(iRow, iCol, fRow, fCol), color) 
-      - mobilityBaseline) / 35;
-  }
-  let i = sample(values, temperature);
-  let selectEnd = Date.now();
-  console.log("Select took: " + (selectEnd - selectStart));
-  console.log("Depp capture count: " + deepCapturableCount);
-  return [singles[i], values[i]];
+function computeSafeOpenLines(iRow, iCol, fRow, fCol, board, newBoard, color) {
+  //console.log(countSafeMoves(newBoard, color));
+  //console.log(countSafeMoves(board, color));
+  return countSafeMoves(newBoard, color) - countSafeMoves(board, color);
 }
 
-let gamedata = new GameData(-1);
-gamedata.move(new Move(Color.WHITE, ELIXIR, 1, 4, 3, 4));
-gamedata.move(new Move(Color.WHITE, 2 * ELIXIR, 0, 3, 4, 7));
-gamedata.move(new Move(Color.WHITE, 3 * ELIXIR, 0, 5, 3, 2));
-console.log(selectMove(gamedata.history.head, 5 * ELIXIR, Color.WHITE, 1));
+/**
+ * Compute increase in number of opponent's moves that don't blunder.
+ */
+function computeSafeRestrictionBonus(iRow, iCol, fRow, fCol, board, newBoard, color) {
+  return countSafeMoves(board, flipColor(color)) - countSafeMoves(newBoard,
+    flipColor(color));
+}
 
-export {selectMove};
+function centralityBonus(iRow, iCol, fRow, fCol) {
+  return Math.min(fRow, 7 - fRow, fCol, 7 - fCol)
+    - Math.min(iRow, 7 - iRow, iCol, 7 - iCol);
+}
+
+function computeFeatures(iRow, iCol, fRow, fCol, board) {
+  let movetype = board.moveType(iRow, iCol, fRow, fCol);
+  let color = colorOf(board.pieceAt(iRow, iCol));
+  let newBoard = board.move(iRow, iCol, fRow, fCol);
+  let output = {};
+  let capturable = computeCapturable(board, flipColor(color));
+  output.captures = movetype === MoveType.EN_PESANT ? 1 :
+    pieceValue(board.pieceAt(fRow, fCol));
+  if(movetype === MoveType.PROMOTION) {
+    output.captures += 8;
+  }
+  output.tacticalValue = computeTacticalValue(iRow, iCol, fRow, fCol, board, 
+    newBoard, color) + capturable;
+  output.legalMoveBonus = computeOpenLinesBonus(iRow, iCol, fRow, fCol, board,
+    newBoard, color);
+  output.legalRestrictBonus = computeRestrictionBonus(iRow, iCol, fRow, fCol,
+    board, newBoard, color);
+  output.safeMovesBonus = computeSafeOpenLines(iRow, iCol, fRow, fCol, board,
+    newBoard, color);
+  output.safeRestrictBonus = computeSafeRestrictionBonus(iRow, iCol, fRow,
+    fCol, board, newBoard, color);
+  output.castling = movetype === MoveType.CASTLE;
+  output.forward = color === Color.WHITE ? fRow - iRow : iRow - fRow;
+  output.centerBonus = centralityBonus(iRow, iCol, fRow, fCol);
+  return output;
+}
+
+export {computeCapturable, listAttackers, listDefenders, listAttackable, pieceValue, computeFeatures}
