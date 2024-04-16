@@ -248,7 +248,7 @@ function selectMove(gamedata, color, now) {
     tacticValues.push(tacticValue);
     let threatValue = computeThreatValue(board, nb, move, color);
     threatValues.push(threatValue);
-    let oppoev = elixirValue(gamestate, oppocolor, now);
+    let oppoev = elixirValue(gamestate.move(move), oppocolor, now);
     oppoEvs.push(oppoev);
   }
   //first, if any feasible threats, then select a move among them
@@ -302,12 +302,15 @@ function selectMove(gamedata, color, now) {
       - newBoards[i].listLegalMoves(oppocolor).length;
     let safeRestrict = oppoSafeBaseline
       - countSafeMoves(newBoards[i], oppocolor);
+    if(safeRestrict === oppoSafeBaseline && elixirCount >= 1.7) {
+      tv = threatValues[i];
+    }
     let centerBonus = centralityBonus(iRow, iCol, fRow, fCol);
     let forward = color === Color.WHITE ? fCol - iCol : iCol - fCol;
     let castling = board.moveType(iRow, iCol, fRow, fCol) === MoveType.CASTLE ? 
       1 : 0;
-    //let resultantev = elixirValue(gamestate.move(moves[i]), color, now);
-    let resultantev = elixirValue(gamestate, color, now);
+    let resultantev = elixirValue(gamestate.move(moves[i]), color, now);
+    //let resultantev = elixirValue(gamestate, color, now);
     if(tv < 0) {
       safeRestrict = 0;
       legalRestrict = 0;
@@ -319,6 +322,7 @@ function selectMove(gamedata, color, now) {
       legalMoveBonus /= 4;
       legalRestrict /= 4;
     }
+    if(tv > 0) resultantev = 0;
     if(DEBUG) {
       console.log("move " + iRow + iCol + fRow + fCol);
       console.log("   tactic value: " + tacticValues[i]);
