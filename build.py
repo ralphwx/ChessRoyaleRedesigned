@@ -35,3 +35,5 @@ with open("./main/" + outdir + "index.html") as f:
 new_html = original_html.replace("/static", "./static")
 with open("./main/" + outdir + "index.html", "w") as f:
     f.write(new_html)
+
+os.system("cp -r main docs")

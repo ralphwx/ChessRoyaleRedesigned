@@ -1,23 +1,23 @@
 
 import React from "react";
 
-import img_null from "./img/null.png";
-import w_pawn from "./img/w_pawn.png";
-import w_rook from "./img/w_rook.png";
-import w_knight from "./img/w_knight.png";
-import w_bishop from "./img/w_bishop.png";
-import w_queen from "./img/w_queen.png";
-import w_king from "./img/w_king.png";
-import b_pawn from "./img/b_pawn.png";
-import b_rook from "./img/b_rook.png";
-import b_knight from "./img/b_knight.png";
-import b_bishop from "./img/b_bishop.png";
-import b_queen from "./img/b_queen.png";
-import b_king from "./img/b_king.png";
-
 import Xarrow from "react-xarrows";
 import {colorOf, Color, Piece, DELAY, ARROW_TIME} from "../data/enums.mjs";
 import "./boardview.css";
+
+let img_null = "/null.png";
+let w_pawn = "/w_pawn.png";
+let w_rook = "/w_rook.png";
+let w_knight = "/w_knight.png";
+let w_bishop = "/w_bishop.png";
+let w_queen = "/w_queen.png";
+let w_king = "/w_king.png";
+let b_pawn = "/b_pawn.png";
+let b_rook = "/b_rook.png";
+let b_knight = "/b_knight.png";
+let b_bishop = "/b_bishop.png";
+let b_queen = "/b_queen.png";
+let b_king = "/b_king.png";
 
 function imgSrc(p) {
   switch(p) {

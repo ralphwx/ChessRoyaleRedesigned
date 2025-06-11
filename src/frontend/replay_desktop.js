@@ -3,9 +3,10 @@ import {HeaderRow} from "./header.js";
 import {ResourceBar} from "./resourcebar.js";
 import {Color, LoginType, ELIXIR, ARROW_TIME} from "../data/enums.mjs";
 import {BoardView} from "./boardview.js";
-import play from "./img/play.png";
-import pause from "./img/pause.png";
 import "./index.css";
+
+let play = "/play.png";
+let pause = "/pause.png";
 
 function InfoBar(props) {
   if(props.elo) {

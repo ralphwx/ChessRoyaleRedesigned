@@ -2,8 +2,9 @@ import {ARROW_TIME, ELIXIR, Color, LoginType} from "../data/enums.mjs";
 import {BoardView} from "./boardview.js";
 import {HeaderRow} from "./header.js";
 import {ResourceBar} from "./resourcebar.js";
-import play from "./img/play.png";
-import pause from "./img/pause.png";
+
+let play = "/play.png";
+let pause = "/pause.png";
 
 function InfoBar(props) {
   if(props.elo) {

@@ -10,6 +10,7 @@ import {DemoBot} from "../bots/randy_lv2.mjs";
 import {Location, LoginType, URL, Color} from "../data/enums.mjs";
 import {connect} from "./metaauthclient.mjs";
 import {encodeGameData} from "../data/gamedataencoder.mjs";
+import {OFFLINE} from "./config.js";
 
 let user = localStorage.getItem("username");
 let psw = localStorage.getItem("password");
@@ -25,6 +26,7 @@ if(loginType !== LoginType.LOGIN && loginType !== LoginType.GUEST) {
 }
 
 function generateReplay(servergame) {
+  if(OFFLINE) return;
   if(loginType !== LoginType.LOGIN && loginType !== LoginType.GUEST) {
     return;
   }
@@ -50,20 +52,22 @@ let model = new LocalModel(user, game, "", "500", generateReplay);
 let controller = new Controller(model, user, loginType);
 let view = <Game controller={controller} />
 
-connect(URL, user, psw, loginType, undefined, (socket) => {
-  if(loginType === LoginType.LOGIN) {
-    socket.notify("getUserInfo", {user: user}, (meta, args) => {
-      model.userElo = args.elo;
-      model.metaUpdate();
-    });
-  }
-  socket.notify("redirect?", {}, (meta, args) => {
-    if(args === Location.GAME) {
-      window.location.replace(URL + "/game");
+if(!OFFLINE) {
+  connect(URL, user, psw, loginType, undefined, (socket) => {
+    if(loginType === LoginType.LOGIN) {
+      socket.notify("getUserInfo", {user: user}, (meta, args) => {
+        model.userElo = args.elo;
+        model.metaUpdate();
+      });
     }
+    socket.notify("redirect?", {}, (meta, args) => {
+      if(args === Location.GAME) {
+        window.location.replace(URL + "/game");
+      }
+    });
+  }, (msg) => {
   });
-}, (msg) => {
-});
+}
 
 let bot = new DemoBot();
 runBotLocal(bot.moveValue, bot.elixirValue, 1000, 300, game, bot_name);

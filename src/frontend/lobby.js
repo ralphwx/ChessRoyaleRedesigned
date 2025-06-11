@@ -5,17 +5,20 @@ import {URL, LoginType, Location} from "../data/enums.mjs";
 import {renderPopUp} from "./popup.js";
 import {LobbyDisplay} from "./lobby_display.js";
 import "./lobby.css";
-//import "./index.css";
+import {OFFLINE} from "./config.js";
 
 let username = window.localStorage.getItem("username");
 let password = window.localStorage.getItem("password");
 let loginType = JSON.parse(window.localStorage.getItem("loginType"));
+if(OFFLINE) loginType = LoginType.GUEST;
 
 function handleCreateOpenChallenge(socket) {
+  if(socket === undefined) return;
   socket.notify("createOpenChallenge", {}, (meta, args) => {});
 }
 
 function handleCreatePrivateChallenge(socket, opponent) {
+  if(socket === undefined) return;
   socket.notify("createPrivateChallenge", opponent, (meta, args) => {
     if(!args.result) {
       renderPopUp(<h3>{args.message}</h3>, [{inner:"Okay", onClick:() => {}}]);
@@ -24,10 +27,12 @@ function handleCreatePrivateChallenge(socket, opponent) {
 }
 
 function handleCancelChallenge(socket) {
+  if(socket === undefined) return;
   socket.notify("cancelChallenge", {}, (meta, args) => {});
 }
 
 function handleAcceptChallenge(socket, opponent) {
+  if(socket === undefined) return;
   socket.notify("acceptChallenge", opponent, () => {});
 }
 
@@ -89,6 +94,20 @@ function LoginPopUp(props) {
   </div>
 }
 
+function SunsetPopUp(props) {
+    return <div>
+        <h2>Welcome to Chess Royale!</h2>
+        <p>
+            Due to a lack of interest in this game, I've decided to sunset all
+            multiplayer functionality (and stop paying for the server). You can
+            still play against the practice bots that I designed on this website
+            under "Practice". The code for this game is also publicly available
+            on GitHub, so feel free to clone and host your own server to play
+            with your friends!
+        </p>
+    </div>
+}
+
 function handleLogin() {
   let username = document.querySelector("#username-input").value;
   let password = document.querySelector("#password-input").value;
@@ -141,24 +160,34 @@ function requestAuthentication() {
 }
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-if(loginType !== null) {
-  connect(URL, username, password, loginType, undefined, (socket) => {
-    socket.addEventHandler("joined", (meta, args) => {
-      window.location.replace(URL + "/game");
-    });
-    socket.addEventHandler("started", (meta, args) => {
-      window.location.replace(URL + "/game");
-    });
-    socket.notify("redirect?", {}, (meta, args) => {
-      if(args === Location.GAME) {
-        window.location.replace(URL + "/game");
-      }
-    });
-    root.render(<Lobby user={username} loginType={loginType} socket={socket} />);
-  }, (msg) => {
-    requestAuthentication();
-  });
+if(OFFLINE) {
+  renderPopUp(<SunsetPopUp />, [
+    {
+      inner: "Okay",
+      onClick: () => {},
+    }
+  ]);
+  root.render(<Lobby user={""} socket={undefined} />);
 } else {
-  requestAuthentication();
+  if(loginType !== null) {
+    connect(URL, username, password, loginType, undefined, (socket) => {
+      socket.addEventHandler("joined", (meta, args) => {
+        window.location.replace(URL + "/game");
+      });
+      socket.addEventHandler("started", (meta, args) => {
+        window.location.replace(URL + "/game");
+      });
+      socket.notify("redirect?", {}, (meta, args) => {
+        if(args === Location.GAME) {
+          window.location.replace(URL + "/game");
+        }
+      });
+      root.render(<Lobby user={username} loginType={loginType} socket={socket} />);
+    }, (msg) => {
+      requestAuthentication();
+    });
+  } else {
+    requestAuthentication();
+  }
 }
 

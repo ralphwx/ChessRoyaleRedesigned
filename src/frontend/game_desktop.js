@@ -9,9 +9,10 @@ import {ChessMap} from "../data/maps.mjs";
 import {BoardView} from "./boardview.js";
 import {ChatBox} from "./chatbox.js";
 import {HoverButton} from "./hoverbutton.js";
-import abort from "./img/abort.png";
-import exit from "./img/exit.png";
-import resign from  "./img/flag.png";
+
+let abort = "/abort.png";
+let exit = "/exit.png";
+let resign = "/flag.png";
 
 const abort_img = <img className="playimg" src={abort} alt="?" />
 const exit_img = <img className="playimg" src={exit} alt="?" />

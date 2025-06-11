@@ -7,12 +7,11 @@ import {ChatBox} from "./chatbox.js";
 import {ChessBoard} from "../data/chess.mjs";
 import {ChessMap} from "../data/maps.mjs";
 import {ARROW_TIME, Color, ELIXIR, LoginType} from "../data/enums.mjs";
-
-import exit from "./img/exit.png";
-import resign from "./img/flag.png";
-import abort from "./img/abort.png";
-
 import "./index.css";
+
+let exit = "/exit.png";
+let resign = "/flag.png";
+let abort = "/abort.png";
 
 const abort_img = <img className="playimg" src={abort} alt="?" />;
 const exit_img = <img className="playimg" src={exit} alt="?" />;

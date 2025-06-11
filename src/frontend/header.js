@@ -1,9 +1,10 @@
 import React from "react";
-import logo1 from "./img/logo1.png";
-import logo2 from "./img/logo2.png";
 import {URL, LoginType} from "../data/enums.mjs";
 import {DynamicDisplay} from "./dynamicdisplay.js";
 import "./header.css";
+
+let logo1 = "/logo1.png";
+let logo2 = "/logo2.png";
 
 function logout() {
   localStorage.removeItem("username");
