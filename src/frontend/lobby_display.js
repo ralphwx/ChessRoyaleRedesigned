@@ -5,6 +5,7 @@ import {Tabs} from "./tabs.js";
 import {HeaderRow} from "./header.js";
 import {renderPopUp} from "./popup.js";
 import {URL, LoginType} from "../data/enums.mjs";
+import {OFFLINE} from "./config.js";
 
 const RowType = {
   NO_CHALLENGES: "empty",
@@ -121,7 +122,6 @@ function SpectateRow(props) {
 }
 
 function PracticeLobby(props) {
-  if(!props.data) return <LobbyRow type={RowType.LOADING} />;
   let output = [
     <LobbyRow
       key={"practice1"}
@@ -280,11 +280,14 @@ function handlePrivateChallenge(props) {
  *     opponent's username
  */
 function LobbyDisplay(props) {
-  let labels = ["Play", "Practice"];
-  let windows = [
-    <div>{<PlayersLobby {...props} />}</div>,
-    <div>{<PracticeLobby {...props} />}</div>,
-  ];
+  let labels = [];
+  let windows = [];
+  if(!OFFLINE) {
+    labels.push("Play");
+    windows.push(<div><PlayersLobby {...props} /></div>);
+  }
+  labels.push("Practice");
+  windows.push(<div><PracticeLobby {...props} /></div>);
   if(props.loginType === LoginType.LOGIN) {
     labels.push("Spectate");
     windows.push(<div><SpectateLobby {...props}/></div>);
