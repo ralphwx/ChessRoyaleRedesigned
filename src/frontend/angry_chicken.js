@@ -15,6 +15,7 @@ import {OFFLINE} from "./config.js";
 let user = localStorage.getItem("username");
 let psw = localStorage.getItem("password");
 let loginType = JSON.parse(localStorage.getItem("loginType"));
+if(OFFLINE) loginType = LoginType.GUEST;
 
 let bot_name = "Angry Chicken";
 
